@@ -1,0 +1,50 @@
+{
+  "$schema": "./_schema.json",
+  "id": "game_booth",
+  "display_name_key": "STALL_GAME_BOOTH_NAME",
+  "description_key": "STALL_GAME_BOOTH_DESC",
+  "rarity": "common",
+  "icon_path": "res://assets/sprites/stalls/game_booth_icon.png",
+  "sprite_sheet": "res://assets/sprites/stalls/game_booth.png",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "service",
+  "need_type": "joy",
+
+  "tiers": [
+	{
+	  "tier": 1,
+	  "cost_to_guest": 2,
+	  "value": 2,
+	  "service_duration": 3,
+	  "capacity": 1
+	},
+	{
+	  "tier": 2,
+	  "cost_to_guest": 2,
+	  "value": 2,
+	  "service_duration": 3,
+	  "capacity": 2
+	},
+	{
+	  "tier": 3,
+	  "cost_to_guest": 2,
+	  "value": 2,
+	  "service_duration": 3,
+	  "capacity": 3
+	}
+  ],
+
+  "placement_restriction": null,
+
+  "animations": {
+	"idle": { "frames": [0], "fps": 1, "loop": true },
+	"serving": { "frames": [1, 2, 3, 4], "fps": 8, "loop": true },
+	"empty": { "frames": [5], "fps": 1, "loop": true },
+	"upgrade": { "frames": [6, 7, 8], "fps": 10, "loop": false }
+  },
+
+  "tags": []
+}

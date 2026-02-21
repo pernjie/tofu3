@@ -1,0 +1,23 @@
+{
+  "$schema": "./_schema.json",
+  "id": "apothecary",
+  "display_name_key": "GUEST_APOTHECARY_NAME",
+  "description_key": "GUEST_APOTHECARY_DESC",
+  "rarity": "common",
+
+  "is_core_guest": true,
+
+  "base_stats": {
+    "needs": {
+      "food": 3
+    },
+    "money": 2,
+    "movement_speed": 1
+  },
+
+  "skills": [
+    { "skill_id": "restock_on_deplete" }
+  ],
+
+  "tags": []
+}

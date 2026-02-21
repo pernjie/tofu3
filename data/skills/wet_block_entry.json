@@ -1,0 +1,20 @@
+{
+  "$schema": "./_schema.json",
+  "id": "wet_block_entry",
+  "display_name_key": "SKILL_WET_BLOCK_ENTRY_NAME",
+  "description_key": "SKILL_WET_BLOCK_ENTRY_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_pre_enter_stall",
+
+  "parameters": {},
+
+  "conditions": [],
+
+  "effects": [
+    { "type": "block_entry" }
+  ],
+
+  "tags": ["debuff", "entry_block"]
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "./_schema.json",
+  "id": "encounter_apply_status",
+  "display_name_key": "SKILL_ENCOUNTER_APPLY_STATUS_NAME",
+  "description_key": "SKILL_ENCOUNTER_APPLY_STATUS_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_encounter",
+
+  "parameters": {
+    "status_id": {
+      "type": "string",
+      "default": ""
+    },
+    "stacks": {
+      "type": "int",
+      "default": 1
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    {
+      "type": "apply_status",
+      "target": "target",
+      "status_id": "{status_id}",
+      "stacks": "{stacks}"
+    }
+  ]
+}

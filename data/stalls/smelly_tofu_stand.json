@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "smelly_tofu_stand",
+  "display_name_key": "STALL_SMELLY_TOFU_STAND_NAME",
+  "description_key": "STALL_SMELLY_TOFU_STAND_DESC",
+  "rarity": "common",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "product",
+  "need_type": "food",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 2,
+      "value": 2,
+      "restock_amount": 2,
+      "restock_duration": 3,
+      "skills": [
+        { "skill_id": "smelly_aura" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 3,
+      "value": 3,
+      "restock_amount": 2,
+      "restock_duration": 3,
+      "skills": [
+        { "skill_id": "smelly_aura" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 4,
+      "value": 4,
+      "restock_amount": 2,
+      "restock_duration": 3,
+      "skills": [
+        { "skill_id": "smelly_aura" }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

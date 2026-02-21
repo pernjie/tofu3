@@ -1,0 +1,29 @@
+{
+  "$schema": "./_schema.json",
+  "id": "test_aura_debuff",
+  "display_name_key": "STATUS_TEST_AURA_DEBUFF",
+  "description_key": "STATUS_TEST_AURA_DEBUFF_DESC",
+  "icon_path": "",
+
+  "effect_type": "debuff",
+  "stack_type": "passive",
+  "max_stacks": 10,
+  "initial_stacks": 1,
+
+  "applicable_to": ["stall"],
+
+  "stat_modifiers": [
+    {
+      "stat": "value",
+      "operation": "add",
+      "value_per_stack": -1
+    }
+  ],
+
+  "granted_skills": [],
+  "on_apply_effects": [],
+  "on_turn_end_effects": [],
+  "on_remove_effects": [],
+
+  "tags": ["debuff"]
+}

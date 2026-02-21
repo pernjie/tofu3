@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StatusEffectDefinition",
+  "type": "object",
+  "required": ["id", "effect_type", "stack_type"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this status effect"
+    },
+    "display_name_key": {
+      "type": "string"
+    },
+    "description_key": {
+      "type": "string"
+    },
+    "icon_path": {
+      "type": "string"
+    },
+    "rarity": {
+      "type": "string",
+      "enum": ["common", "rare", "epic", "legendary"]
+    },
+    "effect_type": {
+      "type": "string",
+      "enum": ["buff", "debuff"],
+      "description": "Whether this is positive or negative"
+    },
+    "stack_type": {
+      "type": "string",
+      "enum": ["time", "trigger", "passive"],
+      "description": "How stacks are consumed (time=per turn, trigger=on event, passive=permanent)"
+    },
+    "max_stacks": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "initial_stacks": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "applicable_to": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["guest", "stall", "hero"]
+      },
+      "description": "Entity types this can be applied to"
+    },
+    "stat_modifiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stat", "operation"],
+        "properties": {
+          "stat": {
+            "type": "string",
+            "description": "Stat to modify (money, movement_speed, etc.)"
+          },
+          "operation": {
+            "type": "string",
+            "enum": ["add", "multiply", "set"],
+            "description": "How to apply the modifier"
+          },
+          "value": {
+            "type": "number",
+            "description": "Fixed value (for non-stacking)"
+          },
+          "value_per_stack": {
+            "type": "number",
+            "description": "Value multiplied by stack count"
+          }
+        }
+      }
+    },
+    "on_apply_effects": {
+      "type": "array",
+      "items": { "type": "object" },
+      "description": "Effects triggered when status is first applied"
+    },
+    "on_turn_end_effects": {
+      "type": "array",
+      "items": { "type": "object" },
+      "description": "Effects triggered at end of each turn"
+    },
+    "on_remove_effects": {
+      "type": "array",
+      "items": { "type": "object" },
+      "description": "Effects triggered when status is removed"
+    },
+    "granted_skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["skill_id"],
+        "properties": {
+          "skill_id": {
+            "type": "string",
+            "description": "ID of the skill definition to grant"
+          },
+          "parameters": {
+            "type": "object",
+            "description": "Parameter overrides for the granted skill"
+          }
+        }
+      },
+      "description": "Skills granted to the target while this status is active"
+    },
+    "is_aura": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this radiates to nearby entities"
+    },
+    "aura_range": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "aura_target_filter": {
+      "type": "object",
+      "description": "Filter for aura targets"
+    },
+    "visual": {
+      "type": "object",
+      "properties": {
+        "particle_effect": { "type": "string" },
+        "tint_color": { "type": "string" }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

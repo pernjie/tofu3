@@ -1,0 +1,39 @@
+{
+  "$schema": "./_schema.json",
+  "id": "encounter_consume_debuff",
+  "display_name_key": "SKILL_ENCOUNTER_CONSUME_DEBUFF_NAME",
+  "description_key": "SKILL_ENCOUNTER_CONSUME_DEBUFF_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_encounter",
+
+  "parameters": {
+    "amount": {
+      "type": "int",
+      "default": 1
+    }
+  },
+
+  "conditions": [
+    {
+      "type": "has_debuff",
+      "target": "target"
+    }
+  ],
+
+  "effects": [
+    {
+      "type": "remove_status",
+      "target": "target",
+      "status_filter": "debuff",
+      "count": 1
+    },
+    {
+      "type": "fulfill_need",
+      "target": "target",
+      "need_type": "random",
+      "amount": "{amount}"
+    }
+  ]
+}

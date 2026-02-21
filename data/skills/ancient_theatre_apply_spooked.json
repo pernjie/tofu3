@@ -1,0 +1,25 @@
+{
+  "$schema": "./_schema.json",
+  "id": "ancient_theatre_apply_spooked",
+  "display_name_key": "SKILL_ANCIENT_THEATRE_APPLY_SPOOKED_NAME",
+  "description_key": "SKILL_ANCIENT_THEATRE_APPLY_SPOOKED_DESC",
+  "icon_path": "",
+
+  "owner_types": ["stall"],
+  "trigger_type": "on_serve",
+
+  "parameters": {
+    "stacks": {
+      "type": "int",
+      "default": 4,
+      "min": 1,
+      "max": 10
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    { "type": "apply_status", "target": "guest", "status_id": "spooked", "stacks": "{stacks}" }
+  ]
+}

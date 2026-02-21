@@ -1,0 +1,21 @@
+{
+  "$schema": "./_schema.json",
+  "id": "seamstress",
+  "display_name_key": "GUEST_SEAMSTRESS_NAME",
+  "description_key": "GUEST_SEAMSTRESS_DESC",
+  "rarity": "rare",
+
+  "is_core_guest": true,
+
+  "base_stats": {
+    "needs": { "food": 2, "joy": 2 },
+    "money": 2,
+    "movement_speed": 1
+  },
+
+  "skills": [
+    { "skill_id": "perfectionist" }
+  ],
+
+  "tags": []
+}

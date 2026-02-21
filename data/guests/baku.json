@@ -1,0 +1,24 @@
+{
+  "$schema": "./_schema.json",
+  "id": "baku",
+  "display_name_key": "GUEST_BAKU_NAME",
+  "description_key": "GUEST_BAKU_DESC",
+  "rarity": "rare",
+
+  "is_core_guest": false,
+  "is_mythical_beast": true,
+  "spawn_at_exit": true,
+  "move_direction": "reverse",
+
+  "base_stats": {
+    "needs": { "interact": 3 },
+    "money": 0,
+    "movement_speed": 1
+  },
+
+  "skills": [
+    { "skill_id": "encounter_consume_debuff", "parameters": { "amount": 1 } }
+  ],
+
+  "tags": []
+}

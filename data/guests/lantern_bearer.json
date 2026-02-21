@@ -1,0 +1,23 @@
+{
+  "$schema": "./_schema.json",
+  "id": "lantern_bearer",
+  "display_name_key": "GUEST_LANTERN_BEARER_NAME",
+  "description_key": "GUEST_LANTERN_BEARER_DESC",
+  "rarity": "rare",
+
+  "is_core_guest": true,
+
+  "base_stats": {
+    "needs": {
+      "food": 3
+    },
+    "money": 2,
+    "movement_speed": 1
+  },
+
+  "skills": [
+    { "skill_id": "lantern_summon" }
+  ],
+
+  "tags": []
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "./_schema.json",
+  "id": "standard_run",
+  "display_name_key": "RUN_STANDARD_NAME",
+  "description_key": "RUN_STANDARD_DESC",
+  "acts": [
+    {
+      "act_number": 1,
+      "levels": ["test_level"],
+      "boss": "test_level"
+    }
+  ]
+}

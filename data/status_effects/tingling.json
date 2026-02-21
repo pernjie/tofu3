@@ -1,0 +1,38 @@
+{
+  "$schema": "./_schema.json",
+  "id": "tingling",
+  "display_name_key": "STATUS_TINGLING_NAME",
+  "description_key": "STATUS_TINGLING_DESC",
+  "icon_path": "",
+
+  "effect_type": "debuff",
+  "stack_type": "time",
+  "max_stacks": 10,
+  "initial_stacks": 1,
+
+  "applicable_to": ["guest"],
+
+  "stat_modifiers": [],
+
+  "granted_skills": [
+    { "skill_id": "tingling_reduce_food" }
+  ],
+
+  "on_apply_effects": [],
+
+  "on_turn_end_effects": [
+    {
+      "type": "remove_stacks",
+      "amount": 1
+    }
+  ],
+
+  "on_remove_effects": [],
+
+  "visual": {
+    "particle_effect": "",
+    "tint_color": "#FF4500"
+  },
+
+  "tags": ["debuff"]
+}

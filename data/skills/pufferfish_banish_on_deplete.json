@@ -1,0 +1,16 @@
+{
+  "$schema": "./_schema.json",
+  "id": "pufferfish_banish_on_deplete",
+  "display_name_key": "SKILL_PUFFERFISH_BANISH_ON_DEPLETE_NAME",
+  "description_key": "SKILL_PUFFERFISH_BANISH_ON_DEPLETE_DESC",
+  "owner_types": ["stall"],
+  "trigger_type": "on_serve",
+  "parameters": {},
+  "conditions": [
+    { "type": "stall_stock_check", "comparison": "equal", "value": 0 }
+  ],
+  "effects": [
+    { "type": "banish", "target": "guest" }
+  ],
+  "tags": ["banish", "food"]
+}

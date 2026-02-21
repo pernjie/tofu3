@@ -1,0 +1,25 @@
+{
+  "$schema": "./_schema.json",
+  "id": "tanuki",
+  "display_name_key": "GUEST_TANUKI_NAME",
+  "description_key": "GUEST_TANUKI_DESC",
+  "rarity": "rare",
+
+  "is_core_guest": false,
+  "is_mythical_beast": true,
+  "spawn_at_exit": true,
+  "move_direction": "reverse",
+
+  "base_stats": {
+    "needs": { "interact": 3 },
+    "money": 0,
+    "movement_speed": 1
+  },
+
+  "skills": [
+    { "skill_id": "encounter_fulfill_need", "parameters": { "need_type": "food", "amount": 2 } },
+    { "skill_id": "encounter_apply_status", "parameters": { "status_id": "lost", "stacks": 5 } }
+  ],
+
+  "tags": []
+}

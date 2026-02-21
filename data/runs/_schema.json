@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["id", "acts"],
+  "properties": {
+    "id": { "type": "string" },
+    "display_name_key": { "type": "string" },
+    "description_key": { "type": "string" },
+    "acts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["act_number", "levels", "boss"],
+        "properties": {
+          "act_number": { "type": "integer", "minimum": 1 },
+          "levels": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "boss": { "type": "string" }
+        }
+      }
+    }
+  }
+}

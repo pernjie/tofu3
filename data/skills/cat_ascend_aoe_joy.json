@@ -1,0 +1,21 @@
+{
+  "$schema": "./_schema.json",
+  "id": "cat_ascend_aoe_joy",
+  "display_name_key": "SKILL_CAT_ASCEND_AOE_JOY_NAME",
+  "description_key": "SKILL_CAT_ASCEND_AOE_JOY_DESC",
+  "owner_types": ["guest"],
+  "trigger_type": "on_ascend",
+  "conditions": [
+	{ "type": "always" }
+  ],
+  "effects": [
+	{
+	  "type": "fulfill_need",
+	  "target": "adjacent_guests",
+	  "need_type": "joy",
+	  "amount": 1,
+	  "range": 1
+	}
+  ],
+  "tags": ["aoe", "joy"]
+}

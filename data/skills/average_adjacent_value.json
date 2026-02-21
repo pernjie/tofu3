@@ -1,0 +1,18 @@
+{
+  "$schema": "./_schema.json",
+  "id": "average_adjacent_value",
+  "display_name_key": "SKILL_AVERAGE_ADJACENT_VALUE_NAME",
+  "description_key": "SKILL_AVERAGE_ADJACENT_VALUE_DESC",
+  "owner_types": ["stall"],
+  "trigger_type": "on_turn_start",
+  "parameters": {},
+  "conditions": [],
+  "effects": [
+    {
+      "type": "average_adjacent_stall_values",
+      "target": "self",
+      "stat": "value"
+    }
+  ],
+  "tags": ["synergy", "value_scaling"]
+}

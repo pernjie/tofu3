@@ -1,0 +1,32 @@
+{
+  "$schema": "./_schema.json",
+  "id": "closed",
+  "display_name_key": "STATUS_CLOSED_NAME",
+  "description_key": "STATUS_CLOSED_DESC",
+  "icon_path": "",
+
+  "effect_type": "debuff",
+  "stack_type": "passive",
+  "max_stacks": 1,
+  "initial_stacks": 1,
+
+  "applicable_to": ["stall"],
+
+  "stat_modifiers": [],
+
+  "granted_skills": [
+    { "skill_id": "closed_block_service" },
+    { "skill_id": "closed_block_entry" }
+  ],
+
+  "on_apply_effects": [],
+  "on_turn_end_effects": [],
+  "on_remove_effects": [],
+
+  "visual": {
+    "particle_effect": "",
+    "tint_color": "#888888"
+  },
+
+  "tags": ["debuff"]
+}

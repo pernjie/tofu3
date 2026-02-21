@@ -1,0 +1,31 @@
+{
+  "$schema": "./_schema.json",
+  "id": "well_rested",
+  "display_name_key": "STATUS_WELL_RESTED_NAME",
+  "description_key": "STATUS_WELL_RESTED_DESC",
+  "icon_path": "",
+
+  "effect_type": "buff",
+  "stack_type": "passive",
+  "max_stacks": 1,
+  "initial_stacks": 1,
+
+  "applicable_to": ["guest"],
+
+  "stat_modifiers": [],
+
+  "granted_skills": [
+    { "skill_id": "well_rested_double_fulfillment" }
+  ],
+
+  "on_apply_effects": [],
+  "on_turn_end_effects": [],
+  "on_remove_effects": [],
+
+  "visual": {
+    "particle_effect": "",
+    "tint_color": "#4488FF"
+  },
+
+  "tags": ["buff"]
+}

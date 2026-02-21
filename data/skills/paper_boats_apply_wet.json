@@ -1,0 +1,27 @@
+{
+  "$schema": "./_schema.json",
+  "id": "paper_boats_apply_wet",
+  "display_name_key": "SKILL_PAPER_BOATS_APPLY_WET_NAME",
+  "description_key": "SKILL_PAPER_BOATS_APPLY_WET_DESC",
+  "icon_path": "",
+
+  "owner_types": ["stall"],
+  "trigger_type": "on_serve",
+
+  "parameters": {
+    "stacks": {
+      "type": "int",
+      "default": 2,
+      "min": 1,
+      "max": 10
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    { "type": "apply_status", "target": "guest", "status_id": "wet", "stacks": "{stacks}" }
+  ],
+
+  "tags": ["debuff", "entry_block"]
+}

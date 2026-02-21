@@ -1,0 +1,13 @@
+{
+  "$schema": "./_schema.json",
+  "id": "pickle_stand_summon_kappa",
+  "display_name_key": "SKILL_PICKLE_STAND_SUMMON_KAPPA_NAME",
+  "owner_types": ["stall"],
+  "trigger_type": "on_restock",
+  "parameters": {},
+  "conditions": [],
+  "effects": [
+    { "type": "add_to_beast_queue", "guest_id": "kappa" }
+  ],
+  "tags": ["beast"]
+}

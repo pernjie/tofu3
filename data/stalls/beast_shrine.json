@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "beast_shrine",
+  "display_name_key": "STALL_BEAST_SHRINE_NAME",
+  "description_key": "STALL_BEAST_SHRINE_DESC",
+  "rarity": "rare",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "service",
+  "need_type": "joy",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 1,
+      "value": 0,
+      "service_duration": 2,
+      "capacity": 1,
+      "skills": [
+        { "skill_id": "beast_shrine_value", "parameters": { "per_beast": 1 } }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 1,
+      "value": 0,
+      "service_duration": 2,
+      "capacity": 2,
+      "skills": [
+        { "skill_id": "beast_shrine_value", "parameters": { "per_beast": 1 } }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 1,
+      "value": 0,
+      "service_duration": 2,
+      "capacity": 3,
+      "skills": [
+        { "skill_id": "beast_shrine_value", "parameters": { "per_beast": 1 } }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

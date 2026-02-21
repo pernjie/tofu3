@@ -1,0 +1,50 @@
+{
+  "$schema": "./_schema.json",
+  "id": "noodle_stand",
+  "display_name_key": "STALL_NOODLE_STAND_NAME",
+  "description_key": "STALL_NOODLE_STAND_DESC",
+  "rarity": "common",
+  "icon_path": "res://assets/sprites/stalls/noodle_stand_icon.png",
+  "sprite_sheet": "res://assets/sprites/stalls/noodle_stand.png",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "product",
+  "need_type": "food",
+
+  "tiers": [
+	{
+	  "tier": 1,
+	  "cost_to_guest": 1,
+	  "value": 1,
+	  "restock_amount": 2,
+	  "restock_duration": 2
+	},
+	{
+	  "tier": 2,
+	  "cost_to_guest": 1,
+	  "value": 1,
+	  "restock_amount": 3,
+	  "restock_duration": 2
+	},
+	{
+	  "tier": 3,
+	  "cost_to_guest": 1,
+	  "value": 1,
+	  "restock_amount": 4,
+	  "restock_duration": 2
+	}
+  ],
+
+  "placement_restriction": null,
+
+  "animations": {
+	"idle": { "frames": [0], "fps": 1, "loop": true },
+	"serving": { "frames": [1, 2, 3, 4], "fps": 8, "loop": false },
+	"empty": { "frames": [5], "fps": 1, "loop": true },
+	"upgrade": { "frames": [6, 7, 8], "fps": 10, "loop": false }
+  },
+
+  "tags": []
+}

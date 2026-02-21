@@ -1,0 +1,19 @@
+{
+  "$schema": "./_schema.json",
+  "id": "vine_basket_bonus_play",
+  "display_name_key": "SKILL_VINE_BASKET_BONUS_PLAY_NAME",
+  "description_key": "SKILL_VINE_BASKET_BONUS_PLAY_DESC",
+  "owner_types": ["relic"],
+  "trigger_type": "on_restock",
+  "global": true,
+  "state_template": { "granted_this_turn": 0 },
+  "parameters": {},
+  "conditions": [
+    { "type": "state_less_than", "state_key": "granted_this_turn", "value": 1 }
+  ],
+  "effects": [
+    { "type": "grant_bonus_play", "amount": 1 },
+    { "type": "increment_state", "state_key": "granted_this_turn" }
+  ],
+  "tags": ["deck"]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "./_schema.json",
+  "id": "tingling_reduce_food",
+  "display_name_key": "SKILL_TINGLING_REDUCE_FOOD_NAME",
+  "description_key": "SKILL_TINGLING_REDUCE_FOOD_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_pre_fulfill",
+
+  "parameters": {
+    "bonus": {
+      "type": "int",
+      "default": -1,
+      "min": -5,
+      "max": 0
+    }
+  },
+
+  "conditions": [
+    { "type": "need_type_check", "need_type": "food" }
+  ],
+
+  "effects": [
+    { "type": "modify_fulfillment", "bonus": "{bonus}" }
+  ]
+}

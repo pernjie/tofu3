@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "paper_boats",
+  "display_name_key": "STALL_PAPER_BOATS_NAME",
+  "description_key": "STALL_PAPER_BOATS_DESC",
+  "rarity": "common",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "service",
+  "need_type": "joy",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 0,
+      "value": 2,
+      "service_duration": 3,
+      "capacity": 1,
+      "skills": [
+        { "skill_id": "paper_boats_apply_wet", "parameters": { "stacks": 1 } }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 0,
+      "value": 2,
+      "service_duration": 3,
+      "capacity": 2,
+      "skills": [
+        { "skill_id": "paper_boats_apply_wet", "parameters": { "stacks": 1 } }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 0,
+      "value": 2,
+      "service_duration": 3,
+      "capacity": 3,
+      "skills": [
+        { "skill_id": "paper_boats_apply_wet", "parameters": { "stacks": 1 } }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "./_schema.json",
+  "id": "samurai",
+  "display_name_key": "GUEST_SAMURAI_NAME",
+  "description_key": "GUEST_SAMURAI_DESC",
+  "rarity": "rare",
+
+  "is_core_guest": true,
+
+  "base_stats": {
+    "needs": {
+      "food": 2,
+      "joy": 1
+    },
+    "money": 3,
+    "movement_speed": 1
+  },
+
+  "skills": [
+    { "skill_id": "samurai_status_immunity" },
+    { "skill_id": "samurai_banish_immunity" }
+  ],
+
+  "tags": []
+}

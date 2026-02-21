@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "unagi_stand",
+  "display_name_key": "STALL_UNAGI_STAND_NAME",
+  "description_key": "STALL_UNAGI_STAND_DESC",
+  "rarity": "rare",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "product",
+  "need_type": "food",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 2,
+      "value": 3,
+      "restock_amount": 1,
+      "restock_duration": 4,
+      "skills": [
+        { "skill_id": "unagi_escalating_restock" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 2,
+      "value": 3,
+      "restock_amount": 1,
+      "restock_duration": 3,
+      "skills": [
+        { "skill_id": "unagi_escalating_restock" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 2,
+      "value": 4,
+      "restock_amount": 1,
+      "restock_duration": 2,
+      "skills": [
+        { "skill_id": "unagi_escalating_restock" }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

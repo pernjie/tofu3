@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "pufferfish_stand",
+  "display_name_key": "STALL_PUFFERFISH_STAND_NAME",
+  "description_key": "STALL_PUFFERFISH_STAND_DESC",
+  "rarity": "rare",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "product",
+  "need_type": "food",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 3,
+      "value": 2,
+      "restock_amount": 3,
+      "restock_duration": 2,
+      "skills": [
+        { "skill_id": "pufferfish_banish_on_deplete" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 4,
+      "value": 3,
+      "restock_amount": 3,
+      "restock_duration": 2,
+      "skills": [
+        { "skill_id": "pufferfish_banish_on_deplete" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 5,
+      "value": 4,
+      "restock_amount": 3,
+      "restock_duration": 2,
+      "skills": [
+        { "skill_id": "pufferfish_banish_on_deplete" }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

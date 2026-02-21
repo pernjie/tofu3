@@ -1,0 +1,16 @@
+{
+  "$schema": "./_schema.json",
+  "id": "silk_market_midnight_shift",
+  "display_name_key": "SKILL_SILK_MARKET_MIDNIGHT_SHIFT_NAME",
+  "description_key": "SKILL_SILK_MARKET_MIDNIGHT_SHIFT_DESC",
+  "owner_types": ["stall"],
+  "trigger_type": "on_midnight",
+  "parameters": {
+    "need_type": { "type": "string", "default": "food" }
+  },
+  "conditions": [],
+  "effects": [
+    { "type": "change_stall_need_type", "need_type": "{need_type}" }
+  ],
+  "tags": ["midnight", "transformation"]
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "./_schema.json",
+  "id": "cat_lady_summon",
+  "display_name_key": "SKILL_CAT_LADY_SUMMON_NAME",
+  "description_key": "SKILL_CAT_LADY_SUMMON_DESC",
+  "owner_types": ["guest"],
+  "trigger_type": "on_spawn",
+  "conditions": [
+	{ "type": "always" }
+  ],
+  "effects": [
+	{
+	  "type": "summon_guest",
+	  "guest_id": "cat"
+	}
+  ],
+  "tags": ["summon"]
+}

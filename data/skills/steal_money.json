@@ -1,0 +1,34 @@
+{
+  "$schema": "./_schema.json",
+  "id": "steal_money",
+  "display_name_key": "SKILL_STEAL_MONEY_NAME",
+  "description_key": "SKILL_STEAL_MONEY_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_encounter",
+
+  "parameters": {
+    "amount": {
+      "type": "int",
+      "default": 1
+    }
+  },
+
+  "conditions": [
+    {
+      "type": "money_threshold",
+      "target": "target",
+      "comparison": "greater_than",
+      "value": 0
+    }
+  ],
+
+  "effects": [
+    {
+      "type": "steal_money",
+      "target": "target",
+      "amount": "{amount}"
+    }
+  ]
+}

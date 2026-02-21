@@ -1,0 +1,27 @@
+{
+  "$schema": "./_schema.json",
+  "id": "beast_shrine_value",
+  "display_name_key": "SKILL_BEAST_SHRINE_VALUE_NAME",
+  "description_key": "SKILL_BEAST_SHRINE_VALUE_DESC",
+  "icon_path": "",
+
+  "owner_types": ["stall"],
+  "trigger_type": "on_turn_start",
+
+  "parameters": {
+    "per_beast": {
+      "type": "int",
+      "default": 1,
+      "min": 1,
+      "max": 10
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    { "type": "scale_stat_by_beast_count", "target": "self", "stat": "value", "per_beast": "{per_beast}" }
+  ],
+
+  "tags": ["beast_synergy", "value_scaling"]
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "./_schema.json",
+  "id": "lost_reverse_movement",
+  "display_name_key": "SKILL_LOST_REVERSE_MOVEMENT_NAME",
+  "description_key": "SKILL_LOST_REVERSE_MOVEMENT_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_pre_move",
+
+  "parameters": {
+    "chance": {
+      "type": "float",
+      "default": 0.25,
+      "min": 0.0,
+      "max": 1.0
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    {
+      "type": "chance_reverse_movement",
+      "chance": "{chance}"
+    }
+  ]
+}

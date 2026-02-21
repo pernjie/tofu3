@@ -1,0 +1,32 @@
+{
+  "$schema": "./_schema.json",
+  "id": "apply_status_on_interact",
+  "display_name_key": "SKILL_APPLY_STATUS_ON_INTERACT_NAME",
+  "description_key": "SKILL_APPLY_STATUS_ON_INTERACT_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_interact",
+
+  "parameters": {
+    "status_id": {
+      "type": "string",
+      "default": ""
+    },
+    "stacks": {
+      "type": "int",
+      "default": 1
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    {
+      "type": "apply_status",
+      "target": "target",
+      "status_id": "{status_id}",
+      "stacks": "{stacks}"
+    }
+  ]
+}

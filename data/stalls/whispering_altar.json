@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "whispering_altar",
+  "display_name_key": "STALL_WHISPERING_ALTAR_NAME",
+  "description_key": "STALL_WHISPERING_ALTAR_DESC",
+  "rarity": "rare",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "product",
+  "need_type": "any",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 3,
+      "value": 4,
+      "restock_amount": 1,
+      "auto_restock": false,
+      "skills": [
+        { "skill_id": "whispering_altar_banish_restock" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 4,
+      "value": 4,
+      "restock_amount": 2,
+      "auto_restock": false,
+      "skills": [
+        { "skill_id": "whispering_altar_banish_restock" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 5,
+      "value": 4,
+      "restock_amount": 3,
+      "auto_restock": false,
+      "skills": [
+        { "skill_id": "whispering_altar_banish_restock" }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

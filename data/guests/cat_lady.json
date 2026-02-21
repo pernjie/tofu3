@@ -1,0 +1,32 @@
+{
+  "$schema": "./_schema.json",
+  "id": "cat_lady",
+  "display_name_key": "GUEST_CAT_LADY_NAME",
+  "description_key": "GUEST_CAT_LADY_DESC",
+  "rarity": "rare",
+  "icon_path": "res://assets/sprites/guests/cat_lady_icon.png",
+  "sprite_sheet": "res://assets/sprites/guests/cat_lady.png",
+
+  "is_core_guest": true,
+
+  "base_stats": {
+	"needs": {
+	  "joy": 2
+	},
+	"money": 2,
+	"movement_speed": 1
+  },
+
+  "skills": [
+	{ "skill_id": "cat_lady_summon" }
+  ],
+
+  "animations": {
+	"idle": { "frames": [0, 1, 2, 3], "fps": 8, "loop": true },
+	"walk": { "frames": [4, 5, 6, 7], "fps": 12, "loop": true },
+	"happy": { "frames": [8, 9, 10, 11], "fps": 8, "loop": false },
+	"sad": { "frames": [12, 13, 14, 15], "fps": 6, "loop": false }
+  },
+
+  "tags": []
+}

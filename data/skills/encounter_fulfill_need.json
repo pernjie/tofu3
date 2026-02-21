@@ -1,0 +1,40 @@
+{
+  "$schema": "./_schema.json",
+  "id": "encounter_fulfill_need",
+  "display_name_key": "SKILL_ENCOUNTER_FULFILL_NEED_NAME",
+  "description_key": "SKILL_ENCOUNTER_FULFILL_NEED_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_encounter",
+
+  "parameters": {
+    "need_type": {
+      "type": "string",
+      "default": ""
+    },
+    "amount": {
+      "type": "int",
+      "default": 1
+    }
+  },
+
+  "conditions": [
+    {
+      "type": "need_threshold",
+      "target": "target",
+      "need_type": "{need_type}",
+      "comparison": "greater_than",
+      "value": 0
+    }
+  ],
+
+  "effects": [
+    {
+      "type": "fulfill_need",
+      "target": "target",
+      "need_type": "{need_type}",
+      "amount": "{amount}"
+    }
+  ]
+}

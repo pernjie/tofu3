@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "shadow_puppets",
+  "display_name_key": "STALL_SHADOW_PUPPETS_NAME",
+  "description_key": "STALL_SHADOW_PUPPETS_DESC",
+  "rarity": "rare",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "service",
+  "need_type": "joy",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 1,
+      "value": 0,
+      "service_duration": 4,
+      "capacity": 2,
+      "skills": [
+        { "skill_id": "average_adjacent_value" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 1,
+      "value": 0,
+      "service_duration": 4,
+      "capacity": 3,
+      "skills": [
+        { "skill_id": "average_adjacent_value" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 1,
+      "value": 0,
+      "service_duration": 4,
+      "capacity": 4,
+      "skills": [
+        { "skill_id": "average_adjacent_value" }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

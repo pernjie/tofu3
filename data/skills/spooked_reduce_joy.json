@@ -1,0 +1,27 @@
+{
+  "$schema": "./_schema.json",
+  "id": "spooked_reduce_joy",
+  "display_name_key": "SKILL_SPOOKED_REDUCE_JOY_NAME",
+  "description_key": "SKILL_SPOOKED_REDUCE_JOY_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_pre_fulfill",
+
+  "parameters": {
+    "bonus": {
+      "type": "int",
+      "default": -1,
+      "min": -5,
+      "max": 0
+    }
+  },
+
+  "conditions": [
+    { "type": "need_type_check", "need_type": "joy" }
+  ],
+
+  "effects": [
+    { "type": "modify_fulfillment", "bonus": "{bonus}" }
+  ]
+}

@@ -1,0 +1,43 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="night"
+run/main_scene="res://src/ui/screens/start/start_screen.tscn"
+config/features=PackedStringArray("4.5", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+EventBus="*res://src/autoload/event_bus.gd"
+ContentRegistry="*res://src/autoload/content_registry.gd"
+BoardSystem="*res://src/autoload/board_system.gd"
+TriggerSystem="*res://src/systems/trigger_system.gd"
+TurnSystem="*res://src/systems/turn_system.gd"
+GameManager="*res://src/autoload/game_manager.gd"
+AnimationCoordinator="*res://src/autoload/animation_coordinator.gd"
+TileOccupancyManager="*res://src/autoload/tile_occupancy_manager.gd"
+LevelFlowManager="*res://src/autoload/level_flow_manager.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="viewport"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

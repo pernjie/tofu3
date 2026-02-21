@@ -1,0 +1,15 @@
+{
+  "$schema": "./_schema.json",
+  "id": "whispering_altar_banish_restock",
+  "display_name_key": "SKILL_WHISPERING_ALTAR_BANISH_RESTOCK_NAME",
+  "description_key": "SKILL_WHISPERING_ALTAR_BANISH_RESTOCK_DESC",
+  "owner_types": ["stall"],
+  "trigger_type": "on_banish",
+  "global": true,
+  "parameters": {},
+  "conditions": [],
+  "effects": [
+    { "type": "restock_stall", "target": "owner" }
+  ],
+  "tags": ["restock", "banish_synergy"]
+}

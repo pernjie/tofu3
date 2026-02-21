@@ -1,0 +1,19 @@
+{
+  "$schema": "./_schema.json",
+  "id": "rest_house_grant_well_rested",
+  "display_name_key": "SKILL_REST_HOUSE_GRANT_WELL_RESTED_NAME",
+  "description_key": "SKILL_REST_HOUSE_GRANT_WELL_RESTED_DESC",
+  "icon_path": "",
+
+  "owner_types": ["stall"],
+  "trigger_type": "on_serve",
+
+  "parameters": {},
+  "conditions": [],
+
+  "effects": [
+    { "type": "apply_status", "target": "guest", "status_id": "well_rested", "stacks": 1 }
+  ],
+
+  "tags": ["buff", "rest"]
+}

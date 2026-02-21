@@ -1,0 +1,23 @@
+{
+  "$schema": "./_schema.json",
+  "id": "spider_lady",
+  "display_name_key": "GUEST_SPIDER_LADY_NAME",
+  "description_key": "GUEST_SPIDER_LADY_DESC",
+  "rarity": "rare",
+
+  "is_core_guest": true,
+
+  "base_stats": {
+    "needs": {
+      "joy": 8
+    },
+    "money": 8,
+    "movement_speed": 1
+  },
+
+  "skills": [
+    { "skill_id": "spider_transform" }
+  ],
+
+  "tags": []
+}

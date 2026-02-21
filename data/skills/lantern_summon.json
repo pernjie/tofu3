@@ -1,0 +1,23 @@
+{
+  "$schema": "./_schema.json",
+  "id": "lantern_summon",
+  "display_name_key": "SKILL_LANTERN_SUMMON_NAME",
+  "description_key": "SKILL_LANTERN_SUMMON_DESC",
+  "owner_types": ["guest"],
+  "trigger_type": "on_spawn",
+  "parameters": {
+    "count": { "type": "int", "default": 2, "min": 1, "max": 5 },
+    "needs_count": { "type": "int", "default": 1, "min": 1, "max": 3 },
+    "money": { "type": "int", "default": 1, "min": 1, "max": 10 }
+  },
+  "conditions": [],
+  "effects": [
+    {
+      "type": "summon_from_queue",
+      "count": "{count}",
+      "needs_count": "{needs_count}",
+      "money": "{money}"
+    }
+  ],
+  "tags": ["summon"]
+}

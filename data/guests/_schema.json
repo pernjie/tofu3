@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GuestDefinition",
+  "type": "object",
+  "required": ["id", "display_name_key", "base_stats"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this guest"
+    },
+    "display_name_key": {
+      "type": "string",
+      "description": "Localization key for display name"
+    },
+    "description_key": {
+      "type": "string",
+      "description": "Localization key for description"
+    },
+    "rarity": {
+      "type": "string",
+      "enum": ["common", "rare", "epic", "legendary"],
+      "default": "common"
+    },
+    "icon_path": {
+      "type": "string",
+      "description": "Path to icon resource"
+    },
+    "sprite_sheet": {
+      "type": "string",
+      "description": "Path to sprite sheet resource"
+    },
+    "is_core_guest": {
+      "type": "boolean",
+      "default": true,
+      "description": "False for summons, mythical beasts"
+    },
+    "is_boss": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_mythical_beast": {
+      "type": "boolean",
+      "default": false
+    },
+    "spawn_at_exit": {
+      "type": "boolean",
+      "default": false,
+      "description": "For mythical beasts that spawn at path end"
+    },
+    "move_direction": {
+      "type": "string",
+      "enum": ["forward", "reverse"],
+      "default": "forward"
+    },
+    "base_stats": {
+      "type": "object",
+      "required": ["needs", "money"],
+      "properties": {
+        "needs": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": "Need types and their base values (food, joy, interact)"
+        },
+        "money": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "movement_speed": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["skill_id"],
+        "properties": {
+          "skill_id": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "animations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "frames": {
+            "type": "array",
+            "items": { "type": "integer" }
+          },
+          "fps": { "type": "integer" },
+          "loop": { "type": "boolean" }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

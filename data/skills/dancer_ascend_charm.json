@@ -1,0 +1,21 @@
+{
+  "$schema": "./_schema.json",
+  "id": "dancer_ascend_charm",
+  "display_name_key": "SKILL_DANCER_ASCEND_CHARM_NAME",
+  "description_key": "SKILL_DANCER_ASCEND_CHARM_DESC",
+  "owner_types": ["guest"],
+  "trigger_type": "on_ascend",
+  "conditions": [
+	{ "type": "always" }
+  ],
+  "effects": [
+	{
+	  "type": "apply_status",
+	  "target": "adjacent_guests",
+	  "status_id": "charmed",
+	  "stacks": 8,
+	  "range": 1
+	}
+  ],
+  "tags": ["aoe", "charm", "debuff"]
+}

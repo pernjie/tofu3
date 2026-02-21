@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "red_bean_stand",
+  "display_name_key": "STALL_RED_BEAN_STAND_NAME",
+  "description_key": "STALL_RED_BEAN_STAND_DESC",
+  "rarity": "common",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "product",
+  "need_type": "food",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 1,
+      "value": 1,
+      "restock_amount": 2,
+      "restock_duration": 2,
+      "skills": [
+        { "skill_id": "red_bean_spawn_charmed", "parameters": { "stacks": 3 } }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 1,
+      "value": 1,
+      "restock_amount": 3,
+      "restock_duration": 2,
+      "skills": [
+        { "skill_id": "red_bean_spawn_charmed", "parameters": { "stacks": 3 } }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 1,
+      "value": 1,
+      "restock_amount": 4,
+      "restock_duration": 2,
+      "skills": [
+        { "skill_id": "red_bean_spawn_charmed", "parameters": { "stacks": 3 } }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

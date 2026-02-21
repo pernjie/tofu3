@@ -1,0 +1,26 @@
+{
+  "$schema": "./_schema.json",
+  "id": "encounter_banish",
+  "display_name_key": "SKILL_ENCOUNTER_BANISH_NAME",
+  "description_key": "SKILL_ENCOUNTER_BANISH_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_encounter",
+
+  "conditions": [
+    {
+      "type": "compare_needs",
+      "target": "target",
+      "compare_to": "source",
+      "comparison": "less_or_equal"
+    }
+  ],
+
+  "effects": [
+    {
+      "type": "banish",
+      "target": "target"
+    }
+  ]
+}

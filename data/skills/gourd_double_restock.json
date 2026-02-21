@@ -1,0 +1,19 @@
+{
+  "$schema": "./_schema.json",
+  "id": "gourd_double_restock",
+  "display_name_key": "SKILL_GOURD_DOUBLE_RESTOCK_NAME",
+  "description_key": "SKILL_GOURD_DOUBLE_RESTOCK_DESC",
+  "owner_types": ["relic"],
+  "trigger_type": "on_restock",
+  "global": true,
+  "state_template": { "restock_count": 0 },
+  "parameters": {},
+  "conditions": [
+    { "type": "state_less_than", "state_key": "restock_count", "value": 1 }
+  ],
+  "effects": [
+    { "type": "bonus_restock" },
+    { "type": "increment_state", "state_key": "restock_count" }
+  ],
+  "tags": ["economy"]
+}

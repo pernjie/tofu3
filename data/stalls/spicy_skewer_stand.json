@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "spicy_skewer_stand",
+  "display_name_key": "STALL_SPICY_SKEWER_STAND_NAME",
+  "description_key": "STALL_SPICY_SKEWER_STAND_DESC",
+  "rarity": "common",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "product",
+  "need_type": "food",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 1,
+      "value": 2,
+      "restock_amount": 2,
+      "restock_duration": 3,
+      "skills": [
+        { "skill_id": "spicy_skewer_apply_tingling", "parameters": { "stacks": 4 } }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 1,
+      "value": 2,
+      "restock_amount": 2,
+      "restock_duration": 2,
+      "skills": [
+        { "skill_id": "spicy_skewer_apply_tingling", "parameters": { "stacks": 4 } }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 1,
+      "value": 2,
+      "restock_amount": 2,
+      "restock_duration": 1,
+      "skills": [
+        { "skill_id": "spicy_skewer_apply_tingling", "parameters": { "stacks": 4 } }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

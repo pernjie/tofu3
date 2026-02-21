@@ -1,0 +1,27 @@
+{
+  "$schema": "./_schema.json",
+  "id": "well_rested_double_fulfillment",
+  "display_name_key": "SKILL_WELL_RESTED_DOUBLE_FULFILLMENT_NAME",
+  "description_key": "SKILL_WELL_RESTED_DOUBLE_FULFILLMENT_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_pre_fulfill",
+
+  "parameters": {
+    "multiplier": {
+      "type": "float",
+      "default": 2.0,
+      "min": 1.0,
+      "max": 10.0
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    { "type": "modify_fulfillment", "multiplier": "{multiplier}" }
+  ],
+
+  "tags": ["buff", "rest"]
+}

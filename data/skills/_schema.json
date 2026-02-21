@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SkillDefinition",
+  "type": "object",
+  "required": ["id", "trigger_type", "owner_types", "effects"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this skill"
+    },
+    "display_name_key": {
+      "type": "string"
+    },
+    "description_key": {
+      "type": "string"
+    },
+    "icon_path": {
+      "type": "string"
+    },
+    "rarity": {
+      "type": "string",
+      "enum": ["common", "rare", "epic", "legendary"]
+    },
+    "trigger_type": {
+      "type": "string",
+      "enum": [
+        "passive",
+        "aura",
+        "on_serve",
+        "on_pre_serve",
+        "on_pre_move",
+        "on_spawn",
+        "on_turn_start",
+        "on_turn_end",
+        "on_enter_stall",
+        "on_pre_enter_stall",
+        "on_need_fulfilled",
+        "on_ascend",
+        "on_descended",
+        "on_status_applied",
+        "on_status_removed",
+        "on_restock",
+        "on_upgrade",
+        "on_place",
+        "on_interact",
+        "on_encounter",
+        "on_midnight",
+        "on_level_start",
+        "on_pre_status",
+        "on_banish",
+        "on_pre_banish",
+        "on_pre_fulfill",
+        "on_bulk_serve"
+      ],
+      "description": "When this skill triggers"
+    },
+    "owner_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["guest", "stall", "relic", "hero", "spell"]
+      },
+      "description": "Entity types that can have this skill"
+    },
+    "global": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, this skill fires on any matching event regardless of entity involvement. Used for observer skills (e.g., a relic reacting to any stall restock). If false (default), the skill only fires when its owner is a participant in the event."
+    },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["int", "float", "string", "bool"]
+          },
+          "default": {},
+          "min": { "type": "number" },
+          "max": { "type": "number" }
+        }
+      },
+      "description": "Configurable parameters for this skill"
+    },
+    "state_template": {
+      "type": "object",
+      "description": "Initial state for stateful skills (counters, etc.)"
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Condition type (always, has_status, need_threshold, etc.)"
+          }
+        }
+      }
+    },
+    "effects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Effect type (grant_tokens, fulfill_need, apply_status, etc.)"
+          },
+          "target": {
+            "type": "string",
+            "description": "Target selector (self, player, trigger_guest, etc.)"
+          }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

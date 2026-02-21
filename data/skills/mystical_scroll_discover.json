@@ -1,0 +1,17 @@
+{
+  "$schema": "./_schema.json",
+  "id": "mystical_scroll_discover",
+  "display_name_key": "SKILL_MYSTICAL_SCROLL_DISCOVER_NAME",
+  "owner_types": ["relic"],
+  "trigger_type": "on_place",
+  "parameters": {
+    "pool": { "type": "string_array", "default": ["baku", "nine_tailed_fox", "hanzaki", "tanuki"] },
+    "count": { "type": "int", "default": 3 },
+    "store_key": { "type": "string", "default": "chosen_beast_id" }
+  },
+  "conditions": [],
+  "effects": [
+    { "type": "discover", "pool": "{pool}", "count": "{count}", "store_key": "{store_key}" }
+  ],
+  "tags": ["beast"]
+}

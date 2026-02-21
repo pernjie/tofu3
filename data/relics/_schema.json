@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RelicDefinition",
+  "type": "object",
+  "required": ["id", "display_name_key", "card_type"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this relic"
+    },
+    "display_name_key": {
+      "type": "string"
+    },
+    "description_key": {
+      "type": "string"
+    },
+    "rarity": {
+      "type": "string",
+      "enum": ["common", "rare", "epic", "legendary"],
+      "default": "common"
+    },
+    "icon_path": {
+      "type": "string"
+    },
+    "card_type": {
+      "type": "string",
+      "const": "relic"
+    },
+    "hero_id": {
+      "type": "string",
+      "default": "",
+      "description": "Empty string for neutral cards"
+    },
+    "skills": {
+      "type": "array",
+      "description": "Skills active for the lifetime of the relic",
+      "items": {
+        "type": "object",
+        "required": ["skill_id"],
+        "properties": {
+          "skill_id": { "type": "string" },
+          "parameters": { "type": "object" }
+        }
+      }
+    },
+    "sprite_sheet": {
+      "type": "string"
+    },
+    "animations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "frames": {
+            "type": "array",
+            "items": { "type": "integer" }
+          },
+          "fps": { "type": "integer" },
+          "loop": { "type": "boolean" }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

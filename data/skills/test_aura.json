@@ -1,0 +1,17 @@
+{
+  "$schema": "./_schema.json",
+  "id": "test_aura",
+  "display_name_key": "SKILL_TEST_AURA",
+  "description_key": "SKILL_TEST_AURA_DESC",
+  "trigger_type": "aura",
+  "owner_types": ["stall"],
+  "global": false,
+  "parameters": {
+    "range": { "type": "int", "default": 1 },
+    "target_type": { "type": "string", "default": "stall" },
+    "status_effect_id": { "type": "string", "default": "test_aura_debuff" },
+    "exclude_self": { "type": "bool", "default": true }
+  },
+  "conditions": [],
+  "effects": []
+}

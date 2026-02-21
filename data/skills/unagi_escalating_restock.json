@@ -1,0 +1,17 @@
+{
+  "$schema": "./_schema.json",
+  "id": "unagi_escalating_restock",
+  "display_name_key": "SKILL_UNAGI_ESCALATING_RESTOCK_NAME",
+  "description_key": "SKILL_UNAGI_ESCALATING_RESTOCK_DESC",
+  "owner_types": ["stall"],
+  "trigger_type": "on_restock",
+  "global": false,
+  "state_template": { "restock_count": 0 },
+  "parameters": {},
+  "conditions": [],
+  "effects": [
+    { "type": "state_bonus_stock", "state_key": "restock_count" },
+    { "type": "increment_state", "state_key": "restock_count" }
+  ],
+  "tags": ["economy", "scaling"]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "./_schema.json",
+  "id": "gourd",
+  "display_name_key": "RELIC_GOURD_NAME",
+  "description_key": "RELIC_GOURD_DESC",
+  "rarity": "common",
+  "card_type": "relic",
+  "hero_id": "",
+  "skills": [
+    { "skill_id": "gourd_double_restock" }
+  ],
+  "sprite_sheet": "",
+  "animations": {},
+  "tags": ["economy"]
+}

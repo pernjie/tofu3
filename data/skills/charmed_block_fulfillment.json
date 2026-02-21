@@ -1,0 +1,28 @@
+{
+  "$schema": "./_schema.json",
+  "id": "charmed_block_fulfillment",
+  "display_name_key": "SKILL_CHARMED_BLOCK_FULFILLMENT_NAME",
+  "description_key": "SKILL_CHARMED_BLOCK_FULFILLMENT_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_pre_serve",
+
+  "parameters": {
+    "chance": {
+      "type": "float",
+      "default": 0.25,
+      "min": 0.0,
+      "max": 1.0
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    {
+      "type": "chance_block_fulfillment",
+      "chance": "{chance}"
+    }
+  ]
+}

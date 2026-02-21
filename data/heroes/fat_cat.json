@@ -1,0 +1,25 @@
+{
+  "$schema": "./_schema.json",
+  "id": "fat_cat",
+  "display_name_key": "HERO_FAT_CAT_NAME",
+  "description_key": "HERO_FAT_CAT_DESC",
+  "icon_path": "",
+  "portrait_path": "",
+
+  "starting_stats": {
+    "reputation": 10,
+    "tokens": 100
+  },
+
+  "opening_hand_size": 4,
+
+  "starting_deck": [
+    { "card_id": "noodle_stand", "count": 3 },
+    { "card_id": "game_booth", "count": 3 }
+  ],
+
+  "exclusive_cards": [],
+  "passive_skills": [],
+  "unlock_condition": {},
+  "progression": {}
+}

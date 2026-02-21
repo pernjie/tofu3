@@ -1,0 +1,20 @@
+{
+  "$schema": "./_schema.json",
+  "id": "blacksmith_status_immunity",
+  "display_name_key": "SKILL_BLACKSMITH_STATUS_IMMUNITY_NAME",
+  "description_key": "SKILL_BLACKSMITH_STATUS_IMMUNITY_DESC",
+
+  "trigger_type": "on_pre_status",
+  "owner_types": ["stall"],
+
+  "parameters": {},
+
+  "conditions": [
+    { "type": "always" }
+  ],
+  "effects": [
+    { "type": "block_status" }
+  ],
+
+  "tags": ["immunity"]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "./_schema.json",
+  "id": "disruptive_entrance",
+  "display_name_key": "SKILL_DISRUPTIVE_ENTRANCE_NAME",
+  "description_key": "SKILL_DISRUPTIVE_ENTRANCE_DESC",
+  "owner_types": ["guest"],
+  "trigger_type": "on_enter_stall",
+  "conditions": [
+    { "type": "always" }
+  ],
+  "effects": [
+    { "type": "reset_service_durations" }
+  ],
+  "tags": ["disruption"]
+}

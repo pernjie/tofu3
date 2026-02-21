@@ -1,0 +1,17 @@
+{
+  "$schema": "./_schema.json",
+  "id": "midnight_feast",
+  "display_name_key": "SKILL_MIDNIGHT_FEAST_NAME",
+  "description_key": "SKILL_MIDNIGHT_FEAST_DESC",
+  "owner_types": ["stall"],
+  "trigger_type": "on_midnight",
+  "parameters": {
+    "value_multiplier": { "type": "int", "default": 2, "min": 1, "max": 10 }
+  },
+  "conditions": [],
+  "effects": [
+    { "type": "modify_stat", "target": "self", "stat": "value", "operation": "multiply", "value": "{value_multiplier}" },
+    { "type": "modify_stat", "target": "self", "stat": "cost_to_guest", "operation": "set", "value": 0 }
+  ],
+  "tags": ["midnight", "buff"]
+}

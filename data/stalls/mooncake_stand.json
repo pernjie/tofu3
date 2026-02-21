@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "mooncake_stand",
+  "display_name_key": "STALL_MOONCAKE_STAND_NAME",
+  "description_key": "STALL_MOONCAKE_STAND_DESC",
+  "rarity": "common",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "product",
+  "need_type": "food",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 1,
+      "value": 1,
+      "restock_amount": 4,
+      "restock_duration": 5,
+      "skills": [
+        { "skill_id": "midnight_feast" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 1,
+      "value": 1,
+      "restock_amount": 4,
+      "restock_duration": 4,
+      "skills": [
+        { "skill_id": "midnight_feast" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 1,
+      "value": 1,
+      "restock_amount": 4,
+      "restock_duration": 3,
+      "skills": [
+        { "skill_id": "midnight_feast" }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": ["midnight"]
+}

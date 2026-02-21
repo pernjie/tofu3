@@ -1,0 +1,25 @@
+{
+  "$schema": "./_schema.json",
+  "id": "spicy_skewer_apply_tingling",
+  "display_name_key": "SKILL_SPICY_SKEWER_APPLY_TINGLING_NAME",
+  "description_key": "SKILL_SPICY_SKEWER_APPLY_TINGLING_DESC",
+  "icon_path": "",
+
+  "owner_types": ["stall"],
+  "trigger_type": "on_serve",
+
+  "parameters": {
+    "stacks": {
+      "type": "int",
+      "default": 2,
+      "min": 1,
+      "max": 10
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    { "type": "apply_status", "target": "guest", "status_id": "tingling", "stacks": "{stacks}" }
+  ]
+}

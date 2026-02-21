@@ -1,0 +1,97 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://src/game/game.gd" id="1_game"]
+[ext_resource type="PackedScene" path="res://src/ui/board_visual.tscn" id="2_board"]
+[ext_resource type="Script" path="res://src/systems/deck_system.gd" id="3_deck"]
+[ext_resource type="PackedScene" path="res://src/ui/components/debug_info_panel.tscn" id="4_debug"]
+[ext_resource type="Script" path="res://src/ui/hand_display.gd" id="5_hand"]
+[ext_resource type="Script" path="res://src/ui/components/debug_console.gd" id="6_debug_console"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_game")
+
+[node name="BoardVisual" parent="." instance=ExtResource("2_board")]
+position = Vector2(100, 50)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="TopBar" type="HBoxContainer" parent="HUD"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 700.0
+offset_bottom = 60.0
+theme_override_constants/separation = 50
+
+[node name="TokensLabel" type="Label" parent="HUD/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Tokens: 100"
+
+[node name="ReputationLabel" type="Label" parent="HUD/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Reputation: 10"
+
+[node name="TurnLabel" type="Label" parent="HUD/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Turn: 1"
+
+[node name="QueueLabel" type="Label" parent="HUD/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Queue: 0"
+
+[node name="PhaseLabel" type="Label" parent="HUD"]
+offset_left = 20.0
+offset_top = 70.0
+offset_right = 300.0
+offset_bottom = 110.0
+theme_override_font_sizes/font_size = 20
+text = "Phase: Idle"
+
+[node name="DebugInfoPanel" parent="HUD" instance=ExtResource("4_debug")]
+
+[node name="HandLayer" type="CanvasLayer" parent="."]
+
+[node name="HandDisplay" type="Control" parent="HandLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -220.0
+offset_right = 400.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("5_hand")
+
+[node name="EndTurnButton" type="Button" parent="HandLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -80.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 22
+text = "End Turn"
+
+[node name="DebugConsole" type="PanelContainer" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -220.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("6_debug_console")
+
+[node name="DeckSystem" type="Node" parent="."]
+script = ExtResource("3_deck")

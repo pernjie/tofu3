@@ -1,0 +1,21 @@
+{
+  "$schema": "./_schema.json",
+  "id": "restock_on_deplete",
+  "display_name_key": "SKILL_RESTOCK_ON_DEPLETE_NAME",
+  "description_key": "SKILL_RESTOCK_ON_DEPLETE_DESC",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_serve",
+
+  "parameters": {},
+
+  "conditions": [
+    { "type": "stall_stock_check", "comparison": "equal", "value": 0 }
+  ],
+
+  "effects": [
+    { "type": "restock_stall" }
+  ],
+
+  "tags": ["service", "restock"]
+}

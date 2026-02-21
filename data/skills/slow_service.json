@@ -1,0 +1,31 @@
+{
+  "$schema": "./_schema.json",
+  "id": "slow_service",
+  "display_name_key": "SKILL_SLOW_SERVICE_NAME",
+  "description_key": "SKILL_SLOW_SERVICE_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_spawn",
+
+  "parameters": {
+    "multiplier": {
+      "type": "int",
+      "default": 2,
+      "min": 1,
+      "max": 10
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    {
+      "type": "modify_stat",
+      "target": "self",
+      "stat": "service_duration_multiplier",
+      "operation": "multiply",
+      "value": "{multiplier}"
+    }
+  ]
+}

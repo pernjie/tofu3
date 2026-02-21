@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "dojo",
+  "display_name_key": "STALL_DOJO_NAME",
+  "description_key": "STALL_DOJO_DESC",
+  "rarity": "rare",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "bulk_service",
+  "need_type": "joy",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 2,
+      "value": 3,
+      "service_duration": 4,
+      "capacity": 2,
+      "skills": [
+        { "skill_id": "banish_weakest_after_bulk" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 2,
+      "value": 3,
+      "service_duration": 3,
+      "capacity": 2,
+      "skills": [
+        { "skill_id": "banish_weakest_after_bulk" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 2,
+      "value": 3,
+      "service_duration": 2,
+      "capacity": 2,
+      "skills": [
+        { "skill_id": "banish_weakest_after_bulk" }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

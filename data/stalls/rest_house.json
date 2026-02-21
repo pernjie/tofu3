@@ -1,0 +1,52 @@
+{
+  "$schema": "./_schema.json",
+  "id": "rest_house",
+  "display_name_key": "STALL_REST_HOUSE_NAME",
+  "description_key": "STALL_REST_HOUSE_DESC",
+  "rarity": "common",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "service",
+  "need_type": "joy",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 0,
+      "value": 0,
+      "service_duration": 4,
+      "capacity": 4,
+      "skills": [
+        { "skill_id": "rest_house_grant_well_rested" },
+        { "skill_id": "rest_house_close_on_midnight" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 0,
+      "value": 0,
+      "service_duration": 4,
+      "capacity": 6,
+      "skills": [
+        { "skill_id": "rest_house_grant_well_rested" },
+        { "skill_id": "rest_house_close_on_midnight" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 0,
+      "value": 0,
+      "service_duration": 4,
+      "capacity": 8,
+      "skills": [
+        { "skill_id": "rest_house_grant_well_rested" },
+        { "skill_id": "rest_house_close_on_midnight" }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

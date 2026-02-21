@@ -1,0 +1,17 @@
+{
+  "$schema": "./_schema.json",
+  "id": "drunkard",
+  "display_name_key": "GUEST_DRUNKARD_NAME",
+  "description_key": "GUEST_DRUNKARD_DESC",
+  "rarity": "common",
+  "is_core_guest": true,
+  "base_stats": {
+    "needs": { "joy": 2 },
+    "money": 4,
+    "movement_speed": 1
+  },
+  "skills": [
+    { "skill_id": "disruptive_entrance" }
+  ],
+  "tags": []
+}

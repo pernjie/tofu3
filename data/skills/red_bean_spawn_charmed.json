@@ -1,0 +1,15 @@
+{
+  "$schema": "./_schema.json",
+  "id": "red_bean_spawn_charmed",
+  "display_name_key": "SKILL_RED_BEAN_SPAWN_CHARMED_NAME",
+  "owner_types": ["stall"],
+  "trigger_type": "on_restock",
+  "parameters": {
+    "stacks": { "type": "int", "default": 3, "min": 1, "max": 10 }
+  },
+  "conditions": [],
+  "effects": [
+    { "type": "spawn_next_from_queue", "status_id": "charmed", "stacks": "{stacks}" }
+  ],
+  "tags": ["spawn", "debuff"]
+}

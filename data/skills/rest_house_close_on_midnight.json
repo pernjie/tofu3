@@ -1,0 +1,19 @@
+{
+  "$schema": "./_schema.json",
+  "id": "rest_house_close_on_midnight",
+  "display_name_key": "SKILL_REST_HOUSE_CLOSE_ON_MIDNIGHT_NAME",
+  "description_key": "SKILL_REST_HOUSE_CLOSE_ON_MIDNIGHT_DESC",
+  "icon_path": "",
+
+  "owner_types": ["stall"],
+  "trigger_type": "on_midnight",
+
+  "parameters": {},
+  "conditions": [],
+
+  "effects": [
+    { "type": "apply_status", "target": "self", "status_id": "closed", "stacks": 1 }
+  ],
+
+  "tags": ["midnight", "closed"]
+}

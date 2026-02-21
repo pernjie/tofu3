@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StallDefinition",
+  "type": "object",
+  "required": ["id", "display_name_key", "card_type", "operation_model", "need_type", "tiers"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this stall"
+    },
+    "display_name_key": {
+      "type": "string"
+    },
+    "description_key": {
+      "type": "string"
+    },
+    "rarity": {
+      "type": "string",
+      "enum": ["common", "rare", "epic", "legendary"],
+      "default": "common"
+    },
+    "icon_path": {
+      "type": "string"
+    },
+    "sprite_sheet": {
+      "type": "string"
+    },
+    "card_type": {
+      "type": "string",
+      "const": "stall"
+    },
+    "hero_id": {
+      "type": "string",
+      "default": "",
+      "description": "Empty string for neutral cards"
+    },
+    "operation_model": {
+      "type": "string",
+      "enum": ["product", "service", "bulk_service"],
+      "description": "Product stalls have stock, service stalls have capacity, bulk_service stalls wait for capacity before serving"
+    },
+    "need_type": {
+      "type": "string",
+      "enum": ["food", "joy", "any"],
+      "description": "Type of need this stall fulfills. 'any' matches any unfulfilled need (randomly chosen)"
+    },
+    "tiers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["tier", "cost_to_guest", "value"],
+        "properties": {
+          "tier": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "cost_to_guest": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Money cost to guest"
+          },
+          "value": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "How much need it fulfills"
+          },
+          "restock_amount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Product stalls: stock restored on restock"
+          },
+          "restock_duration": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Product stalls: turns between restocks"
+          },
+          "service_duration": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Service stalls: turns guest stays"
+          },
+          "capacity": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Service stalls: max simultaneous guests"
+          },
+          "auto_restock": {
+            "type": "boolean",
+            "default": true,
+            "description": "Product stalls: if false, stock never restocks automatically on cooldown"
+          },
+          "skills": {
+            "type": "array",
+            "description": "Skills active at this tier",
+            "items": {
+              "type": "object",
+              "required": ["skill_id"],
+              "properties": {
+                "skill_id": { "type": "string" },
+                "parameters": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "placement_restriction": {
+      "type": ["string", "null"],
+      "description": "Optional placement rule ID"
+    },
+    "animations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "frames": {
+            "type": "array",
+            "items": { "type": "integer" }
+          },
+          "fps": { "type": "integer" },
+          "loop": { "type": "boolean" }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

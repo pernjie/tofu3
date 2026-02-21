@@ -1,0 +1,43 @@
+{
+  "$schema": "./_schema.json",
+  "id": "charmed",
+  "display_name_key": "STATUS_CHARMED_NAME",
+  "description_key": "STATUS_CHARMED_DESC",
+  "icon_path": "res://assets/sprites/effects/charmed.png",
+
+  "effect_type": "debuff",
+  "stack_type": "time",
+  "max_stacks": 10,
+  "initial_stacks": 1,
+
+  "applicable_to": ["guest"],
+
+  "stat_modifiers": [],
+
+  "granted_skills": [
+    {
+      "skill_id": "charmed_block_fulfillment",
+      "parameters": {
+        "chance": 0.25
+      }
+    }
+  ],
+
+  "on_apply_effects": [],
+
+  "on_turn_end_effects": [
+    {
+      "type": "remove_stacks",
+      "amount": 1
+    }
+  ],
+
+  "on_remove_effects": [],
+
+  "visual": {
+    "particle_effect": "res://assets/effects/charm_particles.tscn",
+    "tint_color": "#FF69B4"
+  },
+
+  "tags": ["debuff"]
+}

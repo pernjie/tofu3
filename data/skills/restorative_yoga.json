@@ -1,0 +1,33 @@
+{
+  "$schema": "./_schema.json",
+  "id": "restorative_yoga",
+  "display_name_key": "SKILL_RESTORATIVE_YOGA_NAME",
+  "description_key": "SKILL_RESTORATIVE_YOGA_DESC",
+  "icon_path": "",
+
+  "owner_types": ["stall"],
+  "trigger_type": "on_pre_serve",
+
+  "parameters": {
+    "bonus": {
+      "type": "int",
+      "default": 1,
+      "min": 1,
+      "max": 10
+    }
+  },
+
+  "conditions": [
+    {
+      "type": "has_debuff",
+      "target": "guest"
+    }
+  ],
+
+  "effects": [
+    {
+      "type": "modify_fulfillment",
+      "bonus": "{bonus}"
+    }
+  ]
+}

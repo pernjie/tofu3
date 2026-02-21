@@ -1,0 +1,19 @@
+{
+  "$schema": "./_schema.json",
+  "id": "banish_weakest_after_bulk",
+  "display_name_key": "SKILL_BANISH_WEAKEST_AFTER_BULK_NAME",
+  "description_key": "SKILL_BANISH_WEAKEST_AFTER_BULK_DESC",
+
+  "owner_types": ["stall"],
+  "trigger_type": "on_bulk_serve",
+
+  "conditions": [],
+
+  "effects": [
+    {
+      "type": "banish_from_group",
+      "target": "min",
+      "compare_stat": "remaining_need"
+    }
+  ]
+}

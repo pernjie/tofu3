@@ -1,0 +1,49 @@
+{
+  "$schema": "./_schema.json",
+  "id": "silk_market",
+  "display_name_key": "STALL_SILK_MARKET_NAME",
+  "description_key": "STALL_SILK_MARKET_DESC",
+  "rarity": "rare",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "service",
+  "need_type": "joy",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 1,
+      "value": 2,
+      "service_duration": 2,
+      "capacity": 2,
+      "skills": [
+        { "skill_id": "silk_market_midnight_shift" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 2,
+      "value": 3,
+      "service_duration": 2,
+      "capacity": 2,
+      "skills": [
+        { "skill_id": "silk_market_midnight_shift" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 3,
+      "value": 4,
+      "service_duration": 2,
+      "capacity": 2,
+      "skills": [
+        { "skill_id": "silk_market_midnight_shift" }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": ["midnight"]
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "./_schema.json",
+  "id": "perfectionist",
+  "display_name_key": "SKILL_PERFECTIONIST_NAME",
+  "description_key": "SKILL_PERFECTIONIST_DESC",
+  "owner_types": ["guest"],
+  "trigger_type": "on_need_fulfilled",
+  "parameters": {
+    "required_amount": { "type": "int", "default": 2, "min": 1, "max": 10 }
+  },
+  "conditions": [
+    { "type": "amount_check", "comparison": "equal", "value": "{required_amount}" }
+  ],
+  "effects": [
+    { "type": "force_ascend", "target": "self" }
+  ],
+  "tags": ["ascension"]
+}

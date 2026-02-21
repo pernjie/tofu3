@@ -1,0 +1,17 @@
+{
+  "$schema": "./_schema.json",
+  "id": "spider_transform",
+  "display_name_key": "SKILL_SPIDER_TRANSFORM_NAME",
+  "description_key": "SKILL_SPIDER_TRANSFORM_DESC",
+  "owner_types": ["guest"],
+  "trigger_type": "on_midnight",
+  "parameters": {
+    "from_need_type": { "type": "string", "default": "joy" },
+    "to_need_type": { "type": "string", "default": "food" }
+  },
+  "conditions": [],
+  "effects": [
+    { "type": "transform_need", "from_need_type": "{from_need_type}", "to_need_type": "{to_need_type}" }
+  ],
+  "tags": ["midnight", "transformation"]
+}

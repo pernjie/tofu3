@@ -1,0 +1,22 @@
+{
+  "$schema": "./_schema.json",
+  "id": "ninja",
+  "display_name_key": "GUEST_NINJA_NAME",
+  "description_key": "GUEST_NINJA_DESC",
+  "rarity": "common",
+
+  "is_core_guest": true,
+
+  "base_stats": {
+    "needs": {
+      "food": 2,
+      "joy": 2
+    },
+    "money": 5,
+    "movement_speed": 2
+  },
+
+  "skills": [],
+
+  "tags": []
+}
