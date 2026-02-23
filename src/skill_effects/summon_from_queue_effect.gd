@@ -68,7 +68,7 @@ func execute(context: TriggerContext, skill: SkillInstance) -> SkillEffectResult
 		for j in range(mini(needs_count, shuffled_needs.size())):
 			mini_needs[shuffled_needs[j]] = 1
 
-		var summoned = BoardSystem.summon_mini_guest(
+		var summoned = BoardSystem.summon_guest_with_overrides(
 			picked_def, path_id, spawn_index, mini_needs, money)
 		if summoned:
 			result.add_modified_target(summoned)

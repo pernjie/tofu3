@@ -174,9 +174,9 @@ func summon_guest(guest_def: GuestDefinition, path_id: String = "", spawn_index:
 	return guest
 
 
-func summon_mini_guest(guest_def: GuestDefinition, path_id: String, spawn_index: int,
+func summon_guest_with_overrides(guest_def: GuestDefinition, path_id: String, spawn_index: int,
 		needs_override: Dictionary, money_override: int) -> GuestInstance:
-	## Spawn a mini copy of a guest with overridden needs/money.
+	## Spawn a guest from a definition with overridden needs/money.
 	## Creates instance from definition (preserving skills), then overrides stats.
 	## Handles entity creation, reposition, and guest_spawned event.
 	var guest = spawn_guest(guest_def, path_id, spawn_index)

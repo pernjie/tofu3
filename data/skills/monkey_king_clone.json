@@ -1,0 +1,15 @@
+{
+  "$schema": "./_schema.json",
+  "id": "monkey_king_clone",
+  "display_name_key": "SKILL_MONKEY_KING_CLONE_NAME",
+  "description_key": "SKILL_MONKEY_KING_CLONE_DESC",
+  "owner_types": ["guest"],
+  "trigger_type": "on_need_fulfilled",
+  "conditions": [
+    { "type": "has_remaining_needs", "target": "self" }
+  ],
+  "effects": [
+    { "type": "clone_self" }
+  ],
+  "tags": ["boss", "summon"]
+}

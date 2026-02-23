@@ -75,6 +75,8 @@ static func create(effect_data: Dictionary) -> SkillEffect:
 			return GrantBonusPlayEffect.new(effect_data)
 		"set_state":
 			return SetStateEffect.new(effect_data)
+		"clone_self":
+			return CloneSelfEffect.new(effect_data)
 		_:
 			push_warning("Unknown effect type: %s" % effect_type)
 			return SkillEffect.new(effect_data)

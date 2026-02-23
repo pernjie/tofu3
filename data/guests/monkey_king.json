@@ -1,0 +1,18 @@
+{
+  "$schema": "./_schema.json",
+  "id": "monkey_king",
+  "display_name_key": "GUEST_MONKEY_KING_NAME",
+  "description_key": "GUEST_MONKEY_KING_DESC",
+  "rarity": "legendary",
+  "is_core_guest": true,
+  "is_boss": true,
+  "base_stats": {
+    "needs": { "food": 2, "joy": 3 },
+    "money": 6,
+    "movement_speed": 1
+  },
+  "skills": [
+    { "skill_id": "monkey_king_clone" }
+  ],
+  "tags": ["boss"]
+}
