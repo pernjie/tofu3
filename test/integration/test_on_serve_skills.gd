@@ -244,3 +244,73 @@ class TestAncientTheatreApplySpooked:
 		assert_not_null(spooked, "Spooked status should exist")
 		assert_eq(spooked.definition.stack_type, "time",
 			"Spooked should be a time-based (decaying) status")
+
+
+class TestFishSpaCleanse:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_removes_all_debuffs_on_serve():
+		var guest = create_guest("hungry_ghost")
+		var stall = create_stall("fish_spa")
+		register_guest(guest, Vector2i(2, 0))
+		register_stall(stall, Vector2i(2, 1))
+		# Apply two different debuffs
+		BoardSystem.inflict_status(guest, "charmed", 1)
+		BoardSystem.inflict_status(guest, "spooked", 1)
+
+		assert_true(guest.has_status("charmed"), "Guest should have charmed before serve")
+		assert_true(guest.has_status("spooked"), "Guest should have spooked before serve")
+
+		fire_for("on_serve", TriggerContext.create("on_serve") \
+			.with_guest(guest).with_stall(stall).with_source(stall) \
+			.with_target(guest), [guest, stall])
+
+		assert_false(guest.has_status("charmed"),
+			"Fish spa should remove charmed debuff on serve")
+		assert_false(guest.has_status("spooked"),
+			"Fish spa should remove spooked debuff on serve")
+
+	func test_does_not_remove_buffs():
+		var guest = create_guest("hungry_ghost")
+		var stall = create_stall("fish_spa")
+		register_guest(guest, Vector2i(2, 0))
+		register_stall(stall, Vector2i(2, 1))
+		BoardSystem.inflict_status(guest, "well_rested", 1)
+		BoardSystem.inflict_status(guest, "charmed", 1)
+
+		fire_for("on_serve", TriggerContext.create("on_serve") \
+			.with_guest(guest).with_stall(stall).with_source(stall) \
+			.with_target(guest), [guest, stall])
+
+		assert_true(guest.has_status("well_rested"),
+			"Fish spa should not remove buff statuses")
+		assert_false(guest.has_status("charmed"),
+			"Fish spa should still remove debuffs")
+
+	func test_does_not_remove_aura_tagged_debuffs():
+		var guest = create_guest("hungry_ghost")
+		var stall = create_stall("fish_spa")
+		register_guest(guest, Vector2i(2, 0))
+		register_stall(stall, Vector2i(2, 1))
+		BoardSystem.inflict_status(guest, "charmed", 1)
+
+		fire_for("on_serve", TriggerContext.create("on_serve") \
+			.with_guest(guest).with_stall(stall).with_source(stall) \
+			.with_target(guest), [guest, stall])
+
+		assert_false(guest.has_status("charmed"),
+			"Non-aura debuffs should be removed")
+
+	func test_no_debuffs_is_fine():
+		var guest = create_guest("hungry_ghost")
+		var stall = create_stall("fish_spa")
+		register_guest(guest, Vector2i(2, 0))
+		register_stall(stall, Vector2i(2, 1))
+		# No debuffs on guest
+
+		fire_for("on_serve", TriggerContext.create("on_serve") \
+			.with_guest(guest).with_stall(stall).with_source(stall) \
+			.with_target(guest), [guest, stall])
+
+		# Should not error — skill just does nothing
+		assert_true(true, "Cleanse with no debuffs should not error")

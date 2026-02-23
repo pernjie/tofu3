@@ -25,5 +25,5 @@
   "on_turn_end_effects": [],
   "on_remove_effects": [],
 
-  "tags": ["debuff"]
+  "tags": ["debuff", "aura"]
 }

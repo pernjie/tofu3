@@ -9,11 +9,19 @@ extends SkillEffect
 ##   target: "self", "target", "guest"
 ##   status_filter: "debuff", "buff", or a specific status_id
 ##   count: int or "{parameter_name}" (default 1, -1 for all)
+##   exclude_tags: string or Array[String] — skip statuses whose definition has any of these tags
 
 
 func execute(context: TriggerContext, skill: SkillInstance) -> SkillEffectResult:
 	var status_filter = resolve_string_parameter("status_filter", skill, "debuff")
 	var count = resolve_int_parameter("count", skill, 1)
+	var exclude_tags_raw = effect_data.get("exclude_tags", [])
+	var exclude_tags: Array[String] = []
+	if exclude_tags_raw is String:
+		exclude_tags.append(exclude_tags_raw)
+	elif exclude_tags_raw is Array:
+		for tag in exclude_tags_raw:
+			exclude_tags.append(str(tag))
 
 	var target_entity = resolve_target(context, skill)
 	if not target_entity:
@@ -25,12 +33,22 @@ func execute(context: TriggerContext, skill: SkillInstance) -> SkillEffectResult
 		if not effect or not effect.definition:
 			continue
 		if status_filter == "debuff" or status_filter == "buff":
-			if effect.definition.effect_type == status_filter:
-				matches.append(effect)
+			if effect.definition.effect_type != status_filter:
+				continue
 		else:
 			# Treat as specific status_id
-			if effect.definition.id == status_filter:
-				matches.append(effect)
+			if effect.definition.id != status_filter:
+				continue
+		# Check exclude_tags
+		if not exclude_tags.is_empty():
+			var excluded = false
+			for tag in exclude_tags:
+				if effect.definition.tags.has(tag):
+					excluded = true
+					break
+			if excluded:
+				continue
+		matches.append(effect)
 
 	if matches.is_empty():
 		return SkillEffectResult.failed("No matching status effects to remove")

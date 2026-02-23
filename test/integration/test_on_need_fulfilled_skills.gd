@@ -46,7 +46,7 @@ class TestMonkeyKingClone:
 	extends "res://test/helpers/test_base.gd"
 
 	func test_clone_spawns_on_partial_fulfillment():
-		var mk = create_guest("monkey_king")  # needs: food 3, joy 3, money 6
+		var mk = create_guest("monkey_king")  # needs: food 3, joy 3, money 8
 		register_guest(mk, Vector2i(2, 0))
 
 		# Fulfill 1 food — still has remaining needs
@@ -67,7 +67,7 @@ class TestMonkeyKingClone:
 			"Clone should have 2 food remaining (same as owner)")
 		assert_eq(clone.current_needs.get("joy", 0), 3,
 			"Clone should have 3 joy remaining (same as owner)")
-		assert_eq(clone.current_money, 6,
+		assert_eq(clone.current_money, 8,
 			"Clone should have same money as owner")
 
 	func test_no_clone_when_fully_fulfilled():

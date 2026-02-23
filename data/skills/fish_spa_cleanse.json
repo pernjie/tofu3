@@ -1,0 +1,26 @@
+{
+  "$schema": "./_schema.json",
+  "id": "fish_spa_cleanse",
+  "display_name_key": "SKILL_FISH_SPA_CLEANSE_NAME",
+  "description_key": "SKILL_FISH_SPA_CLEANSE_DESC",
+  "icon_path": "",
+
+  "owner_types": ["stall"],
+  "trigger_type": "on_serve",
+
+  "parameters": {},
+
+  "conditions": [],
+
+  "effects": [
+    {
+      "type": "remove_status",
+      "target": "guest",
+      "status_filter": "debuff",
+      "count": -1,
+      "exclude_tags": ["aura"]
+    }
+  ],
+
+  "tags": ["cleanse"]
+}

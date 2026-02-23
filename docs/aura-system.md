@@ -73,6 +73,8 @@ Recalculation is triggered by board state changes:
 
 Aura-applied statuses should use `stack_type: "passive"` — they persist until explicitly revoked by the AuraSystem when the target leaves range or the source is removed. They should not decay on their own.
 
+Aura status effect definitions **must include `"aura"` in their `tags` array**. This allows cleanse effects (e.g., `remove_status` with `exclude_tags: ["aura"]`) to skip aura-applied statuses — removing them would be pointless since the aura reapplies them when the target re-enters range.
+
 ### Level Lifecycle
 
 - `BoardSystem.clear_level()` calls `aura_system.clear_all()`, which revokes all applied statuses and clears tracking
@@ -122,7 +124,8 @@ Create `data/status_effects/<id>.json` with `stack_type: "passive"`:
     { "stat": "value", "operation": "add", "value_per_stack": -1 }
   ],
   "on_turn_end_effects": [],
-  "granted_skills": []
+  "granted_skills": [],
+  "tags": ["debuff", "aura"]
 }
 ```
 
