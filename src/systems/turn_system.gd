@@ -30,6 +30,11 @@ var _midnight_emitted: bool = false
 var midnight_threshold_fraction: float = 0.0
 var _initial_core_guest_count: int = 0
 
+
+func is_after_midnight() -> bool:
+	return _midnight_emitted
+
+
 # External references
 var board_system = null  # Set via set_board_system()
 var board_visual: BoardVisual = null  # Set via set_board_visual()

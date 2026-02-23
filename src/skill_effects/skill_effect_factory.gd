@@ -89,6 +89,10 @@ static func create(effect_data: Dictionary) -> SkillEffect:
 			return ModifyReputationEffect.new(effect_data)
 		"restock_all_product_stalls":
 			return RestockAllProductStallsEffect.new(effect_data)
+		"modify_persistent_state":
+			return ModifyPersistentStateEffect.new(effect_data)
+		"apply_persistent_bonus":
+			return ApplyPersistentBonusEffect.new(effect_data)
 		_:
 			push_warning("Unknown effect type: %s" % effect_type)
 			return SkillEffect.new(effect_data)

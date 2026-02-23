@@ -1,0 +1,52 @@
+{
+  "$schema": "./_schema.json",
+  "id": "magic_mochi_stand",
+  "display_name_key": "STALL_MAGIC_MOCHI_STAND_NAME",
+  "description_key": "STALL_MAGIC_MOCHI_STAND_DESC",
+  "rarity": "rare",
+
+  "card_type": "stall",
+  "hero_id": "",
+
+  "operation_model": "product",
+  "need_type": "food",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "cost_to_guest": 1,
+      "value": 1,
+      "restock_amount": 1,
+      "restock_duration": 5,
+      "skills": [
+        { "skill_id": "mochi_stand_bonus_value" },
+        { "skill_id": "mochi_stand_permanent_growth" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 1,
+      "value": 1,
+      "restock_amount": 1,
+      "restock_duration": 4,
+      "skills": [
+        { "skill_id": "mochi_stand_bonus_value" },
+        { "skill_id": "mochi_stand_permanent_growth" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 1,
+      "value": 1,
+      "restock_amount": 1,
+      "restock_duration": 3,
+      "skills": [
+        { "skill_id": "mochi_stand_bonus_value" },
+        { "skill_id": "mochi_stand_permanent_growth" }
+      ]
+    }
+  ],
+
+  "placement_restriction": null,
+  "tags": []
+}

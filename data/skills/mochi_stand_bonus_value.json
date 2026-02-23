@@ -1,0 +1,16 @@
+{
+  "$schema": "./_schema.json",
+  "id": "mochi_stand_bonus_value",
+  "display_name_key": "SKILL_MOCHI_STAND_BONUS_VALUE_NAME",
+  "description_key": "SKILL_MOCHI_STAND_BONUS_VALUE_DESC",
+  "owner_types": ["stall"],
+  "trigger_type": "on_pre_serve",
+  "effects": [
+    {
+      "type": "apply_persistent_bonus",
+      "store_id": "magic_mochi_stand",
+      "key": "bonus_value"
+    }
+  ],
+  "tags": ["food", "scaling"]
+}

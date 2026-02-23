@@ -7,6 +7,7 @@ var current_hero: HeroDefinition
 var tokens: int = 0
 var reputation: int = 0
 var current_level_number: int = 0
+var persistent_data: Dictionary = {}  # Run-scoped persistent state for skills (e.g. cross-level growth)
 
 # Run state
 var current_run: RunState = null
@@ -74,7 +75,8 @@ func start_run(hero_id: String, run_id: String = "standard_run") -> void:
 	reputation = current_hero.starting_stats.get("reputation", 10)
 	current_level_number = 1
 
-	# Reset stats
+	# Reset persistent data and stats
+	persistent_data = {}
 	run_stats = {
 		"guests_ascended": 0,
 		"guests_descended": 0,
