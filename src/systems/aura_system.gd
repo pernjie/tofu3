@@ -9,6 +9,7 @@ extends Node
 ##   target_type (String): "stall", "guest", or "all" (default "stall")
 ##   status_effect_id (String): Status to apply to targets in range
 ##   exclude_self (bool): Whether source is excluded (default true)
+##   midnight_only (bool): If true, aura is dormant until midnight fires (default false)
 
 # Tracks which targets each aura source has actively applied statuses to.
 # Key: source entity instance_id (String)
@@ -19,6 +20,9 @@ signal aura_tiles_changed
 
 # Cached tile sets for UI rendering
 var _all_aura_tiles: Dictionary = {}  # Vector2i -> true
+
+# Midnight state: midnight_only auras are dormant until this is true
+var _midnight_reached: bool = false
 
 # External references (set by game.gd)
 var board_system = null
@@ -42,6 +46,7 @@ func _ready() -> void:
 	EventBus.guest_descended.connect(_on_entity_removed)
 	EventBus.guest_banished.connect(_on_entity_removed)
 	EventBus.relic_placed.connect(_on_relic_placed)
+	EventBus.midnight_reached.connect(_on_midnight_reached)
 
 
 # =============================================================================
@@ -63,6 +68,10 @@ func get_aura_tiles_for(source: BaseInstance) -> Dictionary:
 		return tiles
 
 	for record in _active_auras[source_id]:
+		# Skip dormant midnight-only auras for UI overlay
+		var midnight_only: bool = record.skill.get_parameter("midnight_only")
+		if midnight_only and not _midnight_reached:
+			continue
 		var source_pos = _get_entity_position(record.source)
 		if source_pos == Vector2i(-1, -1):
 			continue
@@ -122,6 +131,7 @@ func clear_all() -> void:
 		for record in _active_auras[source_id]:
 			_remove_all_aura_statuses(record)
 	_active_auras.clear()
+	_midnight_reached = false
 	_rebuild_tile_cache()
 
 
@@ -135,6 +145,12 @@ func _recalculate_aura(record: Dictionary) -> void:
 	var source: BaseInstance = record.source
 	var skill: SkillInstance = record.skill
 	var old_targets: Array = record.targets.duplicate()
+
+	# Midnight-only auras are dormant until midnight fires
+	var midnight_only: bool = skill.get_parameter("midnight_only")
+	if midnight_only and not _midnight_reached:
+		_remove_all_aura_statuses(record)
+		return
 
 	var aura_range: int = skill.get_parameter("range")
 	if aura_range == null:
@@ -235,6 +251,10 @@ func _rebuild_tile_cache() -> void:
 	var new_tiles: Dictionary = {}
 	for source_id in _active_auras:
 		for record in _active_auras[source_id]:
+			# Skip dormant midnight-only auras for UI overlay
+			var midnight_only: bool = record.skill.get_parameter("midnight_only")
+			if midnight_only and not _midnight_reached:
+				continue
 			var source_pos = _get_entity_position(record.source)
 			if source_pos == Vector2i(-1, -1):
 				continue
@@ -277,6 +297,12 @@ func _remove_all_aura_statuses(record: Dictionary) -> void:
 # =============================================================================
 # Event Handlers
 # =============================================================================
+
+func _on_midnight_reached() -> void:
+	## Midnight fired. Activate any dormant midnight_only auras.
+	_midnight_reached = true
+	_recalculate_all_auras()
+
 
 func _on_stall_placed(stall: StallInstance, _tile) -> void:
 	## A stall was placed. Two things to check:
