@@ -79,8 +79,8 @@ static func create(effect_data: Dictionary) -> SkillEffect:
 			return CloneSelfEffect.new(effect_data)
 		"modify_need":
 			return ModifyNeedEffect.new(effect_data)
-		"enable_early_beast_spawning":
-			return EnableEarlyBeastSpawningEffect.new(effect_data)
+		"set_midnight_threshold":
+			return SetMidnightThresholdEffect.new(effect_data)
 		"modify_encounter":
 			return ModifyEncounterEffect.new(effect_data)
 		"give_money":

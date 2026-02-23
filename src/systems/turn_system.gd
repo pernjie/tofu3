@@ -27,7 +27,8 @@ var waiting_for_player: bool = false
 # Level completion tracking
 var _level_complete_emitted: bool = false
 var _midnight_emitted: bool = false
-var early_beast_spawning: bool = false
+var midnight_threshold_fraction: float = 0.0
+var _initial_core_guest_count: int = 0
 
 # External references
 var board_system = null  # Set via set_board_system()
@@ -272,7 +273,12 @@ func start_level() -> void:
 	waiting_for_player = false
 	_level_complete_emitted = false
 	_midnight_emitted = false
-	early_beast_spawning = false
+	midnight_threshold_fraction = 0.0
+	_initial_core_guest_count = 0
+	if board_system:
+		for guest_def in board_system.guest_queue:
+			if guest_def.is_core_guest:
+				_initial_core_guest_count += 1
 
 	EventBus.level_started.emit()
 	advance_turn()
@@ -1043,20 +1049,20 @@ func _execute_guest_spawn() -> void:
 		# Flush & sweep: play skill-effect animations, ascend newly-satisfied guests
 		await _flush_and_sweep()
 
-	# Check for midnight: all core guests have left the queue
+	# Check for midnight: core guests depleted past threshold
 	if not _midnight_emitted:
-		var has_core_in_queue = false
+		var core_remaining: int = 0
 		for guest_def in board_system.guest_queue:
 			if guest_def.is_core_guest:
-				has_core_in_queue = true
-				break
-		if not has_core_in_queue:
+				core_remaining += 1
+		var threshold_count: int = int(floor(_initial_core_guest_count * midnight_threshold_fraction))
+		if core_remaining <= threshold_count:
 			_midnight_emitted = true
 			EventBus.midnight_reached.emit()
 			await _flush_and_sweep()
 
-	# Spawn beast from beast queue (after midnight, or if early spawning enabled)
-	if _midnight_emitted or early_beast_spawning:
+	# Spawn beast from beast queue (after midnight)
+	if _midnight_emitted:
 		var beast = board_system.spawn_next_beast_from_queue()
 		if beast:
 			var beast_skip: Array[GuestInstance] = [beast]

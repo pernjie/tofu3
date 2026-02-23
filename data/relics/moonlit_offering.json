@@ -1,0 +1,15 @@
+{
+  "$schema": "./_schema.json",
+  "id": "moonlit_offering",
+  "display_name_key": "RELIC_MOONLIT_OFFERING_NAME",
+  "description_key": "RELIC_MOONLIT_OFFERING_DESC",
+  "rarity": "rare",
+  "card_type": "relic",
+  "hero_id": "",
+  "skills": [
+    { "skill_id": "moonlit_offering_boost_interact" }
+  ],
+  "sprite_sheet": "",
+  "animations": {},
+  "tags": ["beast"]
+}

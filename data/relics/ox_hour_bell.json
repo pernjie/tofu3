@@ -7,8 +7,7 @@
   "card_type": "relic",
   "hero_id": "",
   "skills": [
-    { "skill_id": "ox_hour_bell_early_beasts" },
-    { "skill_id": "ox_hour_bell_boost_interact" }
+    { "skill_id": "ox_hour_bell_early_midnight" }
   ],
   "sprite_sheet": "",
   "animations": {},

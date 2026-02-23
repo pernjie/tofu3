@@ -1,0 +1,19 @@
+{
+  "$schema": "./_schema.json",
+  "id": "moonlit_offering_boost_interact",
+  "display_name_key": "SKILL_MOONLIT_OFFERING_BOOST_INTERACT_NAME",
+  "description_key": "SKILL_MOONLIT_OFFERING_BOOST_INTERACT_DESC",
+  "owner_types": ["relic"],
+  "trigger_type": "on_spawn",
+  "global": true,
+  "parameters": {
+    "amount": { "type": "int", "default": 2, "min": 1, "max": 5 }
+  },
+  "conditions": [
+    { "type": "guest_flag_check", "flag": "is_mythical_beast", "target": "guest" }
+  ],
+  "effects": [
+    { "type": "modify_need", "target": "guest", "need_type": "interact", "amount": "{amount}" }
+  ],
+  "tags": ["beast"]
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "./_schema.json",
+  "id": "ox_hour_bell_early_midnight",
+  "display_name_key": "SKILL_OX_HOUR_BELL_EARLY_MIDNIGHT_NAME",
+  "description_key": "SKILL_OX_HOUR_BELL_EARLY_MIDNIGHT_DESC",
+  "owner_types": ["relic"],
+  "trigger_type": "on_level_start",
+  "parameters": {
+    "threshold": { "type": "float", "default": 0.5, "min": 0.0, "max": 1.0 }
+  },
+  "conditions": [],
+  "effects": [
+    { "type": "set_midnight_threshold", "threshold": "{threshold}" }
+  ],
+  "tags": ["beast", "midnight"]
+}

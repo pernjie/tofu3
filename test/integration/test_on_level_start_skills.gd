@@ -34,34 +34,34 @@ class TestMysticalScrollSummon:
 			"Queued beast should match the chosen beast, not a default")
 
 
-class TestOxHourBellEarlyBeasts:
+class TestOxHourBellEarlyMidnight:
 	extends "res://test/helpers/test_base.gd"
 
-	func test_enables_early_beast_spawning_on_level_start():
-		TurnSystem.early_beast_spawning = false
+	func test_sets_midnight_threshold_on_level_start():
+		TurnSystem.midnight_threshold_fraction = 0.0
 		var relic = create_relic("ox_hour_bell")
 		register_relic(relic, Vector2i(1, 1))
 
 		fire("on_level_start", TriggerContext.create("on_level_start"))
 
-		assert_true(TurnSystem.early_beast_spawning,
-			"Ox Hour Bell should enable early beast spawning")
+		assert_almost_eq(TurnSystem.midnight_threshold_fraction, 0.5, 0.001,
+			"Ox Hour Bell should set midnight threshold to 0.5")
 
-	func test_enables_early_beast_spawning_on_mid_level_placement():
-		TurnSystem.early_beast_spawning = false
+	func test_sets_midnight_threshold_on_mid_level_placement():
+		TurnSystem.midnight_threshold_fraction = 0.0
 		var relic = create_relic("ox_hour_bell")
 		register_relic(relic, Vector2i(1, 1))
 
 		# Simulate mid-level placement: fire on_level_start for just this relic
 		fire_for("on_level_start", TriggerContext.create("on_level_start"), [relic])
 
-		assert_true(TurnSystem.early_beast_spawning,
-			"Ox Hour Bell should enable early beast spawning when placed mid-level")
+		assert_almost_eq(TurnSystem.midnight_threshold_fraction, 0.5, 0.001,
+			"Ox Hour Bell should set midnight threshold when placed mid-level")
 
-	func test_early_beast_spawning_not_set_without_relic():
-		TurnSystem.early_beast_spawning = false
+	func test_midnight_threshold_not_set_without_relic():
+		TurnSystem.midnight_threshold_fraction = 0.0
 
 		fire("on_level_start", TriggerContext.create("on_level_start"))
 
-		assert_false(TurnSystem.early_beast_spawning,
-			"Early beast spawning should remain false without relic")
+		assert_almost_eq(TurnSystem.midnight_threshold_fraction, 0.0, 0.001,
+			"Midnight threshold should remain 0.0 without relic")

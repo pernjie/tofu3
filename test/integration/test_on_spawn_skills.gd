@@ -66,11 +66,11 @@ class TestLanternBearerSummon:
 			"Lantern bearer should not summon with empty queue")
 
 
-class TestOxHourBellBoostInteract:
+class TestMoonlitOfferingBoostInteract:
 	extends "res://test/helpers/test_base.gd"
 
 	func test_beast_gains_bonus_interact_need():
-		var relic = create_relic("ox_hour_bell")
+		var relic = create_relic("moonlit_offering")
 		register_relic(relic, Vector2i(1, 1))
 
 		var beast = create_guest("baku")
@@ -80,13 +80,13 @@ class TestOxHourBellBoostInteract:
 		fire_for("on_spawn", TriggerContext.create("on_spawn") \
 			.with_guest(beast).with_source(beast), [beast])
 
-		assert_eq(beast.current_needs["interact"], base_interact + 1,
-			"Beast should gain +1 interact need from Ox Hour Bell")
-		assert_eq(beast.initial_needs["interact"], base_interact + 1,
+		assert_eq(beast.current_needs["interact"], base_interact + 2,
+			"Beast should gain +2 interact need from Moonlit Offering")
+		assert_eq(beast.initial_needs["interact"], base_interact + 2,
 			"Initial needs should also be updated for UI denominator")
 
 	func test_non_beast_does_not_gain_bonus_interact():
-		var relic = create_relic("ox_hour_bell")
+		var relic = create_relic("moonlit_offering")
 		register_relic(relic, Vector2i(1, 1))
 
 		var guest = create_guest("hungry_ghost")
