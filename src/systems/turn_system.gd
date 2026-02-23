@@ -27,6 +27,7 @@ var waiting_for_player: bool = false
 # Level completion tracking
 var _level_complete_emitted: bool = false
 var _midnight_emitted: bool = false
+var early_beast_spawning: bool = false
 
 # External references
 var board_system = null  # Set via set_board_system()
@@ -256,6 +257,7 @@ func start_level() -> void:
 	waiting_for_player = false
 	_level_complete_emitted = false
 	_midnight_emitted = false
+	early_beast_spawning = false
 
 	EventBus.level_started.emit()
 	advance_turn()
@@ -1032,8 +1034,8 @@ func _execute_guest_spawn() -> void:
 			EventBus.midnight_reached.emit()
 			await _flush_and_sweep()
 
-	# Spawn beast from beast queue (only after midnight)
-	if _midnight_emitted:
+	# Spawn beast from beast queue (after midnight, or if early spawning enabled)
+	if _midnight_emitted or early_beast_spawning:
 		var beast = board_system.spawn_next_beast_from_queue()
 		if beast:
 			var beast_skip: Array[GuestInstance] = [beast]

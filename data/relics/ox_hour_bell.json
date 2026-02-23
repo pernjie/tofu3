@@ -1,0 +1,16 @@
+{
+  "$schema": "./_schema.json",
+  "id": "ox_hour_bell",
+  "display_name_key": "RELIC_OX_HOUR_BELL_NAME",
+  "description_key": "RELIC_OX_HOUR_BELL_DESC",
+  "rarity": "rare",
+  "card_type": "relic",
+  "hero_id": "",
+  "skills": [
+    { "skill_id": "ox_hour_bell_early_beasts" },
+    { "skill_id": "ox_hour_bell_boost_interact" }
+  ],
+  "sprite_sheet": "",
+  "animations": {},
+  "tags": ["beast"]
+}

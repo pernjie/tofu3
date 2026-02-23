@@ -77,6 +77,10 @@ static func create(effect_data: Dictionary) -> SkillEffect:
 			return SetStateEffect.new(effect_data)
 		"clone_self":
 			return CloneSelfEffect.new(effect_data)
+		"modify_need":
+			return ModifyNeedEffect.new(effect_data)
+		"enable_early_beast_spawning":
+			return EnableEarlyBeastSpawningEffect.new(effect_data)
 		_:
 			push_warning("Unknown effect type: %s" % effect_type)
 			return SkillEffect.new(effect_data)

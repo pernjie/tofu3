@@ -64,3 +64,48 @@ class TestLanternBearerSummon:
 
 		assert_eq(BoardSystem.active_guests.size(), count_before,
 			"Lantern bearer should not summon with empty queue")
+
+
+class TestOxHourBellBoostInteract:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_beast_gains_bonus_interact_need():
+		var relic = create_relic("ox_hour_bell")
+		register_relic(relic, Vector2i(1, 1))
+
+		var beast = create_guest("baku")
+		register_guest(beast, Vector2i(4, 0))
+		var base_interact = beast.definition.base_needs.get("interact", 0)
+
+		fire_for("on_spawn", TriggerContext.create("on_spawn") \
+			.with_guest(beast).with_source(beast), [beast])
+
+		assert_eq(beast.current_needs["interact"], base_interact + 1,
+			"Beast should gain +1 interact need from Ox Hour Bell")
+		assert_eq(beast.initial_needs["interact"], base_interact + 1,
+			"Initial needs should also be updated for UI denominator")
+
+	func test_non_beast_does_not_gain_bonus_interact():
+		var relic = create_relic("ox_hour_bell")
+		register_relic(relic, Vector2i(1, 1))
+
+		var guest = create_guest("hungry_ghost")
+		register_guest(guest, Vector2i(1, 0))
+		var needs_before = guest.current_needs.duplicate()
+
+		fire_for("on_spawn", TriggerContext.create("on_spawn") \
+			.with_guest(guest).with_source(guest), [guest])
+
+		assert_eq(guest.current_needs, needs_before,
+			"Non-beast guest should not have needs modified")
+
+	func test_does_not_modify_without_relic():
+		var beast = create_guest("baku")
+		register_guest(beast, Vector2i(4, 0))
+		var base_interact = beast.definition.base_needs.get("interact", 0)
+
+		fire_for("on_spawn", TriggerContext.create("on_spawn") \
+			.with_guest(beast).with_source(beast), [beast])
+
+		assert_eq(beast.current_needs["interact"], base_interact,
+			"Beast interact need should be unchanged without relic")
