@@ -104,6 +104,21 @@ func _resolve_pre_move(guest: GuestInstance) -> Dictionary:
 	return context.movement_result
 
 
+func _resolve_pre_encounter(beast: GuestInstance, guest: GuestInstance) -> Dictionary:
+	## Fire on_pre_encounter triggers and return the encounter_result dictionary.
+	## Callers check encounter_result.get("blocked", false) and read benefit_multiplier.
+	var context = TriggerContext.create("on_pre_encounter")
+	context.with_guest(guest)
+	context.with_source(beast)
+	context.with_target(guest)
+	context.with_encounter_result()
+
+	if trigger_system:
+		trigger_system.trigger_entity_skills("on_pre_encounter", context, [guest])
+
+	return context.encounter_result
+
+
 func _resolve_pre_enter_stall(guest: GuestInstance, stall: StallInstance) -> Dictionary:
 	## Fire on_pre_enter_stall triggers and return the entry_result dictionary.
 	## Callers check entry_result.get("blocked", false).
@@ -854,11 +869,17 @@ func _resolve_beast_interactions(beast: GuestInstance) -> Array:
 		if guest.interacted_this_turn:
 			continue
 
+		# Fire on_pre_encounter (guest's skills can modify encounter)
+		var encounter_result = _resolve_pre_encounter(beast, guest)
+		if encounter_result.get("blocked", false):
+			continue
+
 		# Fire on_encounter skills (beast's skills, with guest as target)
 		var context = TriggerContext.create("on_encounter")
 		context.with_guest(guest)
 		context.with_source(beast)
 		context.with_target(guest)
+		context.encounter_result = encounter_result
 
 		var results = trigger_system.trigger_entity_skills("on_encounter", context, [beast])
 

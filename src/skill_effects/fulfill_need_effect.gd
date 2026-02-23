@@ -47,8 +47,12 @@ func _execute_single(context: TriggerContext, skill: SkillInstance, need_type: S
 			return SkillEffectResult.succeeded()  # No-op, not a failure
 		resolved_need_type = unfulfilled.pick_random()
 
+	var final_amount = amount
+	if not context.encounter_result.is_empty():
+		final_amount = int(amount * context.encounter_result.get("benefit_multiplier", 1.0))
+
 	var old_value = guest.get_remaining_need(resolved_need_type)
-	var fulfilled = BoardSystem.fulfill_and_notify(guest, resolved_need_type, amount, skill.owner)
+	var fulfilled = BoardSystem.fulfill_and_notify(guest, resolved_need_type, final_amount, skill.owner)
 
 	var result = SkillEffectResult.succeeded()
 	result.add_modified_target(guest)

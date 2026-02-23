@@ -222,3 +222,174 @@ class TestTanukiEncounterApplyStatus:
 
 		assert_eq(target.get_status("lost").stacks, 10,
 			"Second encounter should accumulate to max stacks (10)")
+
+
+class TestAkashitaEncounter:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_applies_wet_on_encounter():
+		var akashita = create_guest("akashita")
+		var target = create_guest("hungry_ghost")
+		register_guest(akashita, Vector2i(2, 0))
+		register_guest(target, Vector2i(2, 0))
+
+		fire_for("on_encounter", TriggerContext.create("on_encounter") \
+			.with_guest(target).with_source(akashita).with_target(target), [akashita])
+
+		var status = target.get_status("wet")
+		assert_not_null(status, "Akashita should apply wet on encounter")
+		assert_eq(status.stacks, 1, "Wet should have 1 stack")
+
+	func test_wet_stacks_accumulate():
+		var akashita = create_guest("akashita")
+		var target = create_guest("hungry_ghost")
+		register_guest(akashita, Vector2i(2, 0))
+		register_guest(target, Vector2i(2, 0))
+
+		fire_for("on_encounter", TriggerContext.create("on_encounter") \
+			.with_guest(target).with_source(akashita).with_target(target), [akashita])
+		fire_for("on_encounter", TriggerContext.create("on_encounter") \
+			.with_guest(target).with_source(akashita).with_target(target), [akashita])
+
+		var status = target.get_status("wet")
+		assert_eq(status.stacks, 2, "Wet should accumulate to 2 stacks")
+
+
+class TestQilinEncounter:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_gives_money_on_encounter():
+		var qilin = create_guest("qilin")
+		var target = create_guest("hungry_ghost")
+		register_guest(qilin, Vector2i(2, 0))
+		register_guest(target, Vector2i(2, 0))
+		var money_before = target.current_money
+
+		fire_for("on_encounter", TriggerContext.create("on_encounter") \
+			.with_guest(target).with_source(qilin).with_target(target), [qilin])
+
+		assert_eq(target.current_money, money_before + 3,
+			"Qilin should give 3 money on encounter")
+
+	func test_applies_gilded_burden_on_encounter():
+		var qilin = create_guest("qilin")
+		var target = create_guest("hungry_ghost")
+		register_guest(qilin, Vector2i(2, 0))
+		register_guest(target, Vector2i(2, 0))
+
+		fire_for("on_encounter", TriggerContext.create("on_encounter") \
+			.with_guest(target).with_source(qilin).with_target(target), [qilin])
+
+		var status = target.get_status("gilded_burden")
+		assert_not_null(status, "Qilin should apply gilded_burden on encounter")
+		assert_eq(status.stacks, 1, "Gilded burden should have 1 stack")
+
+	func test_gilded_burden_stacks_accumulate():
+		var qilin = create_guest("qilin")
+		var target = create_guest("hungry_ghost")
+		register_guest(qilin, Vector2i(2, 0))
+		register_guest(target, Vector2i(2, 0))
+
+		fire_for("on_encounter", TriggerContext.create("on_encounter") \
+			.with_guest(target).with_source(qilin).with_target(target), [qilin])
+		fire_for("on_encounter", TriggerContext.create("on_encounter") \
+			.with_guest(target).with_source(qilin).with_target(target), [qilin])
+
+		var status = target.get_status("gilded_burden")
+		assert_eq(status.stacks, 2, "Gilded burden should stack to 2")
+
+
+
+class TestQilinSpiritAttunedInteraction:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_benefit_multiplier_doubles_money():
+		var qilin = create_guest("qilin")
+		var target = create_guest("hungry_ghost")
+		register_guest(qilin, Vector2i(2, 0))
+		register_guest(target, Vector2i(2, 0))
+		var money_before = target.current_money
+
+		var context = TriggerContext.create("on_encounter") \
+			.with_guest(target).with_source(qilin).with_target(target)
+		context.encounter_result = { "benefit_multiplier": 2.0, "blocked": false }
+
+		fire_for("on_encounter", context, [qilin])
+
+		assert_eq(target.current_money, money_before + 6,
+			"Benefit multiplier 2.0 should double money from 3 to 6")
+
+	func test_spirit_attuned_full_flow():
+		# Full integration: apply spirit_attuned, fire on_pre_encounter, then on_encounter
+		var qilin = create_guest("qilin")
+		var target = create_guest("hungry_ghost")
+		register_guest(qilin, Vector2i(2, 0))
+		register_guest(target, Vector2i(2, 0))
+		var money_before = target.current_money
+
+		# Apply spirit_attuned (grants double encounter skill)
+		BoardSystem.inflict_status(target, "spirit_attuned", 1)
+		assert_not_null(target.get_status("spirit_attuned"), "Should have spirit_attuned")
+
+		# Fire on_pre_encounter on the target (spirit_attuned_double_encounter fires)
+		var pre_context = TriggerContext.create("on_pre_encounter") \
+			.with_guest(target).with_source(qilin).with_target(target) \
+			.with_encounter_result()
+		fire_for("on_pre_encounter", pre_context, [target])
+
+		assert_eq(pre_context.encounter_result.get("benefit_multiplier"), 2.0,
+			"Spirit attuned should set benefit_multiplier to 2.0")
+
+		# Fire on_encounter with the modified encounter_result
+		var context = TriggerContext.create("on_encounter") \
+			.with_guest(target).with_source(qilin).with_target(target)
+		context.encounter_result = pre_context.encounter_result
+		fire_for("on_encounter", context, [qilin])
+
+		assert_eq(target.current_money, money_before + 6,
+			"Spirit-attuned guest should receive 6 money (3 x 2.0)")
+		assert_not_null(target.get_status("gilded_burden"),
+			"Gilded burden should still apply (not scaled by benefit_multiplier)")
+		assert_eq(target.get_status("gilded_burden").stacks, 1,
+			"Gilded burden stacks should not be scaled")
+
+
+class TestGildedBurdenDescentPenalty:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_extra_penalty_on_descent():
+		var target = create_guest("hungry_ghost")
+		register_guest(target, Vector2i(2, 0))
+		BoardSystem.inflict_status(target, "gilded_burden", 1)
+		var rep_before = GameManager.reputation
+
+		fire_for("on_descended", TriggerContext.create("on_descended") \
+			.with_guest(target).with_source(target), [target])
+
+		# 1 stack = -1 extra reputation
+		assert_eq(GameManager.reputation, rep_before - 1,
+			"1 stack of gilded_burden should cost 1 extra reputation on descent")
+
+	func test_stacks_multiply_penalty():
+		var target = create_guest("hungry_ghost")
+		register_guest(target, Vector2i(2, 0))
+		BoardSystem.inflict_status(target, "gilded_burden", 3)
+		var rep_before = GameManager.reputation
+
+		fire_for("on_descended", TriggerContext.create("on_descended") \
+			.with_guest(target).with_source(target), [target])
+
+		# 3 stacks = -3 extra reputation
+		assert_eq(GameManager.reputation, rep_before - 3,
+			"3 stacks of gilded_burden should cost 3 extra reputation on descent")
+
+	func test_no_penalty_without_status():
+		var target = create_guest("hungry_ghost")
+		register_guest(target, Vector2i(2, 0))
+		var rep_before = GameManager.reputation
+
+		fire_for("on_descended", TriggerContext.create("on_descended") \
+			.with_guest(target).with_source(target), [target])
+
+		assert_eq(GameManager.reputation, rep_before,
+			"No gilded_burden should mean no extra penalty")

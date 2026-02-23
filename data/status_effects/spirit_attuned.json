@@ -1,0 +1,32 @@
+{
+  "$schema": "./_schema.json",
+  "id": "spirit_attuned",
+  "display_name_key": "STATUS_SPIRIT_ATTUNED_NAME",
+  "description_key": "STATUS_SPIRIT_ATTUNED_DESC",
+  "icon_path": "",
+
+  "effect_type": "buff",
+  "stack_type": "passive",
+  "max_stacks": 1,
+  "initial_stacks": 1,
+
+  "applicable_to": ["guest"],
+
+  "stat_modifiers": [],
+
+  "granted_skills": [
+    { "skill_id": "spirit_attuned_block_entry" },
+    { "skill_id": "spirit_attuned_double_encounter" }
+  ],
+
+  "on_apply_effects": [],
+  "on_turn_end_effects": [],
+  "on_remove_effects": [],
+
+  "visual": {
+    "particle_effect": "",
+    "tint_color": "#AA66FF"
+  },
+
+  "tags": ["buff"]
+}

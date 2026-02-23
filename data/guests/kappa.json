@@ -20,5 +20,5 @@
     { "skill_id": "steal_money", "parameters": { "amount": 1 } }
   ],
 
-  "tags": []
+  "tags": ["beast"]
 }

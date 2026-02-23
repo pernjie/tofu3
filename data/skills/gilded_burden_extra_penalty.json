@@ -1,0 +1,31 @@
+{
+  "$schema": "./_schema.json",
+  "id": "gilded_burden_extra_penalty",
+  "display_name_key": "SKILL_GILDED_BURDEN_EXTRA_PENALTY_NAME",
+  "description_key": "SKILL_GILDED_BURDEN_EXTRA_PENALTY_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_descended",
+
+  "parameters": {
+    "amount": {
+      "type": "int",
+      "default": -1
+    },
+    "status_id": {
+      "type": "string",
+      "default": "gilded_burden"
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    {
+      "type": "modify_reputation",
+      "amount": "{amount}",
+      "per_stack_of": "{status_id}"
+    }
+  ]
+}

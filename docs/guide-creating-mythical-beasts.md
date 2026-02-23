@@ -393,3 +393,33 @@ Consider refactoring when:
 **Extend, don't duplicate.** If a new behavior is a variation of an existing effect — different targeting, different scope — extend the existing effect with a configuration option. The anti-pattern is creating `encounter_fulfill_need` and `encounter_fulfill_need_area` as separate classes with copied logic. The correct pattern is one effect that accepts targeting options. One class, one place to fix bugs, and the JSON author discovers all targeting options in one effect type.
 
 **Read the code path end-to-end before implementing.** Trace from the beast JSON definition through spawning, movement, interaction resolution, and ascension. Identify every place where a value is read without modifier support, where an event fires without a corresponding trigger hook, or where behavior is hard-coded that could be data-driven. Propose fixes for what you find.
+
+## Encounter Interception: `on_pre_encounter`
+
+Beast encounters support a pre-event trigger hook, following the same pattern as `on_pre_serve`, `on_pre_status`, and `on_pre_banish`.
+
+**When it fires:** In `_resolve_beast_interactions()`, on the **target guest's** skills, before the beast's `on_encounter` skills execute.
+
+**Context fields:**
+- `encounter_result` dict: `{ "benefit_multiplier": 1.0, "blocked": false }`
+- `source`: the beast
+- `target`: the regular guest
+- `guest`: the regular guest
+
+**`encounter_result` fields:**
+| Field | Default | Effect |
+|-------|---------|--------|
+| `benefit_multiplier` | `1.0` | Scales beneficial encounter effects (fulfillment amounts, debuff removal counts). Negative effects like `apply_status`, `banish`, and `steal_money` are unaffected. |
+| `blocked` | `false` | If `true`, the encounter is skipped entirely — the beast's `on_encounter` skills do not fire for this guest. |
+
+**Which effects read `benefit_multiplier`:**
+- `fulfill_need` — scales `amount`
+- `remove_status` with `status_filter: "debuff"` — scales `count`
+
+**Example: Spirit Hall stall**
+
+The Spirit Hall applies a `spirit_attuned` status (passive buff) that grants two skills:
+1. `spirit_attuned_block_entry` (`on_pre_enter_stall`) — prevents the guest from entering any stall
+2. `spirit_attuned_double_encounter` (`on_pre_encounter`) — sets `benefit_multiplier` to 2.0
+
+This creates a high-risk, high-reward play: spirit-attuned guests can't visit stalls but receive doubled benefits from every beast encounter. See `docs/plans/2026-02-23-spirit-hall-design.md` for the full design.

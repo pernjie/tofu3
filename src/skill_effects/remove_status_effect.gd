@@ -53,13 +53,18 @@ func execute(context: TriggerContext, skill: SkillInstance) -> SkillEffectResult
 	if matches.is_empty():
 		return SkillEffectResult.failed("No matching status effects to remove")
 
+	# Apply encounter benefit multiplier for debuff removal
+	var final_count = count
+	if status_filter == "debuff" and count > 0 and not context.encounter_result.is_empty():
+		final_count = int(count * context.encounter_result.get("benefit_multiplier", 1.0))
+
 	# Shuffle and pick count
 	matches.shuffle()
 	var to_remove: Array[StatusEffectInstance] = []
-	if count < 0:
+	if final_count < 0:
 		to_remove = matches
 	else:
-		for i in mini(count, matches.size()):
+		for i in mini(final_count, matches.size()):
 			to_remove.append(matches[i])
 
 	# Remove each

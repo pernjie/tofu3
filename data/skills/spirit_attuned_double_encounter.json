@@ -1,0 +1,27 @@
+{
+  "$schema": "./_schema.json",
+  "id": "spirit_attuned_double_encounter",
+  "display_name_key": "SKILL_SPIRIT_ATTUNED_DOUBLE_ENCOUNTER_NAME",
+  "description_key": "SKILL_SPIRIT_ATTUNED_DOUBLE_ENCOUNTER_DESC",
+  "icon_path": "",
+
+  "owner_types": ["guest"],
+  "trigger_type": "on_pre_encounter",
+
+  "parameters": {
+    "benefit_multiplier": {
+      "type": "float",
+      "default": 2.0,
+      "min": 1.0,
+      "max": 10.0
+    }
+  },
+
+  "conditions": [],
+
+  "effects": [
+    { "type": "modify_encounter", "benefit_multiplier": "{benefit_multiplier}" }
+  ],
+
+  "tags": []
+}

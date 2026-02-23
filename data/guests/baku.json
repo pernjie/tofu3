@@ -20,5 +20,5 @@
     { "skill_id": "encounter_consume_debuff", "parameters": { "amount": 1 } }
   ],
 
-  "tags": []
+  "tags": ["beast"]
 }

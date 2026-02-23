@@ -1,0 +1,14 @@
+{
+  "$schema": "./_schema.json",
+  "id": "akashita_restock_all",
+  "display_name_key": "SKILL_AKASHITA_RESTOCK_ALL_NAME",
+  "description_key": "SKILL_AKASHITA_RESTOCK_ALL_DESC",
+  "owner_types": ["guest"],
+  "trigger_type": "on_spawn",
+  "parameters": {},
+  "conditions": [],
+  "effects": [
+    { "type": "restock_all_product_stalls" }
+  ],
+  "tags": ["restock", "spawn"]
+}

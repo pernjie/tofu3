@@ -11,7 +11,7 @@
   "move_direction": "reverse",
 
   "base_stats": {
-    "needs": { "interact": 2 },
+    "needs": { "interact": 3 },
     "money": 0,
     "movement_speed": 1
   },
@@ -21,5 +21,5 @@
     { "skill_id": "apply_status_on_interact", "parameters": { "status_id": "charmed", "stacks": 8 } }
   ],
 
-  "tags": []
+  "tags": ["beast"]
 }

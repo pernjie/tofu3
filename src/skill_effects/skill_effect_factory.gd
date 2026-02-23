@@ -81,6 +81,14 @@ static func create(effect_data: Dictionary) -> SkillEffect:
 			return ModifyNeedEffect.new(effect_data)
 		"enable_early_beast_spawning":
 			return EnableEarlyBeastSpawningEffect.new(effect_data)
+		"modify_encounter":
+			return ModifyEncounterEffect.new(effect_data)
+		"give_money":
+			return GiveMoneyEffect.new(effect_data)
+		"modify_reputation":
+			return ModifyReputationEffect.new(effect_data)
+		"restock_all_product_stalls":
+			return RestockAllProductStallsEffect.new(effect_data)
 		_:
 			push_warning("Unknown effect type: %s" % effect_type)
 			return SkillEffect.new(effect_data)

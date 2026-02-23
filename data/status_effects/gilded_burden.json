@@ -1,0 +1,31 @@
+{
+  "$schema": "./_schema.json",
+  "id": "gilded_burden",
+  "display_name_key": "STATUS_GILDED_BURDEN_NAME",
+  "description_key": "STATUS_GILDED_BURDEN_DESC",
+  "icon_path": "",
+
+  "effect_type": "debuff",
+  "stack_type": "passive",
+  "max_stacks": 99,
+  "initial_stacks": 1,
+
+  "applicable_to": ["guest"],
+
+  "stat_modifiers": [],
+
+  "granted_skills": [
+    { "skill_id": "gilded_burden_extra_penalty" }
+  ],
+
+  "on_apply_effects": [],
+  "on_turn_end_effects": [],
+  "on_remove_effects": [],
+
+  "visual": {
+    "particle_effect": "",
+    "tint_color": "#FFD700"
+  },
+
+  "tags": ["debuff", "curse"]
+}

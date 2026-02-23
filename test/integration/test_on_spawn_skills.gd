@@ -109,3 +109,69 @@ class TestOxHourBellBoostInteract:
 
 		assert_eq(beast.current_needs["interact"], base_interact,
 			"Beast interact need should be unchanged without relic")
+
+
+class TestAkashitaRestockAll:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_restocks_all_product_stalls_on_spawn():
+		var akashita = create_guest("akashita")
+		register_guest(akashita, Vector2i(4, 0))
+
+		# Place two product stalls and deplete them
+		var stall_a = create_stall("noodle_stand")
+		register_stall(stall_a, Vector2i(1, 1))
+		stall_a.current_stock = 0
+
+		var stall_b = create_stall("red_bean_stand")
+		register_stall(stall_b, Vector2i(3, 1))
+		stall_b.current_stock = 0
+
+		fire_for("on_spawn", TriggerContext.create("on_spawn") \
+			.with_guest(akashita).with_source(akashita), [akashita])
+
+		assert_gt(stall_a.current_stock, 0,
+			"Akashita should restock first product stall on spawn")
+		assert_gt(stall_b.current_stock, 0,
+			"Akashita should restock second product stall on spawn")
+
+	func test_no_effect_when_all_stalls_already_full():
+		var akashita = create_guest("akashita")
+		register_guest(akashita, Vector2i(4, 0))
+
+		# Place a product stall that is already full
+		var stall = create_stall("noodle_stand")
+		register_stall(stall, Vector2i(1, 1))
+		var stock_before = stall.current_stock
+
+		var results = fire_for("on_spawn", TriggerContext.create("on_spawn") \
+			.with_guest(akashita).with_source(akashita), [akashita])
+
+		assert_eq(stall.current_stock, stock_before,
+			"Already-full stall should not change")
+		# The restock effect should report failure (nothing to restock)
+		var any_succeeded = false
+		for result in results:
+			if result.success:
+				any_succeeded = true
+		assert_false(any_succeeded,
+			"Effect should fail when no stalls need restocking")
+
+	func test_does_not_restock_service_stalls():
+		var akashita = create_guest("akashita")
+		register_guest(akashita, Vector2i(4, 0))
+
+		# Place a service stall (not product)
+		var service_stall = create_stall("fish_spa")
+		register_stall(service_stall, Vector2i(1, 1))
+
+		# Place a depleted product stall
+		var product_stall = create_stall("noodle_stand")
+		register_stall(product_stall, Vector2i(3, 1))
+		product_stall.current_stock = 0
+
+		fire_for("on_spawn", TriggerContext.create("on_spawn") \
+			.with_guest(akashita).with_source(akashita), [akashita])
+
+		assert_gt(product_stall.current_stock, 0,
+			"Product stall should be restocked")

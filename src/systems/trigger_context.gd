@@ -22,6 +22,7 @@ var status_result: Dictionary = {}  # Mutable status outcome for on_pre_status e
 var banish_result: Dictionary = {}  # Mutable banish outcome for on_pre_banish effects
 var fulfillment_result: Dictionary = {}  # Mutable fulfillment outcome for on_pre_fulfill effects
 var entry_result: Dictionary = {}  # Mutable entry outcome for on_pre_enter_stall effects
+var encounter_result: Dictionary = {}  # Mutable encounter outcome for on_pre_encounter effects
 var guests: Array = []  # Array of GuestInstance, populated for on_bulk_serve
 
 
@@ -130,6 +131,15 @@ func with_entry_result() -> TriggerContext:
 	## Initialize default entry result for on_pre_enter_stall triggers.
 	entry_result = {
 		"blocked": false,
+	}
+	return self
+
+
+func with_encounter_result() -> TriggerContext:
+	## Initialize default encounter result for on_pre_encounter triggers.
+	encounter_result = {
+		"blocked": false,
+		"benefit_multiplier": 1.0,
 	}
 	return self
 
