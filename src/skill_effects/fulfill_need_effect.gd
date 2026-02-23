@@ -8,7 +8,7 @@ extends SkillEffect
 ##   type: "fulfill_need"
 ##   target: "self", "target", "guest", "adjacent_guests"
 ##   need_type: string (food, joy, or "random" to pick a random unfulfilled need)
-##   amount: int or "{parameter_name}"
+##   amount: int, "{parameter_name}", or "remaining" (fulfills all remaining of that need)
 ##   range: int (Manhattan distance, only for "adjacent_guests", default 1)
 
 
@@ -17,15 +17,22 @@ func execute(context: TriggerContext, skill: SkillInstance) -> SkillEffectResult
 	if need_type.is_empty():
 		return SkillEffectResult.failed("No need_type specified")
 
-	var amount = resolve_int_parameter("amount", skill, 1)
+	var use_remaining = _is_remaining_amount(skill)
+	var amount = 0 if use_remaining else resolve_int_parameter("amount", skill, 1)
 	var target_mode = get_target_string()
 
 	if target_mode == "adjacent_guests":
-		return _execute_area(context, skill, need_type, amount)
-	return _execute_single(context, skill, need_type, amount)
+		return _execute_area(context, skill, need_type, amount, use_remaining)
+	return _execute_single(context, skill, need_type, amount, use_remaining)
 
 
-func _execute_single(context: TriggerContext, skill: SkillInstance, need_type: String, amount: int) -> SkillEffectResult:
+func _is_remaining_amount(skill: SkillInstance) -> bool:
+	var raw = effect_data.get("amount", 1)
+	var resolved = resolve_parameter(raw, skill)
+	return resolved is String and resolved == "remaining"
+
+
+func _execute_single(context: TriggerContext, skill: SkillInstance, need_type: String, amount: int, use_remaining: bool) -> SkillEffectResult:
 	var target_entity = resolve_target(context, skill)
 
 	if not target_entity:
@@ -47,9 +54,12 @@ func _execute_single(context: TriggerContext, skill: SkillInstance, need_type: S
 			return SkillEffectResult.succeeded()  # No-op, not a failure
 		resolved_need_type = unfulfilled.pick_random()
 
-	var final_amount = amount
+	var final_amount = guest.get_remaining_need(resolved_need_type) if use_remaining else amount
+	if final_amount <= 0:
+		return SkillEffectResult.succeeded()  # Nothing to fulfill
+
 	if not context.encounter_result.is_empty():
-		final_amount = int(amount * context.encounter_result.get("benefit_multiplier", 1.0))
+		final_amount = int(final_amount * context.encounter_result.get("benefit_multiplier", 1.0))
 
 	var old_value = guest.get_remaining_need(resolved_need_type)
 	var fulfilled = BoardSystem.fulfill_and_notify(guest, resolved_need_type, final_amount, skill.owner)
@@ -60,7 +70,7 @@ func _execute_single(context: TriggerContext, skill: SkillInstance, need_type: S
 	return result
 
 
-func _execute_area(context: TriggerContext, skill: SkillInstance, need_type: String, amount: int) -> SkillEffectResult:
+func _execute_area(context: TriggerContext, skill: SkillInstance, need_type: String, amount: int, use_remaining: bool) -> SkillEffectResult:
 	var range_val = resolve_int_parameter("range", skill, 1)
 
 	var owner_guest = context.guest
@@ -82,7 +92,10 @@ func _execute_area(context: TriggerContext, skill: SkillInstance, need_type: Str
 
 		var guests_on_tile = BoardSystem.get_guests_at(tile.position)
 		for guest in guests_on_tile:
-			var fulfilled = BoardSystem.fulfill_and_notify(guest, need_type, amount, skill.owner)
+			var final_amount = guest.get_remaining_need(need_type) if use_remaining else amount
+			if final_amount <= 0:
+				continue
+			var fulfilled = BoardSystem.fulfill_and_notify(guest, need_type, final_amount, skill.owner)
 			if fulfilled > 0:
 				result.add_modified_target(guest)
 

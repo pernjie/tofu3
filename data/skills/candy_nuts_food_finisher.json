@@ -1,0 +1,29 @@
+{
+  "$schema": "./_schema.json",
+  "id": "candy_nuts_food_finisher",
+  "display_name_key": "SKILL_CANDY_NUTS_FOOD_FINISHER_NAME",
+  "description_key": "SKILL_CANDY_NUTS_FOOD_FINISHER_DESC",
+  "owner_types": ["stall"],
+  "trigger_type": "on_serve",
+  "parameters": {
+    "threshold": { "type": "float", "default": 0.5, "min": 0.0, "max": 1.0 }
+  },
+  "conditions": [
+    {
+      "type": "need_fulfillment_ratio",
+      "target": "guest",
+      "need_type": "food",
+      "comparison": "greater_or_equal",
+      "ratio": "{threshold}"
+    }
+  ],
+  "effects": [
+    {
+      "type": "fulfill_need",
+      "target": "guest",
+      "need_type": "food",
+      "amount": "remaining"
+    }
+  ],
+  "tags": ["food", "finisher"]
+}

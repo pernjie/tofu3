@@ -48,6 +48,19 @@ func resolve_int_parameter(key: String, skill: SkillInstance, default: int = 0) 
 	return default
 
 
+func resolve_float_parameter(key: String, skill: SkillInstance, default: float = 0.0) -> float:
+	## Convenience method to resolve a float parameter.
+	var raw_value = condition_data.get(key, default)
+	var resolved = resolve_parameter(raw_value, skill)
+	if resolved is float:
+		return resolved
+	if resolved is int:
+		return float(resolved)
+	if resolved is String:
+		return float(resolved) if resolved.is_valid_float() else default
+	return default
+
+
 func resolve_string_parameter(key: String, skill: SkillInstance, default: String = "") -> String:
 	## Convenience method to resolve a string parameter.
 	var raw_value = condition_data.get(key, default)

@@ -314,3 +314,209 @@ class TestFishSpaCleanse:
 
 		# Should not error — skill just does nothing
 		assert_true(true, "Cleanse with no debuffs should not error")
+
+
+class TestNeedFulfillmentRatioCondition:
+	extends "res://test/helpers/test_base.gd"
+
+	func _create_skill_with_ratio_condition(threshold: float) -> SkillInstance:
+		var skill_data = {
+			"id": "test_ratio_skill",
+			"trigger_type": "on_serve",
+			"owner_types": ["stall"],
+			"parameters": {
+				"threshold": { "type": "float", "default": threshold }
+			},
+			"conditions": [
+				{
+					"type": "need_fulfillment_ratio",
+					"target": "guest",
+					"need_type": "food",
+					"comparison": "greater_or_equal",
+					"ratio": "{threshold}"
+				}
+			],
+			"effects": []
+		}
+		var def = SkillDefinition.from_dict(skill_data)
+		return SkillInstance.new(def, null)
+
+	func test_passes_when_ratio_met():
+		var guest = create_guest("hungry_ghost")
+		guest.initial_needs = { "food": 4 }
+		guest.current_needs = { "food": 2 }
+		register_guest(guest, Vector2i(2, 0))
+
+		var skill = _create_skill_with_ratio_condition(0.5)
+		var conditions = SkillConditionFactory.create_all(skill.definition.conditions)
+		var context = TriggerContext.create("on_serve").with_guest(guest)
+		var result = SkillConditionFactory.evaluate_all(conditions, context, skill)
+
+		assert_true(result, "Should pass when exactly 50% fulfilled (2/4)")
+
+	func test_fails_when_ratio_not_met():
+		var guest = create_guest("hungry_ghost")
+		guest.initial_needs = { "food": 4 }
+		guest.current_needs = { "food": 3 }
+		register_guest(guest, Vector2i(2, 0))
+
+		var skill = _create_skill_with_ratio_condition(0.5)
+		var conditions = SkillConditionFactory.create_all(skill.definition.conditions)
+		var context = TriggerContext.create("on_serve").with_guest(guest)
+		var result = SkillConditionFactory.evaluate_all(conditions, context, skill)
+
+		assert_false(result, "Should fail when only 25% fulfilled (1/4)")
+
+	func test_passes_when_fully_fulfilled():
+		var guest = create_guest("hungry_ghost")
+		guest.initial_needs = { "food": 4 }
+		guest.current_needs = { "food": 0 }
+		register_guest(guest, Vector2i(2, 0))
+
+		var skill = _create_skill_with_ratio_condition(0.5)
+		var conditions = SkillConditionFactory.create_all(skill.definition.conditions)
+		var context = TriggerContext.create("on_serve").with_guest(guest)
+		var result = SkillConditionFactory.evaluate_all(conditions, context, skill)
+
+		assert_true(result, "Should pass when 100% fulfilled")
+
+	func test_fails_when_no_initial_need():
+		var guest = create_guest("hungry_ghost")
+		guest.initial_needs = { "joy": 2 }
+		guest.current_needs = { "joy": 2 }
+		register_guest(guest, Vector2i(2, 0))
+
+		var skill = _create_skill_with_ratio_condition(0.5)
+		var conditions = SkillConditionFactory.create_all(skill.definition.conditions)
+		var context = TriggerContext.create("on_serve").with_guest(guest)
+		var result = SkillConditionFactory.evaluate_all(conditions, context, skill)
+
+		assert_false(result, "Should fail when guest has no food need")
+
+
+class TestFulfillNeedRemainingAmount:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_remaining_fulfills_all_food():
+		var guest = create_guest("hungry_ghost")
+		guest.initial_needs = { "food": 6 }
+		guest.current_needs = { "food": 4 }
+		register_guest(guest, Vector2i(2, 0))
+
+		var effect_data = {
+			"type": "fulfill_need",
+			"target": "guest",
+			"need_type": "food",
+			"amount": "remaining"
+		}
+		var effect = SkillEffectFactory.create(effect_data)
+		var skill_data = {
+			"id": "test_remaining",
+			"trigger_type": "on_serve",
+			"owner_types": ["stall"],
+			"parameters": {},
+			"conditions": [],
+			"effects": [effect_data]
+		}
+		var def = SkillDefinition.from_dict(skill_data)
+		var skill = SkillInstance.new(def, null)
+		var context = TriggerContext.create("on_serve").with_guest(guest)
+
+		effect.execute(context, skill)
+
+		assert_eq(guest.get_remaining_need("food"), 0,
+			"Should fulfill all 4 remaining food")
+
+	func test_remaining_with_zero_remaining_is_noop():
+		var guest = create_guest("hungry_ghost")
+		guest.initial_needs = { "food": 2 }
+		guest.current_needs = { "food": 0 }
+		register_guest(guest, Vector2i(2, 0))
+
+		var effect_data = {
+			"type": "fulfill_need",
+			"target": "guest",
+			"need_type": "food",
+			"amount": "remaining"
+		}
+		var effect = SkillEffectFactory.create(effect_data)
+		var skill_data = {
+			"id": "test_remaining_noop",
+			"trigger_type": "on_serve",
+			"owner_types": ["stall"],
+			"parameters": {},
+			"conditions": [],
+			"effects": [effect_data]
+		}
+		var def = SkillDefinition.from_dict(skill_data)
+		var skill = SkillInstance.new(def, null)
+		var context = TriggerContext.create("on_serve").with_guest(guest)
+
+		effect.execute(context, skill)
+
+		assert_eq(guest.get_remaining_need("food"), 0,
+			"Should be a no-op when already fulfilled")
+
+
+class TestCandyNutsFoodFinisher:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_finishes_food_when_half_fulfilled():
+		var guest = create_guest("hungry_ghost")
+		guest.initial_needs = { "food": 6 }
+		guest.current_needs = { "food": 3 }
+		var stall = create_stall("candy_nuts_stand")
+		register_guest(guest, Vector2i(2, 0))
+		register_stall(stall, Vector2i(2, 1))
+
+		fire_for("on_serve", TriggerContext.create("on_serve") \
+			.with_guest(guest).with_stall(stall).with_source(stall) \
+			.with_target(guest), [guest, stall])
+
+		assert_eq(guest.get_remaining_need("food"), 0,
+			"Should fulfill all remaining food when 50% already met")
+
+	func test_does_not_trigger_below_half():
+		var guest = create_guest("hungry_ghost")
+		guest.initial_needs = { "food": 6 }
+		guest.current_needs = { "food": 4 }
+		var stall = create_stall("candy_nuts_stand")
+		register_guest(guest, Vector2i(2, 0))
+		register_stall(stall, Vector2i(2, 1))
+
+		fire_for("on_serve", TriggerContext.create("on_serve") \
+			.with_guest(guest).with_stall(stall).with_source(stall) \
+			.with_target(guest), [guest, stall])
+
+		assert_eq(guest.get_remaining_need("food"), 4,
+			"Should not trigger when less than 50% fulfilled")
+
+	func test_finishes_food_when_more_than_half():
+		var guest = create_guest("hungry_ghost")
+		guest.initial_needs = { "food": 4 }
+		guest.current_needs = { "food": 1 }
+		var stall = create_stall("candy_nuts_stand")
+		register_guest(guest, Vector2i(2, 0))
+		register_stall(stall, Vector2i(2, 1))
+
+		fire_for("on_serve", TriggerContext.create("on_serve") \
+			.with_guest(guest).with_stall(stall).with_source(stall) \
+			.with_target(guest), [guest, stall])
+
+		assert_eq(guest.get_remaining_need("food"), 0,
+			"Should fulfill remaining food when more than 50% met")
+
+	func test_no_effect_on_guest_without_food_need():
+		var guest = create_guest("hungry_ghost")
+		guest.initial_needs = { "joy": 4 }
+		guest.current_needs = { "joy": 2 }
+		var stall = create_stall("candy_nuts_stand")
+		register_guest(guest, Vector2i(2, 0))
+		register_stall(stall, Vector2i(2, 1))
+
+		fire_for("on_serve", TriggerContext.create("on_serve") \
+			.with_guest(guest).with_stall(stall).with_source(stall) \
+			.with_target(guest), [guest, stall])
+
+		assert_eq(guest.get_remaining_need("joy"), 2,
+			"Should not affect joy needs — skill only checks food")

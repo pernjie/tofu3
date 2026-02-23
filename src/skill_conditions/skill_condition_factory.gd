@@ -39,6 +39,8 @@ static func create(condition_data: Dictionary) -> SkillCondition:
 			return HasRemainingNeedsCondition.new(condition_data)
 		"guest_flag_check":
 			return GuestFlagCheckCondition.new(condition_data)
+		"need_fulfillment_ratio":
+			return NeedFulfillmentRatioCondition.new(condition_data)
 		_:
 			push_warning("Unknown condition type: %s" % condition_type)
 			return SkillCondition.new(condition_data)
