@@ -1,0 +1,20 @@
+{
+  "$schema": "./_schema.json",
+  "id": "lucky_frog_upgrade_bonus",
+  "owner_types": ["relic"],
+  "trigger_type": "on_upgrade",
+  "global": true,
+  "state_template": { "times_fired": 0 },
+  "parameters": {
+    "status_id": { "type": "string", "default": "lucky_frog_buff" },
+    "stacks": { "type": "int", "default": 1 }
+  },
+  "conditions": [
+    { "type": "state_less_than", "state_key": "times_fired", "value": 1 }
+  ],
+  "effects": [
+    { "type": "apply_status", "target": "stall", "status_id": "{status_id}", "stacks": "{stacks}" },
+    { "type": "increment_state", "state_key": "times_fired" }
+  ],
+  "tags": ["buff"]
+}

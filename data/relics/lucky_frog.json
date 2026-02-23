@@ -1,0 +1,18 @@
+{
+  "$schema": "./_schema.json",
+  "id": "lucky_frog",
+  "display_name_key": "RELIC_LUCKY_FROG_NAME",
+  "description_key": "RELIC_LUCKY_FROG_DESC",
+  "rarity": "common",
+
+  "card_type": "relic",
+  "hero_id": "",
+
+  "skills": [
+    { "skill_id": "lucky_frog_upgrade_bonus" }
+  ],
+
+  "sprite_sheet": "",
+  "animations": {},
+  "tags": ["buff"]
+}

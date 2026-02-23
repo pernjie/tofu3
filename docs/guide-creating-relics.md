@@ -6,7 +6,7 @@ Relics are permanent structures players place on the board. Unlike stalls, relic
 
 **Data flow:** `data/relics/<id>.json` -> `ContentRegistry` loads it -> `RelicDefinition` (immutable) -> `RelicInstance` (mutable runtime state)
 
-Relics are played as cards. The `RelicDefinition` extends `CardDefinition`, so every relic JSON also defines a card with a `price` field. When played, a `RelicInstance` is created on the board at the chosen position and the card is permanently removed from the deck.
+Relics are played as cards. The `RelicDefinition` extends `CardDefinition`, so every relic JSON also defines a card. Price is determined by `rarity` (common=30, rare=50, epic=80, legendary=120) via `CardDefinition.get_price()`. When played, a `RelicInstance` is created on the board at the chosen position and the card is permanently removed from the deck.
 
 You never touch GDScript to add a basic relic. New relics are pure data — a JSON file for the relic and optionally new skill JSON files. You only write code when the relic needs behavior that can't be expressed with existing skill building blocks.
 
@@ -39,7 +39,6 @@ Create `data/relics/<id>.json`:
   "rarity": "common",
 
   "card_type": "relic",
-  "price": 40,
   "hero_id": "",
 
   "skills": [
@@ -63,7 +62,6 @@ Create `data/relics/<id>.json`:
 | `icon_path` | No | Path to icon resource |
 | `sprite_sheet` | No | Path to sprite sheet resource |
 | `card_type` | Yes | Always `"relic"` |
-| `price` | No | Token cost for the player to play this card. Defaults to 0 |
 | `hero_id` | No | Empty string for neutral cards, hero ID for hero-specific cards |
 | `skills` | Yes | Array of skill references (see Skills section) |
 | `animations` | No | Animation data for sprites |
@@ -162,7 +160,6 @@ The Mystical Scroll is a two-skill relic: on placement, the player discovers (pi
   "id": "mystical_scroll",
   "card_type": "relic",
   "rarity": "rare",
-  "price": 50,
   "skills": [
     { "skill_id": "mystical_scroll_discover" },
     { "skill_id": "mystical_scroll_summon" }
@@ -292,7 +289,7 @@ When adding a new relic:
 
 - [ ] Created `data/relics/<id>.json` with valid schema
 - [ ] `card_type` is `"relic"`
-- [ ] `price` feels right — consider that the player permanently loses a stall slot
+- [ ] `rarity` appropriate — price is derived from rarity (common=30, rare=50, epic=80, legendary=120) and the player permanently loses a stall slot
 - [ ] Skill IDs referenced in `skills` array exist in `data/skills/`
 - [ ] Skill JSONs have `"relic"` in their `owner_types`
 - [ ] If new skill JSON was created: trigger type and effects are valid

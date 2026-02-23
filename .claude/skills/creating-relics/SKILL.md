@@ -51,7 +51,7 @@ Relics are permanent structures that provide passive effects through skills. Onc
 
 - [ ] Created `data/relics/<id>.json` with valid schema
 - [ ] `card_type` is `"relic"`
-- [ ] `price` appropriate — consider permanent stall slot cost
+- [ ] `rarity` appropriate — price is derived from rarity (common=30, rare=50, epic=80, legendary=120) and the player permanently loses a stall slot
 - [ ] Skill IDs in `skills` array exist in `data/skills/`
 - [ ] Skill JSONs have `"relic"` in `owner_types`
 - [ ] Global observer skills have `"global": true`

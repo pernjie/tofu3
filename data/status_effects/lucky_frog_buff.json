@@ -1,0 +1,29 @@
+{
+  "$schema": "./_schema.json",
+  "id": "lucky_frog_buff",
+  "display_name_key": "STATUS_LUCKY_FROG_BUFF_NAME",
+  "description_key": "STATUS_LUCKY_FROG_BUFF_DESC",
+  "icon_path": "",
+
+  "effect_type": "buff",
+  "stack_type": "passive",
+  "max_stacks": 1,
+  "initial_stacks": 1,
+
+  "applicable_to": ["stall"],
+
+  "stat_modifiers": [
+    {
+      "stat": "value",
+      "operation": "add",
+      "value_per_stack": 1
+    }
+  ],
+
+  "granted_skills": [],
+  "on_apply_effects": [],
+  "on_turn_end_effects": [],
+  "on_remove_effects": [],
+
+  "tags": ["buff"]
+}
