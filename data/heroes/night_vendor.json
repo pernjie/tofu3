@@ -15,7 +15,7 @@
 
   "starting_deck": [
     { "card_id": "noodle_stand", "count": 2 },
-    { "card_id": "dojo", "count": 2 },
+    { "card_id": "paper_boats", "count": 2 },
     { "card_id": "gourd", "count": 1 },
     { "card_id": "mystical_scroll", "count": 1 }
   ],

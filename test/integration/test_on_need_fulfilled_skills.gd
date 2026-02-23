@@ -114,3 +114,105 @@ class TestMonkeyKingClone:
 
 		assert_eq(BoardSystem.active_guests.size(), guest_count_before + 1,
 			"Clone should be able to clone itself")
+
+
+class TestTenguTransform:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_joy_fulfillment_transforms_remaining_to_food():
+		var tengu = create_guest("tengu")
+		register_guest(tengu, Vector2i(1, 0))
+
+		assert_eq(tengu.get_remaining_need("joy"), 7,
+			"Should start with 7 joy needs")
+
+		# Fulfill 3 joy, then fire on_need_fulfilled
+		tengu.fulfill_need("joy", 3)
+
+		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
+			.with_guest(tengu).with_source(tengu) \
+			.with_need_type("joy").with_amount(3), [tengu])
+
+		assert_eq(tengu.get_remaining_need("joy"), 0,
+			"Joy needs should be 0 after transform")
+		assert_eq(tengu.get_remaining_need("food"), 4,
+			"Remaining 4 joy should have become food")
+
+	func test_food_fulfillment_transforms_remaining_to_joy():
+		var tengu = create_guest("tengu")
+		register_guest(tengu, Vector2i(1, 0))
+
+		# First: transform to food form
+		tengu.fulfill_need("joy", 3)
+		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
+			.with_guest(tengu).with_source(tengu) \
+			.with_need_type("joy").with_amount(3), [tengu])
+
+		# Now fulfill 2 food, fire on_need_fulfilled
+		tengu.fulfill_need("food", 2)
+
+		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
+			.with_guest(tengu).with_source(tengu) \
+			.with_need_type("food").with_amount(2), [tengu])
+
+		assert_eq(tengu.get_remaining_need("food"), 0,
+			"Food needs should be 0 after transform back")
+		assert_eq(tengu.get_remaining_need("joy"), 2,
+			"Remaining 2 food should have become joy")
+
+	func test_full_alternation_cycle():
+		var tengu = create_guest("tengu")
+		register_guest(tengu, Vector2i(1, 0))
+
+		# Cycle 1: fulfill 3 joy -> 4 food
+		tengu.fulfill_need("joy", 3)
+		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
+			.with_guest(tengu).with_source(tengu) \
+			.with_need_type("joy").with_amount(3), [tengu])
+		assert_eq(tengu.get_remaining_need("food"), 4, "Cycle 1: 4 food remaining")
+
+		# Cycle 2: fulfill 2 food -> 2 joy
+		tengu.fulfill_need("food", 2)
+		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
+			.with_guest(tengu).with_source(tengu) \
+			.with_need_type("food").with_amount(2), [tengu])
+		assert_eq(tengu.get_remaining_need("joy"), 2, "Cycle 2: 2 joy remaining")
+
+		# Cycle 3: fulfill all joy -> ascend-ready
+		tengu.fulfill_need("joy", 2)
+		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
+			.with_guest(tengu).with_source(tengu) \
+			.with_need_type("joy").with_amount(2), [tengu])
+
+		assert_true(tengu.are_all_needs_fulfilled(),
+			"Tengu should be fully fulfilled after complete cycle")
+
+	func test_no_transform_when_all_needs_fulfilled():
+		var tengu = create_guest("tengu")
+		register_guest(tengu, Vector2i(1, 0))
+
+		# Fulfill all 7 joy at once (overfulfill scenario)
+		tengu.fulfill_need("joy", 7)
+
+		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
+			.with_guest(tengu).with_source(tengu) \
+			.with_need_type("joy").with_amount(9), [tengu])
+
+		assert_eq(tengu.get_remaining_need("food"), 0,
+			"No food needs should appear when joy was fully fulfilled")
+		assert_true(tengu.are_all_needs_fulfilled(),
+			"Tengu should be fully fulfilled")
+
+	func test_initial_needs_updated_for_display():
+		var tengu = create_guest("tengu")
+		register_guest(tengu, Vector2i(1, 0))
+
+		tengu.fulfill_need("joy", 3)
+		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
+			.with_guest(tengu).with_source(tengu) \
+			.with_need_type("joy").with_amount(3), [tengu])
+
+		assert_eq(tengu.initial_needs.get("food", 0), 4,
+			"Initial food should reflect transformed amount for display")
+		assert_eq(tengu.initial_needs.get("joy", 0), 3,
+			"Initial joy should reflect only the already-fulfilled portion")

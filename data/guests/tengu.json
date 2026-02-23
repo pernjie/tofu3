@@ -1,0 +1,19 @@
+{
+  "$schema": "./_schema.json",
+  "id": "tengu",
+  "display_name_key": "GUEST_TENGU_NAME",
+  "description_key": "GUEST_TENGU_DESC",
+  "rarity": "legendary",
+  "is_core_guest": true,
+  "is_boss": true,
+  "base_stats": {
+    "needs": { "joy": 7 },
+    "money": 7,
+    "movement_speed": 1
+  },
+  "skills": [
+    { "skill_id": "transform_need_on_fulfill", "parameters": { "trigger_need_type": "joy", "from_need_type": "joy", "to_need_type": "food" } },
+    { "skill_id": "transform_need_on_fulfill", "parameters": { "trigger_need_type": "food", "from_need_type": "food", "to_need_type": "joy" } }
+  ],
+  "tags": ["boss", "yokai"]
+}

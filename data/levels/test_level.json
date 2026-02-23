@@ -30,7 +30,7 @@
     {
       "id": "debug",
       "weight": 1000,
-      "guests": ["monkey_king"]
+      "guests": ["tengu"]
     },
     {
       "id": "hungry_rush",
