@@ -369,6 +369,11 @@ func _execute_turn_start() -> void:
 
 	await AnimationCoordinator.play_batch()
 
+	# Reset deck before emitting turn_started, so on_turn_start skills
+	# (e.g. grant_bonus_play) apply after the reset and aren't overwritten.
+	if board_system and board_system.deck_system:
+		board_system.deck_system.start_turn()
+
 	# Emit events after animations
 	EventBus.turn_started.emit(current_turn)
 	for stall in restocked_stalls:

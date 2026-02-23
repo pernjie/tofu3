@@ -1,0 +1,15 @@
+{
+  "$schema": "./_schema.json",
+  "id": "loom",
+  "display_name_key": "RELIC_LOOM_NAME",
+  "description_key": "RELIC_LOOM_DESC",
+  "rarity": "common",
+  "card_type": "relic",
+  "hero_id": "",
+  "skills": [
+    { "skill_id": "loom_bonus_action" }
+  ],
+  "sprite_sheet": "",
+  "animations": {},
+  "tags": ["deck"]
+}

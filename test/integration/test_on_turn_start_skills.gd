@@ -181,3 +181,46 @@ class TestShadowPuppetsAverageAdjacentValue:
 		fire_for("on_turn_start", TriggerContext.create("on_turn_start"), [shadow])
 		assert_eq(shadow.get_value(), 0,
 			"Should not include self in average")
+
+
+class TestLoomBonusAction:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_grants_bonus_play_on_turn_1():
+		var loom = create_relic("loom")
+		register_relic(loom, Vector2i(1, 1))
+
+		TurnSystem.current_turn = 1
+		fire("on_turn_start", TriggerContext.create("on_turn_start"))
+
+		assert_eq(deck_system.max_plays_per_turn, 2,
+			"Loom should grant 1 bonus play on turn 1")
+
+	func test_does_not_grant_on_turn_2():
+		var loom = create_relic("loom")
+		register_relic(loom, Vector2i(1, 1))
+
+		TurnSystem.current_turn = 2
+		fire("on_turn_start", TriggerContext.create("on_turn_start"))
+
+		assert_eq(deck_system.max_plays_per_turn, 1,
+			"Loom should not grant bonus on turn 2")
+
+	func test_grants_on_turn_1_each_level():
+		var loom = create_relic("loom")
+		register_relic(loom, Vector2i(1, 1))
+
+		# Level 1, turn 1
+		TurnSystem.current_turn = 1
+		fire("on_turn_start", TriggerContext.create("on_turn_start"))
+		assert_eq(deck_system.max_plays_per_turn, 2,
+			"Should grant bonus on turn 1 of level 1")
+
+		# Simulate level transition
+		deck_system.max_plays_per_turn = 1
+		TurnSystem.current_turn = 1
+
+		# Level 2, turn 1
+		fire("on_turn_start", TriggerContext.create("on_turn_start"))
+		assert_eq(deck_system.max_plays_per_turn, 2,
+			"Should grant bonus on turn 1 of level 2")

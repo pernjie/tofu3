@@ -426,7 +426,8 @@ func _on_reputation_changed(_old: int, _new: int) -> void:
 
 func _on_turn_started(_turn: int) -> void:
 	_update_hud()
-	deck_system.start_turn()
+	# deck_system.start_turn() is now called by TurnSystem before turn_started emits,
+	# so on_turn_start skills can grant bonus plays without being overwritten.
 	_refresh_hand_dimming()
 
 

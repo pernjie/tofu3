@@ -1,0 +1,14 @@
+{
+  "$schema": "./_schema.json",
+  "id": "loom_bonus_action",
+  "owner_types": ["relic"],
+  "trigger_type": "on_turn_start",
+  "parameters": {},
+  "conditions": [
+    { "type": "turn_number_check", "operator": "eq", "value": 1 }
+  ],
+  "effects": [
+    { "type": "grant_bonus_play", "amount": 1 }
+  ],
+  "tags": ["deck"]
+}
