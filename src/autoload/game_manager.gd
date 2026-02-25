@@ -71,7 +71,7 @@ func start_run(hero_id: String, run_id: String = "standard_run") -> void:
 
 	current_run = RunState.new(run_def, current_hero)
 
-	tokens = current_hero.starting_stats.get("tokens", 100)
+	tokens = current_hero.starting_stats.get("tokens", 10)
 	reputation = current_hero.starting_stats.get("reputation", 10)
 	current_level_number = 1
 

@@ -1,10 +1,10 @@
 class_name CardDefinition extends BaseDefinition
 
 const RARITY_PRICES: Dictionary = {
-	"common": 30,
-	"rare": 50,
-	"epic": 80,
-	"legendary": 120,
+	"common": 3,
+	"rare": 5,
+	"epic": 8,
+	"legendary": 12,
 }
 
 var card_type: String  # stall, spell, relic

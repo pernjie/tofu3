@@ -20,6 +20,7 @@ var location: Location = Location.DECK
 var enhancement = null  # EnhancementDefinition
 var modifier_stack: ModifierStack
 var skill_instances: Array  # Array of SkillInstance
+var price_offset: int = 0  # Random shop price variance
 var temporary_state: Dictionary = {}  # For "this card gains +1 this turn" effects
 
 
@@ -55,7 +56,8 @@ func get_effective_price() -> int:
 	if enhancement:
 		# Apply enhancement price modification if any
 		pass
-	return modifier_stack.calculate_stat("price", base_price)
+	var price = modifier_stack.calculate_stat("price", base_price) + price_offset
+	return maxi(price, 1)
 
 
 func get_effective_stat(stat_name: String, base_value: Variant) -> Variant:

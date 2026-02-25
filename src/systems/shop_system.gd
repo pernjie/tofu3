@@ -10,9 +10,10 @@ const RARITY_WEIGHTS: Dictionary = {
 	"epic": 8,
 	"legendary": 2,
 }
-const REROLL_BASE_COST: int = 5
+const REROLL_BASE_COST: int = 1
 const REROLL_COST_MULTIPLIER: int = 2
 const NUM_OFFERINGS: int = 3
+const PRICE_OFFSETS: Array[int] = [-2, -1, -1, 0, 0, 0, 1]
 
 var _hero_id: String
 var _pool: Array[CardDefinition]
@@ -79,6 +80,7 @@ func reroll() -> bool:
 				if selected:
 					_offerings[i] = CardInstance.new(selected)
 					_offerings[i].location = CardInstance.Location.SHOP
+					_offerings[i].price_offset = PRICE_OFFSETS.pick_random()
 					available.erase(selected)
 				else:
 					_offerings[i] = null
@@ -125,6 +127,7 @@ func _generate_offerings() -> void:
 	for def in selected_defs:
 		var card := CardInstance.new(def)
 		card.location = CardInstance.Location.SHOP
+		card.price_offset = PRICE_OFFSETS.pick_random()
 		_offerings.append(card)
 	# Fill remaining slots with null if pool was too small
 	while _offerings.size() < NUM_OFFERINGS:
