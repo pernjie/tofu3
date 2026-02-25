@@ -46,6 +46,9 @@ signal status_stack_changed(status, old_stacks, new_stacks)
 signal tokens_changed(old_value: int, new_value: int)
 signal reputation_changed(old_value: int, new_value: int)
 
+# Shop
+signal card_purchased(card: CardInstance)
+
 # Level flow
 signal level_started
 signal level_won

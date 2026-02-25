@@ -9,7 +9,6 @@ var skills: Dictionary = {}          # id -> SkillDefinition
 var status_effects: Dictionary = {}  # id -> StatusEffectDefinition
 var enhancements: Dictionary = {}    # id -> EnhancementDefinition
 var levels: Dictionary = {}          # id -> LevelDefinition
-var shop_pools: Dictionary = {}      # id -> ShopPoolDefinition
 var runs: Dictionary = {}              # id -> RunDefinition
 
 var _type_to_dict: Dictionary = {}
@@ -34,7 +33,6 @@ func _setup_type_mappings() -> void:
 		"status_effects": status_effects,
 		"enhancements": enhancements,
 		"levels": levels,
-		"shop_pools": shop_pools,
 		"runs": runs,
 	}
 
@@ -48,7 +46,6 @@ func _setup_type_mappings() -> void:
 		"status_effects": StatusEffectDefinition,
 		"enhancements": EnhancementDefinition,
 		"levels": LevelDefinition,
-		"shop_pools": ShopPoolDefinition,
 		"runs": RunDefinition,
 	}
 
@@ -176,6 +173,13 @@ func get_all_of_type(type: String) -> Array[BaseDefinition]:
 	for def in target_dict.values():
 		result.append(def)
 	return result
+
+
+func get_card_definition(card_id: String) -> CardDefinition:
+	for dict in [stalls, spells, relics]:
+		if dict.has(card_id):
+			return dict[card_id] as CardDefinition
+	return null
 
 
 func get_by_tag(type: String, tag: String) -> Array[BaseDefinition]:

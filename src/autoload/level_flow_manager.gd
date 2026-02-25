@@ -77,7 +77,8 @@ func _on_level_lost() -> void:
 
 func _show_interlude() -> void:
 	var interlude = _interlude_screen_scene.instantiate()
-	interlude.setup(_pending_level_id, _pending_guest_preview, GameManager.current_run.deck)
+	var hero_id: String = GameManager.current_run.hero.id if GameManager.current_run else ""
+	interlude.setup(_pending_level_id, _pending_guest_preview, GameManager.current_run.deck, hero_id)
 	interlude.continue_pressed.connect(_on_interlude_continue)
 	get_tree().root.add_child(interlude)
 

@@ -91,12 +91,7 @@ func start_run(hero_id: String, run_id: String = "standard_run") -> void:
 		var card_id: String = entry.get("card_id", "")
 		var count: int = entry.get("count", 1)
 
-		var card_def = ContentRegistry.get_definition("stalls", card_id)
-		if not card_def:
-			card_def = ContentRegistry.get_definition("spells", card_id)
-		if not card_def:
-			card_def = ContentRegistry.get_definition("relics", card_id)
-
+		var card_def = ContentRegistry.get_card_definition(card_id)
 		if card_def:
 			for i in count:
 				var instance = CardInstance.new(card_def)
