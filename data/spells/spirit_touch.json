@@ -1,0 +1,19 @@
+{
+  "$schema": "./_schema.json",
+  "id": "spirit_touch",
+  "display_name_key": "SPELL_SPIRIT_TOUCH_NAME",
+  "description_key": "SPELL_SPIRIT_TOUCH_DESC",
+  "rarity": "common",
+
+  "card_type": "spell",
+  "hero_id": "",
+
+  "target_type": "tile",
+  "target_filter": { "has_guest": true },
+
+  "effects": [
+    { "type": "fulfill_need", "target": "random_guest_on_tile", "need_type": "random", "amount": 1 }
+  ],
+
+  "tags": []
+}

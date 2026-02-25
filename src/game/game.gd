@@ -253,7 +253,14 @@ func _on_card_clicked(card: CardInstance) -> void:
 			card_ui.set_selected(true)
 		# Clear aura selection when entering card placement
 		board_visual.clear_aura_selection()
-		# Both stalls and relics use stall slot placement mode
+
+		# Spells with target_type "none" cast immediately on selection
+		var spell_def = card.definition as SpellDefinition
+		if spell_def and spell_def.target_type == "none":
+			await _cast_spell(spell_def, Vector2i.ZERO, null)
+			return
+
+		# Stalls, relics, and targeted spells use slot placement mode
 		board_visual.set_placement_mode(true, card.definition)
 
 
@@ -264,6 +271,13 @@ func _on_slot_clicked(pos: Vector2i) -> void:
 	# If no card selected, handle aura selection toggle
 	if not selected_card:
 		_toggle_aura_selection(pos)
+		return
+
+	var spell_def = selected_card.definition as SpellDefinition
+	if spell_def:
+		var target_entity = _get_spell_target_entity(spell_def, pos)
+		if _validate_spell_target(spell_def, pos, target_entity):
+			await _cast_spell(spell_def, pos, target_entity)
 		return
 
 	var relic_def = selected_card.definition as RelicDefinition
@@ -384,6 +398,126 @@ func _fire_level_start_for_relic(relic: RelicInstance) -> void:
 	## Fire on_level_start skills for a relic that was placed after the level already started.
 	var context = TriggerContext.create("on_level_start")
 	TriggerSystem.trigger_entity_skills("on_level_start", context, [relic])
+
+
+func _cast_spell(spell_def: SpellDefinition, pos: Vector2i, target_entity: Variant) -> void:
+	## Execute a spell: run effects, consume card, emit signal, flush animations.
+	var card = selected_card
+	_clear_card_selection()
+
+	# Build context
+	var context = TriggerContext.create("spell_cast")
+	context.with_extra("spell_definition", spell_def)
+	if pos != Vector2i.ZERO:
+		var tile = BoardSystem.board.get_tile_at(pos)
+		if tile:
+			context.with_tile(tile)
+	if target_entity is StallInstance:
+		context.with_stall(target_entity)
+	elif target_entity is GuestInstance:
+		context.with_guest(target_entity)
+
+	# Execute effects with null skill (spells have no SkillInstance)
+	var effects = SkillEffectFactory.create_all(spell_def.effects)
+	for effect in effects:
+		effect.execute(context, null)
+
+	# Consume card (sets location to REMOVED, emits card_played → fires on_play trigger)
+	deck_system.play_card(card, pos)
+
+	# Emit spell_cast signal (fires on_cast trigger via TriggerSystem)
+	EventBus.spell_cast.emit(spell_def, pos, target_entity)
+
+	# Flush animations and sweep for ascensions (spells can fulfill needs)
+	await TurnSystem.flush_and_sweep()
+
+	# Handle deferred requests from spell effects
+	if not TriggerSystem.pending_deferred_requests.is_empty():
+		await _handle_spell_deferred_requests()
+
+
+func _handle_spell_deferred_requests() -> void:
+	## Process pending deferred requests from spell effects.
+	_ui_blocking = true
+	for request in TriggerSystem.pending_deferred_requests:
+		if request.get("type") == "discover":
+			push_warning("Discover effect on a spell has no entity to store result — skipping")
+	TriggerSystem.pending_deferred_requests.clear()
+	_ui_blocking = false
+
+
+func _get_spell_target_entity(spell_def: SpellDefinition, pos: Vector2i) -> Variant:
+	## Resolve the target entity at a position based on the spell's target_type.
+	match spell_def.target_type:
+		"stall":
+			return BoardSystem.get_stall_at(pos)
+		"guest":
+			var guests = BoardSystem.get_guests_at(pos)
+			return guests[0] if not guests.is_empty() else null
+		_:
+			return null
+
+
+func _validate_spell_target(spell_def: SpellDefinition, pos: Vector2i, target_entity: Variant) -> bool:
+	## Check if the target is valid for this spell.
+	match spell_def.target_type:
+		"stall":
+			if not target_entity is StallInstance:
+				return false
+			return _check_spell_filter(spell_def, target_entity)
+		"guest":
+			if not target_entity is GuestInstance:
+				return false
+			return _check_spell_filter(spell_def, target_entity)
+		"tile":
+			return _check_tile_filter(spell_def, pos)
+		_:
+			return true
+
+
+func _check_spell_filter(spell_def: SpellDefinition, target_entity: Variant) -> bool:
+	## Validate target_filter against a stall or guest entity.
+	var filter = spell_def.target_filter
+	if filter.is_empty():
+		return true
+
+	if target_entity is StallInstance:
+		var stall: StallInstance = target_entity
+		if filter.has("need_type") and stall.definition.need_type != filter["need_type"]:
+			return false
+		if filter.has("operation_model") and stall.definition.operation_model != filter["operation_model"]:
+			return false
+		if filter.has("has_tag") and filter["has_tag"] not in stall.definition.tags:
+			return false
+
+	elif target_entity is GuestInstance:
+		var guest: GuestInstance = target_entity
+		if filter.has("has_status") and not guest.has_status(filter["has_status"]):
+			return false
+		if filter.has("has_tag") and filter["has_tag"] not in guest.definition.tags:
+			return false
+		if filter.has("is_core_guest") and guest.definition.is_core_guest != filter["is_core_guest"]:
+			return false
+
+	return true
+
+
+func _check_tile_filter(spell_def: SpellDefinition, pos: Vector2i) -> bool:
+	## Validate target_filter for tile-targeted spells.
+	var filter = spell_def.target_filter
+	if filter.is_empty():
+		return true
+
+	if filter.has("has_stall"):
+		var has_stall = BoardSystem.get_stall_at(pos) != null
+		if has_stall != filter["has_stall"]:
+			return false
+	if filter.has("has_guest"):
+		var has_guest = not BoardSystem.get_guests_at(pos).is_empty()
+		if has_guest != filter["has_guest"]:
+			return false
+
+	return true
 
 
 func _toggle_aura_selection(pos: Vector2i) -> void:

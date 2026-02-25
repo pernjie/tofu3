@@ -42,6 +42,7 @@ func _connect_event_bus_signals() -> void:
 
 	# Card events
 	EventBus.card_played.connect(_on_card_played)
+	EventBus.spell_cast.connect(_on_spell_cast)
 
 	# Status events
 	EventBus.status_applied.connect(_on_status_applied)
@@ -342,6 +343,17 @@ func _on_beast_interacted(beast, guest) -> void:
 func _on_midnight_reached() -> void:
 	var context = TriggerContext.create("on_midnight")
 	trigger_skills("on_midnight", context)
+
+
+func _on_spell_cast(spell_def: SpellDefinition, target_pos: Variant, target_entity: Variant) -> void:
+	var context = TriggerContext.create("on_cast")
+	context.with_extra("spell_definition", spell_def)
+	context.with_extra("target_pos", target_pos)
+	if target_entity is GuestInstance:
+		context.with_guest(target_entity)
+	elif target_entity is StallInstance:
+		context.with_stall(target_entity)
+	trigger_skills("on_cast", context)
 
 
 func _on_level_started() -> void:

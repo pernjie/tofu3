@@ -5,7 +5,7 @@
   "owner_types": ["relic"],
   "trigger_type": "on_place",
   "parameters": {
-    "pool": { "type": "string_array", "default": ["baku", "nine_tailed_fox", "hanzaki", "tanuki"] },
+    "pool": { "type": "string_array", "default": ["baku", "nine_tailed_fox", "hanzaki", "tanuki", "akashita", "qilin"] },
     "count": { "type": "int", "default": 3 },
     "store_key": { "type": "string", "default": "chosen_beast_id" }
   },

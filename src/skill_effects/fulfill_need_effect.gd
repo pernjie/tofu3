@@ -62,7 +62,8 @@ func _execute_single(context: TriggerContext, skill: SkillInstance, need_type: S
 		final_amount = int(final_amount * context.encounter_result.get("benefit_multiplier", 1.0))
 
 	var old_value = guest.get_remaining_need(resolved_need_type)
-	var fulfilled = BoardSystem.fulfill_and_notify(guest, resolved_need_type, final_amount, skill.owner)
+	var source = skill.owner if skill else null
+	var fulfilled = BoardSystem.fulfill_and_notify(guest, resolved_need_type, final_amount, source)
 
 	var result = SkillEffectResult.succeeded()
 	result.add_modified_target(guest)
@@ -95,7 +96,8 @@ func _execute_area(context: TriggerContext, skill: SkillInstance, need_type: Str
 			var final_amount = guest.get_remaining_need(need_type) if use_remaining else amount
 			if final_amount <= 0:
 				continue
-			var fulfilled = BoardSystem.fulfill_and_notify(guest, need_type, final_amount, skill.owner)
+			var source = skill.owner if skill else null
+			var fulfilled = BoardSystem.fulfill_and_notify(guest, need_type, final_amount, source)
 			if fulfilled > 0:
 				result.add_modified_target(guest)
 

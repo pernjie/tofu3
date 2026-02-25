@@ -50,7 +50,9 @@
         "on_banish",
         "on_pre_banish",
         "on_pre_fulfill",
-        "on_bulk_serve"
+        "on_bulk_serve",
+        "on_play",
+        "on_cast"
       ],
       "description": "When this skill triggers"
     },

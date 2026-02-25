@@ -171,10 +171,12 @@ func _resolve_service_for_guest(guest: GuestInstance, stall: StallInstance) -> D
 	}
 
 
-func _flush_and_sweep() -> void:
+func flush_and_sweep() -> void:
 	## Flush skill-effect animations, then process banished guests and ascend
 	## any newly-satisfied guests.
 	## Loops until no more pending banishments or ascensions remain.
+	## Called internally by TurnSystem phases, and externally by game.gd for
+	## non-phase actions (spell casting) that may satisfy guests.
 	await AnimationCoordinator.play_batch()
 
 	if not board_system:
@@ -190,8 +192,10 @@ func _flush_and_sweep() -> void:
 		for guest in newly_banished:
 			_handle_guest_banishment(guest)
 
-		# Flush on_banish skill-effect animations
+		# Reposition remaining guests on tiles vacated by banishment, then
+		# flush on_banish skill-effect animations
 		if not newly_banished.is_empty():
+			TileOccupancyManager.queue_all_repositions(newly_banished)
 			await AnimationCoordinator.play_batch()
 
 		# Sweep ascending guests (need animation queued + played)
@@ -212,8 +216,11 @@ func _flush_and_sweep() -> void:
 			for guest in newly_ascending:
 				_handle_guest_ascension(guest)
 
-			# Flush animations from on_ascend skill effects, then loop to check
-			# if those effects satisfied more guests or banished more guests
+			# Reposition remaining guests on tiles vacated by ascension
+			TileOccupancyManager.queue_all_repositions(newly_ascending)
+
+			# Flush repositions + animations from on_ascend skill effects,
+			# then loop to check if those effects satisfied or banished more guests
 			await AnimationCoordinator.play_batch()
 
 
@@ -380,7 +387,7 @@ func _execute_turn_start() -> void:
 		EventBus.stall_restocked.emit(stall)
 
 	# Flush & sweep: play skill-effect animations, ascend newly-satisfied guests
-	await _flush_and_sweep()
+	await flush_and_sweep()
 
 
 func _execute_service_resolution() -> void:
@@ -515,7 +522,7 @@ func _execute_service_resolution() -> void:
 		EventBus.guest_exited_stall.emit(event.guest, event.stall)
 
 	# Phase 7: Flush & sweep
-	await _flush_and_sweep()
+	await flush_and_sweep()
 
 	# Check level completion after ascensions
 	_check_level_complete()
@@ -649,7 +656,7 @@ func _execute_beast_movement() -> void:
 		if not result.reached_end:
 			EventBus.guest_moved.emit(result.beast, result.from, result.to)
 
-	await _flush_and_sweep()
+	await flush_and_sweep()
 
 	# Resolve interactions at beast destination tiles (beasts that didn't exit)
 	var interaction_events: Array = []
@@ -666,7 +673,7 @@ func _execute_beast_movement() -> void:
 		for event in interaction_events:
 			EventBus.beast_interacted.emit(event.beast, event.guest)
 
-		await _flush_and_sweep()
+		await flush_and_sweep()
 
 	# Handle beast exits
 	for beast in beasts_to_exit:
@@ -686,7 +693,7 @@ func _execute_beast_movement() -> void:
 			else:
 				_handle_guest_descent(beast)
 
-		await _flush_and_sweep()
+		await flush_and_sweep()
 
 
 func _execute_guest_movement() -> void:
@@ -770,7 +777,7 @@ func _execute_guest_movement() -> void:
 			EventBus.guest_moved.emit(result.guest, result.from, result.to)
 
 	# Flush & sweep: play skill-effect animations, ascend newly-satisfied guests
-	await _flush_and_sweep()
+	await flush_and_sweep()
 
 	# Handle exits (separate batch for ascend/despawn animations)
 	# Skip guests already removed by the sweep (ascended mid-path)
@@ -793,7 +800,7 @@ func _execute_guest_movement() -> void:
 				_handle_guest_descent(guest)
 
 		# Flush & sweep after exit event processing
-		await _flush_and_sweep()
+		await flush_and_sweep()
 
 		# Check level completion after processing exits
 		_check_level_complete()
@@ -828,7 +835,7 @@ func _execute_beast_interaction() -> void:
 	for event in interaction_events:
 		EventBus.beast_interacted.emit(event.beast, event.guest)
 
-	await _flush_and_sweep()
+	await flush_and_sweep()
 
 
 func _get_guest_path(guest: GuestInstance) -> Path:
@@ -1033,7 +1040,7 @@ func _execute_stall_entry() -> void:
 			EventBus.stall_depleted.emit(event.stall)
 
 	# Flush & sweep: play skill-effect animations, ascend newly-satisfied guests
-	await _flush_and_sweep()
+	await flush_and_sweep()
 
 	# Check level completion after ascensions
 	_check_level_complete()
@@ -1057,7 +1064,7 @@ func _execute_guest_spawn() -> void:
 		EventBus.guest_spawned.emit(guest)
 
 		# Flush & sweep: play skill-effect animations, ascend newly-satisfied guests
-		await _flush_and_sweep()
+		await flush_and_sweep()
 
 	# Check for midnight: core guests depleted past threshold
 	if not _midnight_emitted:
@@ -1069,7 +1076,7 @@ func _execute_guest_spawn() -> void:
 		if core_remaining <= threshold_count:
 			_midnight_emitted = true
 			EventBus.midnight_reached.emit()
-			await _flush_and_sweep()
+			await flush_and_sweep()
 
 	# Spawn beast from beast queue (after midnight)
 	if _midnight_emitted:
@@ -1081,7 +1088,7 @@ func _execute_guest_spawn() -> void:
 
 			EventBus.guest_spawned.emit(beast)
 
-			await _flush_and_sweep()
+			await flush_and_sweep()
 
 
 func _execute_player_action() -> void:
@@ -1097,7 +1104,7 @@ func _execute_turn_end() -> void:
 	EventBus.turn_ended.emit(current_turn)
 
 	# Flush & sweep: play skill-effect animations, ascend newly-satisfied guests
-	await _flush_and_sweep()
+	await flush_and_sweep()
 
 
 

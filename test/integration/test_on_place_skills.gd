@@ -5,7 +5,7 @@ extends "res://test/helpers/test_base.gd"
 class TestMysticalScrollDiscover:
 	extends "res://test/helpers/test_base.gd"
 
-	var beast_pool: Array = ["baku", "nine_tailed_fox", "hanzaki", "tanuki"]
+	var beast_pool: Array = ["baku", "nine_tailed_fox", "hanzaki", "tanuki", "akashita", "qilin"]
 
 	func test_produces_deferred_discover_request():
 		var scroll = create_relic("mystical_scroll")

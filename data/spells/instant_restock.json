@@ -1,0 +1,19 @@
+{
+  "$schema": "./_schema.json",
+  "id": "instant_restock",
+  "display_name_key": "SPELL_INSTANT_RESTOCK_NAME",
+  "description_key": "SPELL_INSTANT_RESTOCK_DESC",
+  "rarity": "common",
+
+  "card_type": "spell",
+  "hero_id": "",
+
+  "target_type": "stall",
+  "target_filter": { "operation_model": "product" },
+
+  "effects": [
+    { "type": "restock_stall", "target": "stall" }
+  ],
+
+  "tags": []
+}

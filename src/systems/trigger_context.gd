@@ -152,7 +152,7 @@ func resolve_target_entity(target_string: String, skill: SkillInstance) -> BaseI
 	## Resolve a target string to an actual entity.
 	match target_string:
 		"self":
-			return skill.owner
+			return skill.owner if skill else null
 		"source":
 			return source
 		"target":
@@ -161,5 +161,11 @@ func resolve_target_entity(target_string: String, skill: SkillInstance) -> BaseI
 			return guest
 		"stall":
 			return stall
+		"random_guest_on_tile":
+			if tile:
+				var guests_on_tile = BoardSystem.get_guests_at(tile.position)
+				if not guests_on_tile.is_empty():
+					return guests_on_tile.pick_random()
+			return null
 		_:
 			return null

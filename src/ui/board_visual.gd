@@ -60,13 +60,26 @@ func set_aura_system(system) -> void:
 
 
 func _is_valid_placement(slot_pos: Vector2i) -> bool:
-	## Check if a slot is valid for the currently selected card.
+	## Check if a stall slot is valid for the currently selected card.
+	## Spells: depends on target_type (stall slots handle "stall" and "tile" targets).
 	## Relics: valid only on empty slots (no stall, no relic).
 	## Stalls: valid on empty slots OR same-type stall that can upgrade.
 	if not placement_mode or not selected_card_def:
 		return false
 
 	var is_occupied = occupied_slots.get(slot_pos, false)
+
+	if selected_card_def is SpellDefinition:
+		var spell_def := selected_card_def as SpellDefinition
+		match spell_def.target_type:
+			"stall":
+				return is_occupied
+			"tile":
+				return _check_spell_tile_filter(spell_def, slot_pos)
+			"guest":
+				return not BoardSystem.get_guests_at(slot_pos).is_empty()
+			_:
+				return false
 
 	if selected_card_def is RelicDefinition:
 		# Relics can only go on empty slots
@@ -84,6 +97,41 @@ func _is_valid_placement(slot_pos: Vector2i) -> bool:
 			return true
 
 	return false
+
+
+func _is_spell_targeting_tiles() -> bool:
+	## Returns true when the current spell needs path tile interaction (tile or guest targeting).
+	if not placement_mode or not selected_card_def is SpellDefinition:
+		return false
+	var spell_def := selected_card_def as SpellDefinition
+	return spell_def.target_type in ["tile", "guest"]
+
+
+func _is_valid_spell_path_tile(pos: Vector2i) -> bool:
+	## Check if a path tile is a valid target for the current spell.
+	if not _is_spell_targeting_tiles():
+		return false
+	var spell_def := selected_card_def as SpellDefinition
+	if spell_def.target_type == "guest":
+		return not BoardSystem.get_guests_at(pos).is_empty()
+	# target_type == "tile"
+	return _check_spell_tile_filter(spell_def, pos)
+
+
+func _check_spell_tile_filter(spell_def: SpellDefinition, pos: Vector2i) -> bool:
+	## Apply the spell's target_filter to a tile position.
+	var filter = spell_def.target_filter
+	if filter.is_empty():
+		return true
+	if filter.has("has_stall"):
+		var has_stall = BoardSystem.get_stall_at(pos) != null
+		if has_stall != filter["has_stall"]:
+			return false
+	if filter.has("has_guest"):
+		var has_guest = not BoardSystem.get_guests_at(pos).is_empty()
+		if has_guest != filter["has_guest"]:
+			return false
+	return true
 
 
 func add_guest_entity(guest: GuestInstance) -> GuestEntity:
@@ -171,13 +219,18 @@ func _draw() -> void:
 		return
 
 	# Draw path tiles
+	var spell_targets_tiles = _is_spell_targeting_tiles()
 	for tile in board.tiles.values():
 		var rect = Rect2(
 			Vector2(tile.position.x, tile.position.y) * TILE_SIZE,
 			Vector2(TILE_SIZE, TILE_SIZE)
 		)
-		draw_rect(rect, Color.DIM_GRAY)
-		draw_rect(rect, Color.GRAY, false, 2.0)
+		if spell_targets_tiles and _is_valid_spell_path_tile(tile.position):
+			draw_rect(rect, Color.DARK_GREEN)
+			draw_rect(rect, Color.GREEN, false, 2.0)
+		else:
+			draw_rect(rect, Color.DIM_GRAY)
+			draw_rect(rect, Color.GRAY, false, 2.0)
 
 	# Draw stall slots
 	for slot_pos in stall_slots:
@@ -221,10 +274,12 @@ func _input(event: InputEvent) -> void:
 			var local_pos = to_local(event.global_position)
 			var tile_pos = Vector2i(local_pos / TILE_SIZE)
 
-			# In placement mode: only allow clicking valid slots
+			# In placement mode: allow clicking valid stall slots or valid path tiles (for spells)
 			# Without placement mode: allow clicking any stall slot (for aura selection)
 			if placement_mode:
 				if tile_pos in stall_slots and _is_valid_placement(tile_pos):
+					slot_clicked.emit(tile_pos)
+				elif board and board.tiles.has(tile_pos) and _is_valid_spell_path_tile(tile_pos):
 					slot_clicked.emit(tile_pos)
 			elif tile_pos in stall_slots:
 				slot_clicked.emit(tile_pos)

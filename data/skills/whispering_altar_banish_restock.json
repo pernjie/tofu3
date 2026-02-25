@@ -9,7 +9,7 @@
   "parameters": {},
   "conditions": [],
   "effects": [
-    { "type": "restock_stall", "target": "owner" }
+    { "type": "restock_stall", "target": "self" }
   ],
   "tags": ["restock", "banish_synergy"]
 }

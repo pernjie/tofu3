@@ -14,6 +14,7 @@
   "opening_hand_size": 4,
 
   "starting_deck": [
+    { "card_id": "spirit_touch", "count": 2 },
     { "card_id": "noodle_stand", "count": 2 },
     { "card_id": "paper_boats", "count": 2 },
     { "card_id": "gourd", "count": 1 },

@@ -7,19 +7,14 @@ extends SkillEffect
 ##
 ## Effect data:
 ##   type: "restock_stall"
-##   target: "context" (default) — uses context.stall
-##           "owner" — uses the skill's owner stall
+##   target: "stall" — uses context.stall (for spells and on_serve skills)
+##           "self" — uses the skill's owner stall (for global observer skills)
 
 
 func execute(context: TriggerContext, skill: SkillInstance) -> SkillEffectResult:
-	var target = effect_data.get("target", "context")
-	var stall: StallInstance
-	if target == "owner":
-		stall = skill.owner as StallInstance
-	else:
-		stall = context.stall
+	var stall = resolve_target(context, skill) as StallInstance
 	if not stall:
-		return SkillEffectResult.failed("No stall in context")
+		return SkillEffectResult.failed("No stall target")
 
 	var old_stock = stall.current_stock
 	if not BoardSystem.restock_and_notify(stall):

@@ -14,7 +14,7 @@
   ],
 
   "effects": [
-    { "type": "restock_stall" }
+    { "type": "restock_stall", "target": "stall" }
   ],
 
   "tags": ["service", "restock"]

@@ -37,6 +37,9 @@ func resolve_parameter(value: Variant, skill: SkillInstance) -> Variant:
 	## Parameter references are strings like "{gold_amount}".
 	if value is String and value.begins_with("{") and value.ends_with("}"):
 		var param_name = value.substr(1, value.length() - 2)
+		if not skill:
+			push_warning("Cannot resolve parameter '%s' without a skill instance" % param_name)
+			return null
 		var param_value = skill.get_parameter(param_name)
 		if param_value != null:
 			return param_value

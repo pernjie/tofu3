@@ -35,6 +35,7 @@ signal relic_placed(relic, tile)
 # Card events
 signal card_drawn(card)
 signal card_played(card)
+signal spell_cast(spell_definition: SpellDefinition, target_pos: Variant, target_entity: Variant)
 
 # Status events
 signal status_applied(target, status)
