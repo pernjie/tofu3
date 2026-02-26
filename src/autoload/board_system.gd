@@ -327,16 +327,22 @@ func upgrade_stall(stall: StallInstance) -> StallInstance:
 	return stall
 
 
+func upgrade_and_notify(stall: StallInstance) -> StallInstance:
+	## Convenience: upgrade stall + emit stall_upgraded event.
+	## For skill effects and spells. Does NOT play batch.
+	var upgraded = upgrade_stall(stall)
+	if upgraded:
+		EventBus.stall_upgraded.emit(upgraded, upgraded.current_tier)
+	return upgraded
+
+
 func deploy_stall(stall_def: StallDefinition, pos: Vector2i) -> StallInstance:
 	## Convenience: place or upgrade stall + emit appropriate event.
 	## For game.gd and skill effects. Does NOT play batch.
 	if stalls.has(pos):
 		var existing = stalls[pos]
 		if existing.definition.id == stall_def.id:
-			var stall = upgrade_stall(existing)
-			if stall:
-				EventBus.stall_upgraded.emit(stall, stall.current_tier)
-			return stall
+			return upgrade_and_notify(existing)
 		push_warning("Cannot place %s at %s - different stall type exists" % [stall_def.id, pos])
 		return null
 

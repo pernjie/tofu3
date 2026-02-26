@@ -56,7 +56,7 @@ func _start_game() -> void:
 	# Run should already be initialized by LevelFlowManager
 	if not GameManager.current_run:
 		push_warning("No current run — starting fallback run (game launched directly?)")
-		GameManager.start_run("night_vendor", "standard_run")
+		GameManager.start_run("angry_bull", "standard_run")
 
 	# Load level from current run state
 	var level_id = GameManager.current_run.get_current_level_id()
@@ -488,6 +488,8 @@ func _check_spell_filter(spell_def: SpellDefinition, target_entity: Variant) -> 
 		if filter.has("operation_model") and stall.definition.operation_model != filter["operation_model"]:
 			return false
 		if filter.has("has_tag") and filter["has_tag"] not in stall.definition.tags:
+			return false
+		if filter.has("can_upgrade") and stall.can_upgrade() != filter["can_upgrade"]:
 			return false
 
 	elif target_entity is GuestInstance:

@@ -35,7 +35,7 @@
     },
     "target_filter": {
       "type": "object",
-      "description": "Upfront validation for valid targets. Keys depend on target_type: stall (need_type, operation_model, has_tag), guest (has_status, has_tag, is_core_guest), tile (has_stall, has_guest)"
+      "description": "Upfront validation for valid targets. Keys depend on target_type: stall (need_type, operation_model, has_tag, can_upgrade), guest (has_status, has_tag, is_core_guest), tile (has_stall, has_guest)"
     },
     "effects": {
       "type": "array",

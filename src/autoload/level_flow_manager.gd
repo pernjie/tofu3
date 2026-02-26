@@ -17,7 +17,7 @@ func _ready() -> void:
 	EventBus.level_lost.connect(_on_level_lost)
 
 
-func start_new_run(hero_id: String = "night_vendor", run_id: String = "standard_run") -> void:
+func start_new_run(hero_id: String = "angry_bull", run_id: String = "standard_run") -> void:
 	## Initialize a new run and show the interlude for the first level.
 	GameManager.start_run(hero_id, run_id)
 

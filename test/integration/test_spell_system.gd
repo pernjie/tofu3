@@ -443,3 +443,106 @@ class TestSpiritTouch:
 			var result = effect.execute(context, null)
 			# Should fail gracefully — no guest to target
 			assert_false(result.success, "Should fail when no guest on tile")
+
+
+class TestForgeAhead:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_spell_definition_loads():
+		var spell_def = ContentRegistry.get_definition("spells", "forge_ahead")
+		assert_not_null(spell_def, "forge_ahead should load from ContentRegistry")
+		assert_eq(spell_def.target_type, "stall")
+		assert_eq(spell_def.target_filter.get("can_upgrade"), true)
+		assert_eq(spell_def.effects.size(), 1)
+		assert_eq(spell_def.effects[0].get("type"), "upgrade_stall")
+		assert_eq(spell_def.effects[0].get("target"), "stall")
+
+	func test_upgrades_stall_tier():
+		var stall = create_stall("noodle_stand")
+		register_stall(stall, Vector2i(1, 1))
+		assert_eq(stall.current_tier, 1, "Stall should start at tier 1")
+
+		var context = TriggerContext.create("spell_cast")
+		context.with_stall(stall)
+
+		var effects = SkillEffectFactory.create_all([
+			{"type": "upgrade_stall", "target": "stall"}
+		])
+		for effect in effects:
+			var result = effect.execute(context, null)
+			assert_true(result.success, "upgrade_stall should succeed with null skill")
+
+		assert_eq(stall.current_tier, 2, "Stall should now be at tier 2")
+
+	func test_upgrades_to_max_tier():
+		var stall = create_stall("noodle_stand")  # 3 tiers
+		register_stall(stall, Vector2i(1, 1))
+
+		# Upgrade to tier 2
+		var context = TriggerContext.create("spell_cast")
+		context.with_stall(stall)
+		var effects = SkillEffectFactory.create_all([
+			{"type": "upgrade_stall", "target": "stall"}
+		])
+		for effect in effects:
+			effect.execute(context, null)
+		assert_eq(stall.current_tier, 2)
+
+		# Upgrade to tier 3 (max)
+		var context2 = TriggerContext.create("spell_cast")
+		context2.with_stall(stall)
+		var effects2 = SkillEffectFactory.create_all([
+			{"type": "upgrade_stall", "target": "stall"}
+		])
+		for effect in effects2:
+			effect.execute(context2, null)
+		assert_eq(stall.current_tier, 3, "Stall should now be at max tier 3")
+
+	func test_fails_at_max_tier():
+		var stall = create_stall("noodle_stand")  # 3 tiers
+		register_stall(stall, Vector2i(1, 1))
+
+		# Upgrade to max tier
+		stall.upgrade()
+		stall.upgrade()
+		assert_eq(stall.current_tier, 3, "Stall should be at max tier")
+		assert_false(stall.can_upgrade(), "Should not be able to upgrade further")
+
+		var context = TriggerContext.create("spell_cast")
+		context.with_stall(stall)
+
+		var effects = SkillEffectFactory.create_all([
+			{"type": "upgrade_stall", "target": "stall"}
+		])
+		for effect in effects:
+			var result = effect.execute(context, null)
+			assert_false(result.success, "upgrade_stall should fail at max tier")
+
+		assert_eq(stall.current_tier, 3, "Tier should remain at 3")
+
+	func test_fails_with_no_stall_in_context():
+		var context = TriggerContext.create("spell_cast")
+
+		var effects = SkillEffectFactory.create_all([
+			{"type": "upgrade_stall", "target": "stall"}
+		])
+		for effect in effects:
+			var result = effect.execute(context, null)
+			assert_false(result.success, "upgrade_stall should fail without stall in context")
+
+	func test_result_tracks_tier_change():
+		var stall = create_stall("noodle_stand")
+		register_stall(stall, Vector2i(1, 1))
+
+		var context = TriggerContext.create("spell_cast")
+		context.with_stall(stall)
+
+		var effects = SkillEffectFactory.create_all([
+			{"type": "upgrade_stall", "target": "stall"}
+		])
+		for effect in effects:
+			var result = effect.execute(context, null)
+			assert_true(result.success)
+			assert_true(result.values_changed.has("tier"), "Should track tier change")
+			assert_eq(result.values_changed["tier"]["old"], 1)
+			assert_eq(result.values_changed["tier"]["new"], 2)

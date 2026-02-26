@@ -102,6 +102,7 @@ Filters narrow valid targets. During targeting, tiles that don't pass the filter
 | `need_type` | `"food"`, `"joy"` | `{ "need_type": "food" }` |
 | `operation_model` | `"product"`, `"service"`, `"bulk_service"` | `{ "operation_model": "product" }` |
 | `has_tag` | any stall tag | `{ "has_tag": "food_stall" }` |
+| `can_upgrade` | `true`/`false` | `{ "can_upgrade": true }` |
 
 **For `"guest"` targets:**
 

@@ -8,15 +8,15 @@
 
   "starting_stats": {
     "reputation": 10,
-    "tokens": 10
+    "tokens": 8
   },
 
   "opening_hand_size": 4,
 
   "starting_deck": [
-    { "card_id": "noodle_stand", "count": 2 },
-    { "card_id": "game_booth", "count": 2 },
-    { "card_id": "yoga_mats", "count": 3 }
+    { "card_id": "warm_water", "count": 3 },
+    { "card_id": "stone_stacking", "count": 3 },
+    { "card_id": "forge_ahead", "count": 1 }
   ],
 
   "exclusive_cards": [],

@@ -13,12 +13,14 @@ const RARITY_WEIGHTS: Dictionary = {
 const REROLL_BASE_COST: int = 1
 const REROLL_COST_MULTIPLIER: int = 2
 const NUM_OFFERINGS: int = 3
-const PRICE_OFFSETS: Array[int] = [-2, -1, -1, 0, 0, 0, 1]
+const PRICE_OFFSETS: Array[int] = [-2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+const REMOVE_CARD_COST: int = 2
 
 var _hero_id: String
 var _pool: Array[CardDefinition]
 var _reroll_count: int = 0
 var _offerings: Array  # CardInstance per slot, null = purchased/empty
+var _card_removed: bool = false
 
 
 func setup(hero_id: String) -> void:
@@ -103,6 +105,25 @@ func can_afford_card(slot_index: int) -> bool:
 	if card == null:
 		return false
 	return GameManager.tokens >= card.get_effective_price()
+
+
+func can_remove_card() -> bool:
+	return not _card_removed and GameManager.tokens >= REMOVE_CARD_COST
+
+
+func remove_card(card: CardInstance) -> bool:
+	if _card_removed:
+		return false
+	if not GameManager.spend_tokens(REMOVE_CARD_COST):
+		return false
+	GameManager.current_run.deck.erase(card)
+	card.location = CardInstance.Location.REMOVED
+	_card_removed = true
+	return true
+
+
+func has_removed_card() -> bool:
+	return _card_removed
 
 
 func has_offerings() -> bool:

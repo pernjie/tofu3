@@ -1,0 +1,19 @@
+{
+  "$schema": "./_schema.json",
+  "id": "forge_ahead",
+  "display_name_key": "SPELL_FORGE_AHEAD_NAME",
+  "description_key": "SPELL_FORGE_AHEAD_DESC",
+  "rarity": "common",
+
+  "card_type": "spell",
+  "hero_id": "",
+
+  "target_type": "stall",
+  "target_filter": { "can_upgrade": true },
+
+  "effects": [
+    { "type": "upgrade_stall", "target": "stall" }
+  ],
+
+  "tags": []
+}
