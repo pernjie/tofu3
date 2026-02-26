@@ -1,0 +1,17 @@
+{
+  "$schema": "./_schema.json",
+  "id": "beast_call",
+  "display_name_key": "SPELL_BEAST_CALL_NAME",
+  "card_type": "spell",
+  "target_type": "tile",
+  "target_filter": { "is_on_path": true },
+  "rarity": "rare",
+  "effects": [
+    {
+      "type": "summon_beast_choice",
+      "pool": ["baku", "nine_tailed_fox", "hanzaki", "tanuki", "akashita", "qilin"],
+      "choices": 3
+    }
+  ],
+  "tags": ["beast"]
+}

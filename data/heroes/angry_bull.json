@@ -16,7 +16,8 @@
   "starting_deck": [
     { "card_id": "warm_water", "count": 3 },
     { "card_id": "stone_stacking", "count": 3 },
-    { "card_id": "forge_ahead", "count": 1 }
+    { "card_id": "forge_ahead", "count": 1 },
+    { "card_id": "beast_call", "count": 1 }
   ],
 
   "exclusive_cards": [],

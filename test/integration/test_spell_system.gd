@@ -336,6 +336,110 @@ class TestSpellTargetValidation:
 		assert_null(result, "Should return null when no tile in context")
 
 
+class TestSpellDefinitionFilters:
+	extends "res://test/helpers/test_base.gd"
+
+	func _create_spell_def(overrides: Dictionary = {}) -> SpellDefinition:
+		var data = {
+			"id": overrides.get("id", "test_filter_spell"),
+			"display_name_key": "TEST_SPELL_NAME",
+			"card_type": "spell",
+			"target_type": overrides.get("target_type", "stall"),
+			"target_filter": overrides.get("target_filter", {}),
+			"effects": overrides.get("effects", [{"type": "grant_tokens", "target": "player", "amount": 1}]),
+		}
+		return SpellDefinition.from_dict(data)
+
+	# --- Stall filters ---
+
+	func test_stall_filter_empty_passes_all():
+		var spell_def = _create_spell_def({"target_filter": {}})
+		var stall = create_stall("noodle_stand")
+		register_stall(stall, Vector2i(1, 1))
+		assert_true(spell_def.is_valid_stall_target(stall))
+
+	func test_stall_filter_need_type_matches():
+		var spell_def = _create_spell_def({"target_filter": {"need_type": "food"}})
+		var stall = create_stall("noodle_stand")  # food stall
+		register_stall(stall, Vector2i(1, 1))
+		assert_true(spell_def.is_valid_stall_target(stall))
+
+	func test_stall_filter_need_type_rejects():
+		var spell_def = _create_spell_def({"target_filter": {"need_type": "joy"}})
+		var stall = create_stall("noodle_stand")  # food stall
+		register_stall(stall, Vector2i(1, 1))
+		assert_false(spell_def.is_valid_stall_target(stall))
+
+	func test_stall_filter_operation_model_matches():
+		var spell_def = _create_spell_def({"target_filter": {"operation_model": "product"}})
+		var stall = create_stall("noodle_stand")  # product stall
+		register_stall(stall, Vector2i(1, 1))
+		assert_true(spell_def.is_valid_stall_target(stall))
+
+	func test_stall_filter_operation_model_rejects():
+		var spell_def = _create_spell_def({"target_filter": {"operation_model": "product"}})
+		var stall = create_stall("ancient_theatre")  # service stall
+		register_stall(stall, Vector2i(1, 1))
+		assert_false(spell_def.is_valid_stall_target(stall))
+
+	func test_stall_filter_can_upgrade_true():
+		var spell_def = _create_spell_def({"target_filter": {"can_upgrade": true}})
+		var stall = create_stall("noodle_stand")  # 3 tiers, starts at 1
+		register_stall(stall, Vector2i(1, 1))
+		assert_true(spell_def.is_valid_stall_target(stall),
+			"Tier 1 stall with 3 tiers should pass can_upgrade filter")
+
+	func test_stall_filter_can_upgrade_rejects_max_tier():
+		var spell_def = _create_spell_def({"target_filter": {"can_upgrade": true}})
+		var stall = create_stall("noodle_stand")
+		register_stall(stall, Vector2i(1, 1))
+		stall.upgrade()
+		stall.upgrade()  # Now at max tier 3
+		assert_false(spell_def.is_valid_stall_target(stall),
+			"Max tier stall should fail can_upgrade filter")
+
+	# --- Guest filters ---
+
+	func test_guest_filter_empty_passes_all():
+		var spell_def = _create_spell_def({
+			"target_type": "guest",
+			"target_filter": {}
+		})
+		var guest = create_guest("hungry_ghost")
+		register_guest(guest, Vector2i(1, 0))
+		assert_true(spell_def.is_valid_guest_target(guest))
+
+	func test_guest_filter_has_status_matches():
+		var spell_def = _create_spell_def({
+			"target_type": "guest",
+			"target_filter": {"has_status": "lost"}
+		})
+		var guest = create_guest("hungry_ghost")
+		register_guest(guest, Vector2i(1, 0))
+		BoardSystem.inflict_status(guest, "lost", 1)
+		assert_true(spell_def.is_valid_guest_target(guest))
+
+	func test_guest_filter_has_status_rejects():
+		var spell_def = _create_spell_def({
+			"target_type": "guest",
+			"target_filter": {"has_status": "lost"}
+		})
+		var guest = create_guest("hungry_ghost")
+		register_guest(guest, Vector2i(1, 0))
+		assert_false(spell_def.is_valid_guest_target(guest),
+			"Guest without lost status should fail filter")
+
+	func test_guest_filter_is_core_guest():
+		var spell_def = _create_spell_def({
+			"target_type": "guest",
+			"target_filter": {"is_core_guest": true}
+		})
+		var guest = create_guest("hungry_ghost")
+		register_guest(guest, Vector2i(1, 0))
+		assert_eq(spell_def.is_valid_guest_target(guest), guest.definition.is_core_guest,
+			"Filter should match guest's is_core_guest property")
+
+
 class TestSpiritTouch:
 	extends "res://test/helpers/test_base.gd"
 
@@ -546,3 +650,132 @@ class TestForgeAhead:
 			assert_true(result.values_changed.has("tier"), "Should track tier change")
 			assert_eq(result.values_changed["tier"]["old"], 1)
 			assert_eq(result.values_changed["tier"]["new"], 2)
+
+
+class TestBeastCall:
+	extends "res://test/helpers/test_base.gd"
+
+	func test_spell_definition_loads():
+		var spell_def = ContentRegistry.get_definition("spells", "beast_call")
+		assert_not_null(spell_def, "beast_call should load from ContentRegistry")
+		assert_eq(spell_def.target_type, "tile")
+		assert_eq(spell_def.target_filter.get("is_on_path"), true)
+		assert_eq(spell_def.effects.size(), 1)
+		assert_eq(spell_def.effects[0].get("type"), "summon_beast_choice")
+
+	func test_spell_has_full_beast_pool():
+		var spell_def = ContentRegistry.get_definition("spells", "beast_call")
+		var pool = spell_def.effects[0].get("pool", [])
+		assert_eq(pool.size(), 6, "Pool should contain all 6 beasts")
+		assert_has(pool, "baku")
+		assert_has(pool, "nine_tailed_fox")
+		assert_has(pool, "hanzaki")
+		assert_has(pool, "tanuki")
+		assert_has(pool, "akashita")
+		assert_has(pool, "qilin")
+
+	func test_effect_returns_deferred_request():
+		var effect = SkillEffectFactory.create({
+			"type": "summon_beast_choice",
+			"pool": ["baku", "nine_tailed_fox", "hanzaki", "tanuki", "akashita", "qilin"],
+			"choices": 3
+		})
+
+		var context = TriggerContext.create("spell_cast")
+		var tile = BoardSystem.board.get_tile_at(Vector2i(2, 0))
+		context.with_tile(tile)
+
+		var result = effect.execute(context, null)
+		assert_true(result.success, "Effect should succeed")
+		assert_false(result.deferred_request.is_empty(), "Should return a deferred request")
+		assert_eq(result.deferred_request.get("type"), "summon_beast_choice")
+
+	func test_deferred_request_has_correct_options_count():
+		var effect = SkillEffectFactory.create({
+			"type": "summon_beast_choice",
+			"pool": ["baku", "nine_tailed_fox", "hanzaki", "tanuki", "akashita", "qilin"],
+			"choices": 3
+		})
+
+		var context = TriggerContext.create("spell_cast")
+		var tile = BoardSystem.board.get_tile_at(Vector2i(2, 0))
+		context.with_tile(tile)
+
+		var result = effect.execute(context, null)
+		var options = result.deferred_request.get("options", [])
+		assert_eq(options.size(), 3, "Should present 3 beast options")
+
+	func test_deferred_request_carries_target_position():
+		var effect = SkillEffectFactory.create({
+			"type": "summon_beast_choice",
+			"pool": ["baku", "nine_tailed_fox", "hanzaki"],
+			"choices": 3
+		})
+
+		var context = TriggerContext.create("spell_cast")
+		var tile = BoardSystem.board.get_tile_at(Vector2i(3, 0))
+		context.with_tile(tile)
+
+		var result = effect.execute(context, null)
+		assert_eq(result.deferred_request.get("target_pos"), Vector2i(3, 0),
+			"Deferred request should carry target tile position")
+
+	func test_options_are_valid_beast_definitions():
+		var effect = SkillEffectFactory.create({
+			"type": "summon_beast_choice",
+			"pool": ["baku", "nine_tailed_fox", "hanzaki"],
+			"choices": 3
+		})
+
+		var context = TriggerContext.create("spell_cast")
+		var tile = BoardSystem.board.get_tile_at(Vector2i(2, 0))
+		context.with_tile(tile)
+
+		var result = effect.execute(context, null)
+		for option in result.deferred_request.get("options", []):
+			assert_true(option.has("title"), "Each option should have a title")
+			assert_true(option.has("data"), "Each option should have data (beast ID)")
+			# Verify the data is a valid beast ID
+			var beast_def = ContentRegistry.get_definition("guests", option["data"])
+			assert_not_null(beast_def, "Option data should be a valid guest ID")
+			assert_true(beast_def.is_mythical_beast, "Option should be a mythical beast")
+
+	func test_fails_with_empty_pool():
+		var effect = SkillEffectFactory.create({
+			"type": "summon_beast_choice",
+			"pool": [],
+			"choices": 3
+		})
+
+		var context = TriggerContext.create("spell_cast")
+		var result = effect.execute(context, null)
+		assert_false(result.success, "Should fail with empty pool")
+
+	func test_fails_with_no_tile_in_context():
+		var effect = SkillEffectFactory.create({
+			"type": "summon_beast_choice",
+			"pool": ["baku", "nine_tailed_fox", "hanzaki"],
+			"choices": 3
+		})
+
+		var context = TriggerContext.create("spell_cast")
+		# No tile set on context
+		var result = effect.execute(context, null)
+		assert_false(result.success, "Should fail without tile in context")
+
+	func test_handles_smaller_pool_than_choices():
+		var effect = SkillEffectFactory.create({
+			"type": "summon_beast_choice",
+			"pool": ["baku", "tanuki"],
+			"choices": 3
+		})
+
+		var context = TriggerContext.create("spell_cast")
+		var tile = BoardSystem.board.get_tile_at(Vector2i(2, 0))
+		context.with_tile(tile)
+
+		var result = effect.execute(context, null)
+		assert_true(result.success, "Should succeed with fewer options than choices")
+		var options = result.deferred_request.get("options", [])
+		assert_eq(options.size(), 2, "Should present all available beasts when pool < choices")
+

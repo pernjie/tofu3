@@ -236,6 +236,12 @@ func _on_card_clicked(card: CardInstance) -> void:
 	if not deck_system.can_play_card(card):
 		return
 
+	# Block targeted spells with no valid targets on the board
+	var spell_check = card.definition as SpellDefinition
+	if spell_check and spell_check.target_type != "none" and selected_card != card:
+		if not _has_valid_spell_targets(spell_check):
+			return
+
 	# Deselect previous
 	if selected_card:
 		var prev_ui := hand_display.get_card_ui(selected_card)
@@ -418,9 +424,13 @@ func _cast_spell(spell_def: SpellDefinition, pos: Vector2i, target_entity: Varia
 		context.with_guest(target_entity)
 
 	# Execute effects with null skill (spells have no SkillInstance)
+	# Capture results to collect deferred requests (spell effects bypass TriggerSystem)
 	var effects = SkillEffectFactory.create_all(spell_def.effects)
+	var deferred_requests: Array[Dictionary] = []
 	for effect in effects:
-		effect.execute(context, null)
+		var result = effect.execute(context, null)
+		if not result.deferred_request.is_empty():
+			deferred_requests.append(result.deferred_request)
 
 	# Consume card (sets location to REMOVED, emits card_played → fires on_play trigger)
 	deck_system.play_card(card, pos)
@@ -432,18 +442,56 @@ func _cast_spell(spell_def: SpellDefinition, pos: Vector2i, target_entity: Varia
 	await TurnSystem.flush_and_sweep()
 
 	# Handle deferred requests from spell effects
-	if not TriggerSystem.pending_deferred_requests.is_empty():
-		await _handle_spell_deferred_requests()
+	if not deferred_requests.is_empty():
+		await _handle_spell_deferred_requests(deferred_requests)
 
 
-func _handle_spell_deferred_requests() -> void:
-	## Process pending deferred requests from spell effects.
+func _handle_spell_deferred_requests(requests: Array[Dictionary]) -> void:
+	## Process deferred requests from spell effects.
 	_ui_blocking = true
-	for request in TriggerSystem.pending_deferred_requests:
-		if request.get("type") == "discover":
-			push_warning("Discover effect on a spell has no entity to store result — skipping")
-	TriggerSystem.pending_deferred_requests.clear()
+	for request in requests:
+		match request.get("type"):
+			"discover":
+				push_warning("Discover effect on a spell has no entity to store result — skipping")
+			"summon_beast_choice":
+				await _handle_summon_beast_choice(request)
 	_ui_blocking = false
+
+
+func _handle_summon_beast_choice(request: Dictionary) -> void:
+	## Show beast selection overlay and spawn the chosen beast at the target tile.
+	var overlay = DiscoverOverlayScene.instantiate()
+	$HUD.add_child(overlay)
+
+	var prompt = tr(request.get("prompt", "DISCOVER_BEAST_PROMPT"))
+	var options: Array[Dictionary] = []
+	for opt in request.get("options", []):
+		options.append(opt)
+	overlay.setup(prompt, options)
+
+	# Wait for player selection
+	var chosen_data = await overlay.option_selected
+
+	# Spawn the chosen beast at the target tile
+	var beast_def = ContentRegistry.get_definition("guests", chosen_data)
+	if beast_def:
+		var target_pos: Vector2i = request.get("target_pos", Vector2i.ZERO)
+		# Find the path and index for the target tile
+		var spawn_index := -1
+		var path_id := ""
+		for path in BoardSystem.board.paths:
+			var tile = BoardSystem.board.get_tile_at(target_pos)
+			if tile:
+				var idx = path.get_tile_index(tile)
+				if idx >= 0:
+					spawn_index = idx
+					path_id = path.id
+					break
+		BoardSystem.summon_guest(beast_def, path_id, spawn_index)
+		await TurnSystem.flush_and_sweep()
+
+	# Clean up overlay
+	overlay.queue_free()
 
 
 func _get_spell_target_entity(spell_def: SpellDefinition, pos: Vector2i) -> Variant:
@@ -477,49 +525,41 @@ func _validate_spell_target(spell_def: SpellDefinition, pos: Vector2i, target_en
 
 func _check_spell_filter(spell_def: SpellDefinition, target_entity: Variant) -> bool:
 	## Validate target_filter against a stall or guest entity.
-	var filter = spell_def.target_filter
-	if filter.is_empty():
-		return true
-
+	## Delegates to SpellDefinition methods for reuse by board_visual.
 	if target_entity is StallInstance:
-		var stall: StallInstance = target_entity
-		if filter.has("need_type") and stall.definition.need_type != filter["need_type"]:
-			return false
-		if filter.has("operation_model") and stall.definition.operation_model != filter["operation_model"]:
-			return false
-		if filter.has("has_tag") and filter["has_tag"] not in stall.definition.tags:
-			return false
-		if filter.has("can_upgrade") and stall.can_upgrade() != filter["can_upgrade"]:
-			return false
-
+		return spell_def.is_valid_stall_target(target_entity)
 	elif target_entity is GuestInstance:
-		var guest: GuestInstance = target_entity
-		if filter.has("has_status") and not guest.has_status(filter["has_status"]):
-			return false
-		if filter.has("has_tag") and filter["has_tag"] not in guest.definition.tags:
-			return false
-		if filter.has("is_core_guest") and guest.definition.is_core_guest != filter["is_core_guest"]:
-			return false
-
+		return spell_def.is_valid_guest_target(target_entity)
 	return true
 
 
 func _check_tile_filter(spell_def: SpellDefinition, pos: Vector2i) -> bool:
 	## Validate target_filter for tile-targeted spells.
-	var filter = spell_def.target_filter
-	if filter.is_empty():
-		return true
+	return spell_def.is_valid_tile_target(pos)
 
-	if filter.has("has_stall"):
-		var has_stall = BoardSystem.get_stall_at(pos) != null
-		if has_stall != filter["has_stall"]:
-			return false
-	if filter.has("has_guest"):
-		var has_guest = not BoardSystem.get_guests_at(pos).is_empty()
-		if has_guest != filter["has_guest"]:
-			return false
 
-	return true
+func _has_valid_spell_targets(spell_def: SpellDefinition) -> bool:
+	## Check if any valid target exists on the board for this spell.
+	## Used to prevent selecting spells that have nothing to target.
+	match spell_def.target_type:
+		"none":
+			return true
+		"stall":
+			for stall in BoardSystem.stalls.values():
+				if spell_def.is_valid_stall_target(stall):
+					return true
+			return false
+		"guest":
+			for guest in BoardSystem.active_guests:
+				if spell_def.is_valid_guest_target(guest):
+					return true
+			return false
+		"tile":
+			for pos in BoardSystem.board.tiles:
+				if _check_tile_filter(spell_def, pos):
+					return true
+			return false
+	return false
 
 
 func _toggle_aura_selection(pos: Vector2i) -> void:

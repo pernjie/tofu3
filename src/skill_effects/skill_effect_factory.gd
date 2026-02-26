@@ -95,6 +95,8 @@ static func create(effect_data: Dictionary) -> SkillEffect:
 			return ApplyPersistentBonusEffect.new(effect_data)
 		"upgrade_stall":
 			return UpgradeStallEffect.new(effect_data)
+		"summon_beast_choice":
+			return SummonBeastChoiceEffect.new(effect_data)
 		_:
 			push_warning("Unknown effect type: %s" % effect_type)
 			return SkillEffect.new(effect_data)

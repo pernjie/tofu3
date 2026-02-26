@@ -73,11 +73,14 @@ func _is_valid_placement(slot_pos: Vector2i) -> bool:
 		var spell_def := selected_card_def as SpellDefinition
 		match spell_def.target_type:
 			"stall":
-				return is_occupied
+				if not is_occupied:
+					return false
+				var stall = BoardSystem.get_stall_at(slot_pos)
+				return stall != null and spell_def.is_valid_stall_target(stall)
 			"tile":
 				return _check_spell_tile_filter(spell_def, slot_pos)
 			"guest":
-				return not BoardSystem.get_guests_at(slot_pos).is_empty()
+				return _has_valid_guest_at(spell_def, slot_pos)
 			_:
 				return false
 
@@ -113,25 +116,22 @@ func _is_valid_spell_path_tile(pos: Vector2i) -> bool:
 		return false
 	var spell_def := selected_card_def as SpellDefinition
 	if spell_def.target_type == "guest":
-		return not BoardSystem.get_guests_at(pos).is_empty()
+		return _has_valid_guest_at(spell_def, pos)
 	# target_type == "tile"
 	return _check_spell_tile_filter(spell_def, pos)
 
 
+func _has_valid_guest_at(spell_def: SpellDefinition, pos: Vector2i) -> bool:
+	## Check if any guest at a position passes the spell's target_filter.
+	for guest in BoardSystem.get_guests_at(pos):
+		if spell_def.is_valid_guest_target(guest):
+			return true
+	return false
+
+
 func _check_spell_tile_filter(spell_def: SpellDefinition, pos: Vector2i) -> bool:
 	## Apply the spell's target_filter to a tile position.
-	var filter = spell_def.target_filter
-	if filter.is_empty():
-		return true
-	if filter.has("has_stall"):
-		var has_stall = BoardSystem.get_stall_at(pos) != null
-		if has_stall != filter["has_stall"]:
-			return false
-	if filter.has("has_guest"):
-		var has_guest = not BoardSystem.get_guests_at(pos).is_empty()
-		if has_guest != filter["has_guest"]:
-			return false
-	return true
+	return spell_def.is_valid_tile_target(pos)
 
 
 func add_guest_entity(guest: GuestInstance) -> GuestEntity:

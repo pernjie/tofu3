@@ -93,7 +93,12 @@ The `target_type` determines what the player must click to cast the spell. It sh
 
 ### Target Filters
 
-Filters narrow valid targets. During targeting, tiles that don't pass the filter will be visually disabled (when targeting UI is implemented), preventing the player from wasting a spell on an invalid target.
+Filters narrow valid targets in two ways:
+
+1. **Card selectability** — If no entity on the board passes the filter, the spell card cannot be selected at all. The player won't enter targeting mode for a spell with no valid targets.
+2. **Tile highlighting** — During targeting, only tiles with entities passing the filter are highlighted as valid clicks.
+
+Filter validation methods live on `SpellDefinition` (`is_valid_stall_target()`, `is_valid_guest_target()`, `is_valid_tile_target()`) so both `game.gd` and `board_visual.gd` share the same logic.
 
 **For `"stall"` targets:**
 
@@ -116,6 +121,7 @@ Filters narrow valid targets. During targeting, tiles that don't pass the filter
 
 | Key | Values | Example |
 |-----|--------|---------|
+| `is_on_path` | `true`/`false` | `{ "is_on_path": true }` |
 | `has_stall` | `true`/`false` | `{ "has_stall": false }` |
 | `has_guest` | `true`/`false` | `{ "has_guest": true }` |
 
@@ -154,7 +160,7 @@ Spell effects execute with `skill = null`. This means:
 **Does not work:**
 - Parameter references: `"amount": "{bonus}"` — resolves to null, falls back to default
 - State access: `get_state()`, `set_state()`, `increment_state` — no skill instance to store state on
-- `discover` effect — stores results in persistent state on the owner, but spells have no owner
+- `discover` effect — stores results in persistent state on the owner, but spells have no owner. (Note: spells *can* use deferred requests with custom handlers — see `summon_beast_choice` for an example that shows a selection UI and acts on the result without needing persistent state.)
 - Any effect that calls `skill.owner` — returns null
 
 If you need parameterized values, put the literal value directly in the spell JSON. If you need state or discovery, the behavior belongs on a different entity type (a relic or status effect that the spell applies).
@@ -223,7 +229,7 @@ Spells compose multiple effects to create cohesive moments. Common patterns:
 
 ### When Existing Effects Aren't Enough
 
-The 42 existing effects cover a wide range of behaviors. Before requesting a new effect, check whether the behavior can be expressed as:
+The existing effects cover a wide range of behaviors. Before requesting a new effect, check whether the behavior can be expressed as:
 
 1. **A combination of existing effects** — multiple effects in the array can achieve complex results through sequencing
 2. **A status effect** — if the behavior needs to last beyond the cast, apply a status that carries the skills/modifiers
@@ -246,8 +252,17 @@ Target a guest, fulfill 1 of their unfulfilled needs at random. The `fulfill_nee
 }
 ```
 
-**"Summon a random beast" (needs a new effect):**
-Target a tile, spawn a random mythical beast there. No existing effect picks a random beast from all beast definitions — `summon_guest` needs a specific `guest_id`, and `spawn_next_from_queue` pops from a pre-built queue. This needs a new effect (e.g., `summon_random_beast`) that queries ContentRegistry for all beasts and picks one. The spell JSON would be trivial once the effect exists.
+**"Summon a beast from a selection" (works today — `beast_call`):**
+Target a path tile, present 3 random beasts from a pool, spawn the player's choice at that tile. The `summon_beast_choice` effect handles this via the deferred request pattern — it returns a selection to the UI, and `game.gd` shows the discover overlay and spawns the result. The spell JSON is simple:
+```json
+{
+  "target_type": "tile",
+  "target_filter": { "is_on_path": true },
+  "effects": [
+    { "type": "summon_beast_choice", "pool": ["baku", "tanuki", "..."], "choices": 3 }
+  ]
+}
+```
 
 **"Broadcast a stall's effect to all guests" (needs new mechanics):**
 Target a stall, apply its fulfillment effect to every guest on the board, then shut down the stall. No existing effect can introspect another entity's skills, and there's no "shut down stall" effect. This requires both new effects and possibly new system-level concepts. The right approach is to design the new building blocks first (a `broadcast_stall_effect` or similar, a `disable_stall` status effect), then express the spell in terms of those blocks.
@@ -332,7 +347,7 @@ class TestMySpell:
 - **Null skill:** Always pass `null` as the second argument to `effect.execute()` — this matches how `_cast_spell()` works
 - **Context setup:** Build context manually to match the spell's `target_type`. Set `guest`, `stall`, and/or `tile` as appropriate
 - **Effect sequencing:** If effects depend on ordering (e.g., apply status then fulfill need), test the full sequence, not individual effects
-- **Target filters:** Test `_validate_spell_target()` and `_check_spell_filter()` separately for filter validation. The existing `TestSpellTargetValidation` class covers the validation infrastructure
+- **Target filters:** Filter validation lives on `SpellDefinition` (`is_valid_stall_target()`, `is_valid_guest_target()`, `is_valid_tile_target()`). The existing `TestSpellTargetValidation` class covers the validation infrastructure
 - **`on_cast` responders:** Test `on_cast` skills in a separate test class — fire the `on_cast` trigger after spell execution and verify the responder skill's effects
 
 ### Running
@@ -350,7 +365,7 @@ godot -d -s --path "$PWD" addons/gut/gut_cmdln.gd -gtest=res://test/integration/
 | `src/definitions/spell_definition.gd` | Parses spell JSON into typed resource |
 | `src/definitions/card_definition.gd` | Base card fields (SpellDefinition extends this) |
 | `src/game/game.gd` | `_cast_spell()`, target validation, targeting flow |
-| `src/skill_effects/skill_effect_factory.gd` | Effect type registry — all 42 effects available |
+| `src/skill_effects/skill_effect_factory.gd` | Effect type registry — all effect types available |
 | `src/skill_effects/skill_effect.gd` | Base effect class — null skill handling |
 | `src/systems/trigger_system.gd` | Wires `spell_cast` signal → `on_cast` trigger |
 | `src/autoload/event_bus.gd` | `spell_cast` signal definition |
@@ -378,9 +393,9 @@ When adding a new spell:
 
 Spells reuse the existing effect pipeline, so most spell designs should work without new code. When they don't, the issue is almost always a missing building block — not a problem with the spell system itself.
 
-**New effect type needed** when a spell concept requires an action the pipeline can't express. Examples: "pick a random beast and spawn it" (no effect queries ContentRegistry for random definitions), "disable a stall for N turns" (no shutdown/disable effect). Propose the new effect as a general-purpose building block, not a spell-specific hack.
+**New effect type needed** when a spell concept requires an action the pipeline can't express. Examples: "disable a stall for N turns" (no shutdown/disable effect). Propose the new effect as a general-purpose building block, not a spell-specific hack. Effects that need player interaction (like `summon_beast_choice`) can use the deferred request pattern — the effect returns a request dict, and `game.gd` handles the UI and resolution.
 
-**New target filter key needed** when `target_filter` can't express the validation a spell needs. Examples: "target a stall with at least 2 stock" (no `min_stock` filter), "target a guest on a specific path" (no `on_path` filter). Extend the filter vocabulary in `_check_spell_filter()` and the schema.
+**New target filter key needed** when `target_filter` can't express the validation a spell needs. Examples: "target a stall with at least 2 stock" (no `min_stock` filter). Extend the filter vocabulary on `SpellDefinition` (the `is_valid_*_target()` methods) and the schema.
 
 **New target selector needed** when effects need to reach entities that current selectors can't. Examples: "all guests on the board" (no `"all_guests"` selector), "the nearest beast" (no proximity-based selector). Add the selector to `TriggerContext.resolve_target_entity()` and update the schema.
 
@@ -394,4 +409,4 @@ Spells reuse the existing effect pipeline, so most spell designs should work wit
 
 **Keep the JSON boundary clean.** If a spell behavior can't be expressed purely in JSON with existing effect types, that's a signal. Either the building blocks need extending, or a new one is needed. The goal is that most spell designs never require touching GDScript.
 
-**Design effects for reuse.** When proposing a new effect for a spell, ask "what other spells (or skills) could use this?" A `summon_random_beast` effect should work equally well in a spell, a relic skill, or a status-granted skill. Build general primitives.
+**Design effects for reuse.** When proposing a new effect for a spell, ask "what other spells (or skills) could use this?" An effect like `summon_beast_choice` should work equally well in a spell, a relic skill, or a status-granted skill. Build general primitives.
