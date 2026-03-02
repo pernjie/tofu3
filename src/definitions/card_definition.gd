@@ -9,6 +9,7 @@ const RARITY_PRICES: Dictionary = {
 
 var card_type: String  # stall, spell, relic
 var hero_id: String  # Empty string = neutral card
+var shopable: bool  # Whether this card appears in shop offerings
 var skill_data: Array[Dictionary]  # [{ "skill_id": "...", "parameters": {...} }, ...]
 
 
@@ -26,6 +27,7 @@ static func from_dict(data: Dictionary) -> CardDefinition:
 func _populate_card_fields(data: Dictionary) -> void:
 	card_type = data.get("card_type", "")
 	hero_id = data.get("hero_id", "")
+	shopable = data.get("shopable", true)
 
 	var skills_data = data.get("skills", [])
 	var skill_data_arr: Array[Dictionary] = []

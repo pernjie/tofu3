@@ -1,0 +1,23 @@
+{
+  "id": "level_5",
+  "level_number": 5,
+  "guest_groups": [
+    {
+      "id": "boss_hungry",
+      "weight": 3,
+      "guests": ["hungry_ghost", "hungry_ghost", "playful_spirit", "ninja"]
+    },
+    {
+      "id": "boss_disruptive",
+      "weight": 3,
+      "guests": ["old_man", "drunkard", "playful_spirit", "hungry_ghost"]
+    },
+    {
+      "id": "boss_elite",
+      "weight": 2,
+      "guests": ["samurai", "apothecary", "wandering_shade", "playful_spirit"]
+    }
+  ],
+  "boss_guests": ["tengu", "monkey_king"],
+  "special_rules": []
+}

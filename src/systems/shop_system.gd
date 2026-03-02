@@ -137,6 +137,8 @@ func _build_pool(hero_id: String) -> Array[CardDefinition]:
 	var pool: Array[CardDefinition] = []
 	for type in ["stalls", "spells", "relics"]:
 		for def in ContentRegistry.get_all_of_type(type):
+			if not def.shopable:
+				continue
 			if def.hero_id == hero_id or def.hero_id == "":
 				pool.append(def as CardDefinition)
 	return pool

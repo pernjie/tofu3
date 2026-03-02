@@ -68,8 +68,11 @@ func _start_game() -> void:
 	# Generate guest queue from pool
 	var guest_queue = _generate_guest_queue(level_def)
 
-	# Setup board with generated queue
-	BoardSystem.setup_level(level_def, guest_queue)
+	# Setup board with generated queue (board comes from run definition)
+	var board_data: Dictionary = {}
+	if GameManager.current_run and GameManager.current_run.run_definition:
+		board_data = GameManager.current_run.run_definition.board
+	BoardSystem.setup_level(level_def, guest_queue, board_data)
 
 	# Create StatusEffectSystem
 	var status_effect_system = StatusEffectSystem.new()
@@ -174,13 +177,16 @@ func _generate_guest_queue(level_def: LevelDefinition) -> Array:
 	# Shuffle spawn order
 	queue.shuffle()
 
-	# Append boss as final guest
-	if level_def.boss_guest != "":
-		var boss_def = ContentRegistry.get_definition("guests", level_def.boss_guest)
+	# Append boss as final guest (use pre-selected boss from interlude, or pick randomly)
+	if not level_def.boss_guests.is_empty():
+		var boss_id := LevelFlowManager._pending_boss_guest
+		if boss_id == "":
+			boss_id = level_def.boss_guests.pick_random()
+		var boss_def = ContentRegistry.get_definition("guests", boss_id)
 		if boss_def:
 			queue.append(boss_def)
 		else:
-			push_warning("Boss guest not found: " + level_def.boss_guest)
+			push_warning("Boss guest not found: " + boss_id)
 
 	return queue
 

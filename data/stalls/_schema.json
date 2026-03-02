@@ -34,6 +34,11 @@
       "default": "",
       "description": "Empty string for neutral cards"
     },
+    "shopable": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this card appears in shop offerings. Set false for starter/event-only cards."
+    },
     "operation_model": {
       "type": "string",
       "enum": ["product", "service", "bulk_service"],

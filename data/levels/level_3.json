@@ -1,0 +1,23 @@
+{
+  "id": "level_3",
+  "level_number": 3,
+  "guest_groups": [
+    {
+      "id": "rowdy_night",
+      "weight": 3,
+      "guests": ["hungry_ghost", "hungry_ghost", "drunkard", "playful_spirit", "ninja"]
+    },
+    {
+      "id": "disruptive_mix",
+      "weight": 3,
+      "guests": ["playful_spirit", "drunkard", "old_man", "hungry_ghost", "wandering_shade"]
+    },
+    {
+      "id": "ninja_raid",
+      "weight": 2,
+      "guests": ["ninja", "ninja", "hungry_ghost", "playful_spirit", "wandering_shade"]
+    }
+  ],
+  "boss_guests": [],
+  "special_rules": []
+}

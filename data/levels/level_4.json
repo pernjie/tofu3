@@ -1,0 +1,23 @@
+{
+  "id": "level_4",
+  "level_number": 4,
+  "guest_groups": [
+    {
+      "id": "cat_market",
+      "weight": 3,
+      "guests": ["cat_lady", "hungry_ghost", "hungry_ghost", "apothecary", "playful_spirit", "drunkard"]
+    },
+    {
+      "id": "warrior_rush",
+      "weight": 3,
+      "guests": ["samurai", "ninja", "playful_spirit", "playful_spirit", "hungry_ghost", "old_man"]
+    },
+    {
+      "id": "performers",
+      "weight": 2,
+      "guests": ["dancer", "apothecary", "hungry_ghost", "playful_spirit", "ninja"]
+    }
+  ],
+  "boss_guests": [],
+  "special_rules": []
+}

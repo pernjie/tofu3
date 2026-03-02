@@ -10,6 +10,7 @@ var _game_scene_path: String = "res://scenes/game.tscn"
 var _pending_level_id: String = ""
 var _pending_guest_preview: Array = []
 var _pending_guest_group_index: int = -1
+var _pending_boss_guest: String = ""
 
 
 func _ready() -> void:
@@ -105,6 +106,7 @@ func _on_interlude_continue() -> void:
 func _generate_guest_preview(level_def: LevelDefinition) -> Array:
 	## Generate preview by selecting a guest group and resolving its guests.
 	var preview: Array = []
+	_pending_boss_guest = ""
 
 	if level_def.guest_groups.is_empty():
 		return preview
@@ -127,9 +129,11 @@ func _generate_guest_preview(level_def: LevelDefinition) -> Array:
 				"needs": guest_def.base_needs.duplicate(),
 			})
 
-	# Add boss if present
-	if level_def.boss_guest != "":
-		var boss_def = ContentRegistry.get_definition("guests", level_def.boss_guest)
+	# Add boss if present (randomly select one if multiple options)
+	if not level_def.boss_guests.is_empty():
+		var boss_id: String = level_def.boss_guests.pick_random()
+		_pending_boss_guest = boss_id
+		var boss_def = ContentRegistry.get_definition("guests", boss_id)
 		if boss_def:
 			preview.append({
 				"id": boss_def.id,

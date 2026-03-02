@@ -4,6 +4,7 @@ extends BaseDefinition
 ## Defines the structure of a game run (acts and levels).
 
 var acts: Array = []  # Array of ActData
+var board: Dictionary  # Shared board layout for all levels in this run
 
 
 static func from_dict(data: Dictionary) -> RunDefinition:
@@ -11,6 +12,7 @@ static func from_dict(data: Dictionary) -> RunDefinition:
 	def.id = data.get("id", "")
 	def.display_name_key = data.get("display_name_key", "")
 	def.description_key = data.get("description_key", "")
+	def.board = data.get("board", {})
 
 	# Parse acts
 	for act_data in data.get("acts", []):

@@ -1,0 +1,23 @@
+{
+  "id": "level_1",
+  "level_number": 1,
+  "guest_groups": [
+    {
+      "id": "hungry_crowd",
+      "weight": 3,
+      "guests": ["hungry_ghost", "hungry_ghost", "hungry_ghost", "playful_spirit"]
+    },
+    {
+      "id": "playful_crowd",
+      "weight": 3,
+      "guests": ["playful_spirit", "playful_spirit", "playful_spirit", "hungry_ghost"]
+    },
+    {
+      "id": "mixed_wanderers",
+      "weight": 2,
+      "guests": ["wandering_shade", "wandering_shade"]
+    }
+  ],
+  "boss_guests": [],
+  "special_rules": []
+}

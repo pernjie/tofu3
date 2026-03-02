@@ -54,15 +54,15 @@ func set_deck_system(system: DeckSystem) -> void:
 # Level Setup
 # =============================================================================
 
-func setup_level(level_def: LevelDefinition, initial_queue: Array = []) -> void:
+func setup_level(level_def: LevelDefinition, initial_queue: Array = [], board_data: Dictionary = {}) -> void:
 	## Initialize board for a new level.
 	clear_level()
 
 	level_definition = level_def
 
-	# Create board from level data
-	if level_def.board:
-		board = Board.from_dict(level_def.board)
+	# Create board from provided data (typically from RunDefinition)
+	if not board_data.is_empty():
+		board = Board.from_dict(board_data)
 
 	# Set up guest queue
 	guest_queue = initial_queue.duplicate()

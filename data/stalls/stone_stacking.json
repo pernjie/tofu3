@@ -7,6 +7,7 @@
 
   "card_type": "stall",
   "hero_id": "",
+  "shopable": false,
 
   "operation_model": "service",
   "need_type": "joy",

@@ -3,11 +3,27 @@
   "id": "standard_run",
   "display_name_key": "RUN_STANDARD_NAME",
   "description_key": "RUN_STANDARD_DESC",
+  "board": {
+    "paths": [
+      {
+        "id": "main_path",
+        "tiles": [
+          {"x": 0, "y": 2},
+          {"x": 1, "y": 2},
+          {"x": 2, "y": 2},
+          {"x": 3, "y": 2},
+          {"x": 4, "y": 2},
+          {"x": 5, "y": 2},
+          {"x": 6, "y": 2}
+        ]
+      }
+    ]
+  },
   "acts": [
     {
       "act_number": 1,
-      "levels": ["test_level"],
-      "boss": "test_level"
+      "levels": ["level_1", "level_2", "level_3", "level_4"],
+      "boss": "level_5"
     }
   ]
 }
