@@ -37,7 +37,12 @@ Built by `ShopSystem._build_pool(hero_id)`:
 ## Offerings
 
 - 3 card slots (`NUM_OFFERINGS = 3`)
-- Selected via `WeightedRandom.select_multiple()` using rarity weights
+- At least 2 stall cards are guaranteed in every set of offerings (both initial and rerolls)
+- Guaranteed stalls are selected via rarity-weighted random from the stall-only subset of the pool
+- If fewer than 2 stall cards exist in the pool, as many as available are guaranteed
+- Remaining slots are selected from the full pool (any card type, including more stalls)
+- Slot order is shuffled so guaranteed stalls have no fixed position
+- Falls back to normal selection (no guarantee) if no stall cards exist in the pool
 - Each card gets a random `price_offset` from `PRICE_OFFSETS` array
 
 ### Rarity Weights
@@ -69,14 +74,14 @@ Effective price = base + `price_offset` (from `PRICE_OFFSETS: [-2, -1, -1, 0, 0,
 - Cost: card's effective price (base + offset + modifiers)
 - Calls `GameManager.spend_tokens(price)`
 - Card added to `GameManager.current_run.deck` with `location = DECK`
-- Slot becomes null, UI shows "Sold" label
+- Slot marked as sold via `_sold_indices`; card stays in `_offerings` for display
+- UI greys out the card (`modulate = Color(0.4, 0.4, 0.4, 0.5)`), hides buy button, clears price
 - Emits `EventBus.card_purchased(card)`
 
 ### Reroll
 
 - Cost: `REROLL_BASE_COST * (REROLL_COST_MULTIPLIER ^ reroll_count)` = 1, 2, 4, 8...
-- Only re-generates non-purchased (non-null) slots
-- Excludes cards still on display from the new selection
+- Replaces all slots (including sold ones) with fresh offerings
 - Reroll count resets to 0 each interlude visit
 - Hidden when all slots are sold
 
@@ -96,7 +101,7 @@ ShopPanel builds this structure programmatically:
 VBoxContainer (ShopPanel)
 ├── HBoxContainer (slots_row, centered, 24px separation)
 │   ├── VBoxContainer (Slot 0)
-│   │   ├── CardUI (140x200) or "Sold" Label
+│   │   ├── CardUI (140x200, greyed out when sold)
 │   │   ├── Label (price, e.g. "3 tokens")
 │   │   └── Button ("Buy")
 │   ├── VBoxContainer (Slot 1)
@@ -114,10 +119,15 @@ The remove button uses `StyleBoxFlat` with 40px corner radius for a circular app
 
 ## Sold State Pattern
 
-Both card slots and the remove button follow the same pattern when used:
-- The interactive element (CardUI + Buy button, or circular Remove button) is freed
-- Replaced with a centered "Sold" label at the same minimum size
-- Price label cleared to empty string
+**Card slots** remain visible when purchased but are greyed out to preserve layout:
+- Card display stays visible with `modulate = Color(0.4, 0.4, 0.4, 0.5)`
+- Buy button hidden, price label cleared
+- `mouse_filter = MOUSE_FILTER_IGNORE` prevents interaction
+- Sold state tracked in `ShopSystem._sold_indices` (card stays in `_offerings`)
+
+**Remove button** follows the original pattern:
+- Circular button freed and replaced with centered "Sold" label
+- Price label cleared
 
 ## Token Flow
 
@@ -149,6 +159,7 @@ All token spending goes through `GameManager.spend_tokens(amount)`:
 
 ```gdscript
 NUM_OFFERINGS = 3
+MIN_STALL_OFFERINGS = 2
 RARITY_WEIGHTS = { "common": 60, "rare": 30, "epic": 8, "legendary": 2 }
 REROLL_BASE_COST = 1
 REROLL_COST_MULTIPLIER = 2

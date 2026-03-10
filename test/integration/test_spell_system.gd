@@ -194,7 +194,7 @@ class TestInstantRestock:
 	extends "res://test/helpers/test_base.gd"
 
 	func test_restocks_depleted_product_stall():
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(1, 1))
 		var restock_amount = stall.get_current_tier_data().restock_amount
 		assert_eq(stall.current_stock, restock_amount, "Stall should start full")
@@ -258,7 +258,7 @@ class TestSpellTargetValidation:
 	# underlying logic patterns instead.
 
 	func test_stall_target_filter_need_type():
-		var stall = create_stall("noodle_stand")  # food stall
+		var stall = create_stall("warm_water")  # food stall
 		register_stall(stall, Vector2i(1, 1))
 
 		# Verify stall's need type for the filter
@@ -354,25 +354,25 @@ class TestSpellDefinitionFilters:
 
 	func test_stall_filter_empty_passes_all():
 		var spell_def = _create_spell_def({"target_filter": {}})
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(1, 1))
 		assert_true(spell_def.is_valid_stall_target(stall))
 
 	func test_stall_filter_need_type_matches():
 		var spell_def = _create_spell_def({"target_filter": {"need_type": "food"}})
-		var stall = create_stall("noodle_stand")  # food stall
+		var stall = create_stall("warm_water")  # food stall
 		register_stall(stall, Vector2i(1, 1))
 		assert_true(spell_def.is_valid_stall_target(stall))
 
 	func test_stall_filter_need_type_rejects():
 		var spell_def = _create_spell_def({"target_filter": {"need_type": "joy"}})
-		var stall = create_stall("noodle_stand")  # food stall
+		var stall = create_stall("warm_water")  # food stall
 		register_stall(stall, Vector2i(1, 1))
 		assert_false(spell_def.is_valid_stall_target(stall))
 
 	func test_stall_filter_operation_model_matches():
 		var spell_def = _create_spell_def({"target_filter": {"operation_model": "product"}})
-		var stall = create_stall("noodle_stand")  # product stall
+		var stall = create_stall("warm_water")  # product stall
 		register_stall(stall, Vector2i(1, 1))
 		assert_true(spell_def.is_valid_stall_target(stall))
 
@@ -384,14 +384,14 @@ class TestSpellDefinitionFilters:
 
 	func test_stall_filter_can_upgrade_true():
 		var spell_def = _create_spell_def({"target_filter": {"can_upgrade": true}})
-		var stall = create_stall("noodle_stand")  # 3 tiers, starts at 1
+		var stall = create_stall("warm_water")  # 3 tiers, starts at 1
 		register_stall(stall, Vector2i(1, 1))
 		assert_true(spell_def.is_valid_stall_target(stall),
 			"Tier 1 stall with 3 tiers should pass can_upgrade filter")
 
 	func test_stall_filter_can_upgrade_rejects_max_tier():
 		var spell_def = _create_spell_def({"target_filter": {"can_upgrade": true}})
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(1, 1))
 		stall.upgrade()
 		stall.upgrade()  # Now at max tier 3
@@ -562,7 +562,7 @@ class TestForgeAhead:
 		assert_eq(spell_def.effects[0].get("target"), "stall")
 
 	func test_upgrades_stall_tier():
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(1, 1))
 		assert_eq(stall.current_tier, 1, "Stall should start at tier 1")
 
@@ -579,7 +579,7 @@ class TestForgeAhead:
 		assert_eq(stall.current_tier, 2, "Stall should now be at tier 2")
 
 	func test_upgrades_to_max_tier():
-		var stall = create_stall("noodle_stand")  # 3 tiers
+		var stall = create_stall("warm_water")  # 3 tiers
 		register_stall(stall, Vector2i(1, 1))
 
 		# Upgrade to tier 2
@@ -603,7 +603,7 @@ class TestForgeAhead:
 		assert_eq(stall.current_tier, 3, "Stall should now be at max tier 3")
 
 	func test_fails_at_max_tier():
-		var stall = create_stall("noodle_stand")  # 3 tiers
+		var stall = create_stall("warm_water")  # 3 tiers
 		register_stall(stall, Vector2i(1, 1))
 
 		# Upgrade to max tier
@@ -635,7 +635,7 @@ class TestForgeAhead:
 			assert_false(result.success, "upgrade_stall should fail without stall in context")
 
 	func test_result_tracks_tier_change():
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(1, 1))
 
 		var context = TriggerContext.create("spell_cast")

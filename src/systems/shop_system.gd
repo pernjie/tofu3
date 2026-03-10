@@ -14,12 +14,14 @@ const REROLL_BASE_COST: int = 1
 const REROLL_COST_MULTIPLIER: int = 2
 const NUM_OFFERINGS: int = 3
 const PRICE_OFFSETS: Array[int] = [-2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+const MIN_STALL_OFFERINGS: int = 2
 const REMOVE_CARD_COST: int = 2
 
 var _hero_id: String
 var _pool: Array[CardDefinition]
 var _reroll_count: int = 0
-var _offerings: Array  # CardInstance per slot, null = purchased/empty
+var _offerings: Array  # CardInstance per slot, null = empty
+var _sold_indices: Array[int] = []
 var _card_removed: bool = false
 
 
@@ -37,6 +39,8 @@ func get_offerings() -> Array:
 func purchase_card(slot_index: int) -> bool:
 	if slot_index < 0 or slot_index >= _offerings.size():
 		return false
+	if is_slot_sold(slot_index):
+		return false
 
 	var card: CardInstance = _offerings[slot_index]
 	if card == null:
@@ -48,9 +52,13 @@ func purchase_card(slot_index: int) -> bool:
 
 	card.location = CardInstance.Location.DECK
 	GameManager.current_run.deck.append(card)
-	_offerings[slot_index] = null
+	_sold_indices.append(slot_index)
 	EventBus.card_purchased.emit(card)
 	return true
+
+
+func is_slot_sold(slot_index: int) -> bool:
+	return slot_index in _sold_indices
 
 
 func reroll() -> bool:
@@ -59,34 +67,7 @@ func reroll() -> bool:
 		return false
 
 	_reroll_count += 1
-
-	# Collect definitions of cards still on offer (to exclude from new rolls)
-	var kept_defs: Array[CardDefinition] = []
-	for i in _offerings.size():
-		if _offerings[i] != null:
-			kept_defs.append(_offerings[i].definition)
-
-	# Build available pool excluding kept cards
-	var available: Array = []
-	for def in _pool:
-		if def not in kept_defs:
-			available.append(def)
-
-	# Re-roll only non-null (non-purchased) slots
-	for i in _offerings.size():
-		if _offerings[i] != null:
-			if available.is_empty():
-				_offerings[i] = null
-			else:
-				var selected = WeightedRandom.select_by_rarity(available, RARITY_WEIGHTS)
-				if selected:
-					_offerings[i] = CardInstance.new(selected)
-					_offerings[i].location = CardInstance.Location.SHOP
-					_offerings[i].price_offset = PRICE_OFFSETS.pick_random()
-					available.erase(selected)
-				else:
-					_offerings[i] = null
-
+	_generate_offerings()
 	return true
 
 
@@ -100,6 +81,8 @@ func can_afford_reroll() -> bool:
 
 func can_afford_card(slot_index: int) -> bool:
 	if slot_index < 0 or slot_index >= _offerings.size():
+		return false
+	if is_slot_sold(slot_index):
 		return false
 	var card: CardInstance = _offerings[slot_index]
 	if card == null:
@@ -127,8 +110,8 @@ func has_removed_card() -> bool:
 
 
 func has_offerings() -> bool:
-	for offering in _offerings:
-		if offering != null:
+	for i in _offerings.size():
+		if _offerings[i] != null and not is_slot_sold(i):
 			return true
 	return false
 
@@ -144,8 +127,36 @@ func _build_pool(hero_id: String) -> Array[CardDefinition]:
 	return pool
 
 
+func _select_with_stall_guarantee(pool: Array, count: int) -> Array:
+	if count <= 0 or pool.is_empty():
+		return []
+
+	var stall_pool: Array = pool.filter(func(def): return def.card_type == "stall")
+
+	# If no stalls available, fall back to normal selection
+	if stall_pool.is_empty():
+		return WeightedRandom.select_multiple(pool, count, RARITY_WEIGHTS)
+
+	# Pick guaranteed stalls (at least 2, or as many as available)
+	var num_guaranteed := mini(MIN_STALL_OFFERINGS, stall_pool.size())
+	var guaranteed: Array = WeightedRandom.select_multiple(stall_pool, num_guaranteed, RARITY_WEIGHTS)
+	var results: Array = guaranteed.duplicate()
+
+	# Pick remaining from full pool (excluding guaranteed picks)
+	var remaining: Array = pool.duplicate()
+	for def in guaranteed:
+		remaining.erase(def)
+	var extras: Array = WeightedRandom.select_multiple(remaining, count - results.size(), RARITY_WEIGHTS)
+	results.append_array(extras)
+
+	# Shuffle so guaranteed stalls aren't always first
+	results.shuffle()
+	return results
+
+
 func _generate_offerings() -> void:
-	var selected_defs: Array = WeightedRandom.select_multiple(_pool, NUM_OFFERINGS, RARITY_WEIGHTS)
+	_sold_indices.clear()
+	var selected_defs: Array = _select_with_stall_guarantee(_pool, NUM_OFFERINGS)
 	_offerings = []
 	for def in selected_defs:
 		var card := CardInstance.new(def)

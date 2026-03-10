@@ -14,8 +14,8 @@
   "opening_hand_size": 4,
 
   "starting_deck": [
-    { "card_id": "noodle_stand", "count": 3 },
-    { "card_id": "game_booth", "count": 3 }
+    { "card_id": "warm_water", "count": 3 },
+    { "card_id": "stone_stacking", "count": 3 }
   ],
 
   "exclusive_cards": [],

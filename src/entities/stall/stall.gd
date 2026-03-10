@@ -169,10 +169,20 @@ func _input(event: InputEvent) -> void:
 	var board_visual := get_parent().get_parent() as BoardVisual
 	if board_visual and board_visual.placement_mode:
 		return
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var local_pos = to_local(event.global_position)
-		var half_size = SPRITE_SIZE / 2.0
-		if local_pos.x >= -half_size and local_pos.x <= half_size and local_pos.y >= -half_size and local_pos.y <= half_size:
-			if instance:
-				EventBus.debug_show_stall.emit(instance)
+	if not event is InputEventMouseButton or not event.pressed:
+		return
+	var local_pos = to_local(event.global_position)
+	var half_size = SPRITE_SIZE / 2.0
+	if local_pos.x < -half_size or local_pos.x > half_size or local_pos.y < -half_size or local_pos.y > half_size:
+		return
+
+	if event.button_index == MOUSE_BUTTON_LEFT:
+		if instance:
+			EventBus.debug_show_stall.emit(instance)
+			get_viewport().set_input_as_handled()
+	elif event.button_index == MOUSE_BUTTON_RIGHT:
+		if instance:
+			var stall_def := instance.definition as StallDefinition
+			if stall_def:
+				EventBus.tier_preview_requested.emit(stall_def, instance.current_tier)
 				get_viewport().set_input_as_handled()

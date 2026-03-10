@@ -42,6 +42,17 @@ func _update_modulate() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT:
 			card_clicked.emit(card_instance)
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			_request_tier_preview()
+
+
+func _request_tier_preview() -> void:
+	if not card_instance:
+		return
+	if not card_instance.definition is StallDefinition:
+		return
+	var stall_def := card_instance.definition as StallDefinition
+	EventBus.tier_preview_requested.emit(stall_def, 1)

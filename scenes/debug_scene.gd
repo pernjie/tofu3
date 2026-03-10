@@ -19,7 +19,7 @@ func _ready() -> void:
 
 	print("")
 
-	var stall = ContentRegistry.get_definition("stalls", "noodle_stand")
+	var stall = ContentRegistry.get_definition("stalls", "warm_water")
 	if stall:
 		print("✓ Loaded stall: ", stall.id)
 		print("  - Operation model: ", stall.operation_model)
@@ -28,7 +28,7 @@ func _ready() -> void:
 		if stall.tiers.size() > 0:
 			print("  - Tier 1 value: ", stall.tiers[0].value)
 	else:
-		print("✗ Failed to load noodle_stand")
+		print("✗ Failed to load warm_water")
 
 	print("")
 
@@ -148,9 +148,9 @@ func _test_guest_instance() -> void:
 func _test_stall_instance() -> void:
 	print("\n=== Testing StallInstance ===")
 
-	var stall_def = ContentRegistry.get_definition("stalls", "noodle_stand")
+	var stall_def = ContentRegistry.get_definition("stalls", "warm_water")
 	if not stall_def:
-		print("  SKIP: noodle_stand not found")
+		print("  SKIP: warm_water not found")
 		return
 
 	var stall = StallInstance.new(stall_def)
@@ -183,9 +183,9 @@ func _test_stall_instance() -> void:
 func _test_card_instance() -> void:
 	print("\n=== Testing CardInstance ===")
 
-	var stall_def = ContentRegistry.get_definition("stalls", "noodle_stand")
+	var stall_def = ContentRegistry.get_definition("stalls", "warm_water")
 	if not stall_def:
-		print("  SKIP: noodle_stand not found")
+		print("  SKIP: warm_water not found")
 		return
 
 	var card = CardInstance.new(stall_def)
@@ -394,9 +394,9 @@ func _test_systems_integration() -> void:
 	print("  Level set up with %d path tiles" % BoardSystem.board.tiles.size())
 
 	# Test stall placement
-	var stall_def = ContentRegistry.get_definition("stalls", "noodle_stand")
+	var stall_def = ContentRegistry.get_definition("stalls", "warm_water")
 	if not stall_def:
-		print("  SKIP: noodle_stand not found")
+		print("  SKIP: warm_water not found")
 		return
 
 	var stall = BoardSystem.place_stall(stall_def, Vector2i(1, 1))

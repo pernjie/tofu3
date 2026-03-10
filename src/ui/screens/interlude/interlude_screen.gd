@@ -6,6 +6,7 @@ extends Control
 signal continue_pressed
 
 var _card_display_scene: PackedScene = preload("res://src/ui/components/card_display.tscn")
+var _tier_preview_scene: PackedScene = preload("res://src/ui/overlays/tier_preview_overlay.tscn")
 var deck: Array[CardInstance] = []
 
 var next_level_id: String = ""
@@ -47,6 +48,7 @@ func _ready() -> void:
 	remove_popup.hide()
 
 	EventBus.tokens_changed.connect(_on_tokens_changed)
+	EventBus.tier_preview_requested.connect(_on_tier_preview_requested)
 	_update_token_display()
 
 	if next_level_id != "":
@@ -190,6 +192,14 @@ func _on_tokens_changed(_old_value: int, _new_value: int) -> void:
 	_update_token_display()
 
 
+func _on_tier_preview_requested(stall_def: StallDefinition, current_tier: int) -> void:
+	var overlay = _tier_preview_scene.instantiate()
+	add_child(overlay)
+	overlay.setup(stall_def, current_tier)
+
+
 func _exit_tree() -> void:
 	if EventBus.tokens_changed.is_connected(_on_tokens_changed):
 		EventBus.tokens_changed.disconnect(_on_tokens_changed)
+	if EventBus.tier_preview_requested.is_connected(_on_tier_preview_requested):
+		EventBus.tier_preview_requested.disconnect(_on_tier_preview_requested)

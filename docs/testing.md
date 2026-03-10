@@ -128,7 +128,7 @@ A 5-tile horizontal path. Tiles at `(0,0)` through `(4,0)`. Adjacent tiles are a
 ```gdscript
 # Create instances from real JSON definitions
 var guest = create_guest("old_man")        # -> GuestInstance
-var stall = create_stall("noodle_stand")   # -> StallInstance
+var stall = create_stall("warm_water")   # -> StallInstance
 var relic = create_relic("gourd")          # -> RelicInstance
 
 # Place on board and register skills with TriggerSystem
@@ -202,7 +202,7 @@ func test_restorative_yoga_bonus():
 ```
 
 **Key considerations:**
-- Stalls have two operation models: `product` (stock-based, like noodle_stand) and `service` (capacity-based, like game_booth)
+- Stalls have two operation models: `product` (stock-based, like warm_water) and `service` (capacity-based, like stone_stacking)
 - Use `stall.current_stock` for product stalls, `stall.current_occupants` for service stalls
 - `stall.get_service_duration()` returns the tier-specific duration
 - To test upgraded stall skills, call `BoardSystem.upgrade_stall(stall)` before registering skills
@@ -215,7 +215,7 @@ Relics persist across levels and fire on placement or level-wide triggers. The `
 func test_doubles_first_restock():
     var gourd = create_relic("gourd")
     register_relic(gourd, Vector2i(1, 1))
-    var stall = create_stall("noodle_stand")
+    var stall = create_stall("warm_water")
     register_stall(stall, Vector2i(2, 1))
     var tier_data = stall.get_current_tier_data()
     var restock_amount = tier_data.restock_amount

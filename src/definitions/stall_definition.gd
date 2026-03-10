@@ -8,6 +8,11 @@ var sprite_sheet: String
 var animations: Dictionary
 
 
+func get_explicit_description() -> String:
+	## Returns the explicit description only (no auto-generation from skills).
+	return super.get_description()
+
+
 func get_description() -> String:
 	# Explicit description overrides auto-generated
 	var explicit := super.get_description()

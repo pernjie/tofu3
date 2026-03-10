@@ -8,7 +8,7 @@ class TestLuckyFrogUpgradeBonus:
 	func test_applies_value_buff_on_first_upgrade():
 		var frog = create_relic("lucky_frog")
 		register_relic(frog, Vector2i(1, 1))
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(2, 1))
 
 		var value_before = stall.get_value()
@@ -25,9 +25,9 @@ class TestLuckyFrogUpgradeBonus:
 	func test_does_not_apply_on_second_upgrade():
 		var frog = create_relic("lucky_frog")
 		register_relic(frog, Vector2i(1, 1))
-		var stall_a = create_stall("noodle_stand")
+		var stall_a = create_stall("warm_water")
 		register_stall(stall_a, Vector2i(2, 1))
-		var stall_b = create_stall("noodle_stand")
+		var stall_b = create_stall("warm_water")
 		register_stall(stall_b, Vector2i(3, 1))
 
 		# First upgrade — should apply buff
@@ -45,7 +45,7 @@ class TestLuckyFrogUpgradeBonus:
 	func test_skill_state_tracks_fire_count():
 		var frog = create_relic("lucky_frog")
 		register_relic(frog, Vector2i(1, 1))
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(2, 1))
 
 		var skill = frog.skill_instances[0]
@@ -61,7 +61,7 @@ class TestLuckyFrogUpgradeBonus:
 	func test_no_effect_without_upgrade():
 		var frog = create_relic("lucky_frog")
 		register_relic(frog, Vector2i(1, 1))
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(2, 1))
 
 		assert_false(stall.has_status("lucky_frog_buff"),

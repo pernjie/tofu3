@@ -7,7 +7,7 @@ class TestWellRestedDoubleFulfillment:
 
 	func test_doubles_fulfillment_for_well_rested_guest():
 		var guest = create_guest("hungry_ghost")
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 
@@ -24,7 +24,7 @@ class TestWellRestedDoubleFulfillment:
 
 	func test_no_multiplier_without_well_rested():
 		var guest = create_guest("hungry_ghost")
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 		# No well_rested status
@@ -39,7 +39,7 @@ class TestWellRestedDoubleFulfillment:
 
 	func test_well_rested_doubles_joy_fulfillment_too():
 		var guest = create_guest("hungry_ghost")
-		var stall = create_stall("game_booth")
+		var stall = create_stall("stone_stacking")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 
@@ -59,7 +59,7 @@ class TestSpookedReduceJoy:
 
 	func test_reduces_joy_fulfillment_for_spooked_guest():
 		var guest = create_guest("playful_spirit")
-		var stall = create_stall("game_booth")
+		var stall = create_stall("stone_stacking")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 
@@ -75,7 +75,7 @@ class TestSpookedReduceJoy:
 
 	func test_spooked_does_not_reduce_food_fulfillment():
 		var guest = create_guest("hungry_ghost")
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 
@@ -91,7 +91,7 @@ class TestSpookedReduceJoy:
 
 	func test_no_reduction_without_spooked():
 		var guest = create_guest("playful_spirit")
-		var stall = create_stall("game_booth")
+		var stall = create_stall("stone_stacking")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 		# No spooked status
@@ -176,7 +176,7 @@ class TestFulfillGuestNeedIntegration:
 
 	func test_fulfill_guest_need_passes_source_to_trigger():
 		var guest = create_guest("hungry_ghost")
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 		BoardSystem.inflict_status(guest, "tingling", 3)

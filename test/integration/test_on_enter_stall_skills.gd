@@ -8,7 +8,7 @@ class TestDrunkardDisruptiveEntrance:
 	func test_resets_service_durations_for_other_guests():
 		var drunkard = create_guest("drunkard")
 		var other = create_guest("playful_spirit")
-		var stall = create_stall("game_booth")
+		var stall = create_stall("stone_stacking")
 		register_guest(drunkard, Vector2i(2, 0))
 		register_guest(other, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
@@ -31,7 +31,7 @@ class TestDrunkardDisruptiveEntrance:
 
 	func test_does_not_reset_triggering_guest():
 		var drunkard = create_guest("drunkard")
-		var stall = create_stall("game_booth")
+		var stall = create_stall("stone_stacking")
 		register_guest(drunkard, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 		# Drunkard is the one entering — should not be affected
@@ -54,7 +54,7 @@ class TestBlockEntry:
 
 	func test_block_entry_effect_sets_blocked():
 		var guest = create_guest("hungry_ghost")
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 
@@ -71,7 +71,7 @@ class TestBlockEntry:
 
 	func test_non_wet_guest_not_blocked():
 		var guest = create_guest("hungry_ghost")
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 		# No wet status
@@ -86,7 +86,7 @@ class TestBlockEntry:
 
 	func test_wet_guest_can_enter_after_expiry():
 		var guest = create_guest("hungry_ghost")
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 

@@ -119,7 +119,7 @@ class TestAkashitaRestockAll:
 		register_guest(akashita, Vector2i(4, 0))
 
 		# Place two product stalls and deplete them
-		var stall_a = create_stall("noodle_stand")
+		var stall_a = create_stall("warm_water")
 		register_stall(stall_a, Vector2i(1, 1))
 		stall_a.current_stock = 0
 
@@ -140,7 +140,7 @@ class TestAkashitaRestockAll:
 		register_guest(akashita, Vector2i(4, 0))
 
 		# Place a product stall that is already full
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(1, 1))
 		var stock_before = stall.current_stock
 
@@ -166,7 +166,7 @@ class TestAkashitaRestockAll:
 		register_stall(service_stall, Vector2i(1, 1))
 
 		# Place a depleted product stall
-		var product_stall = create_stall("noodle_stand")
+		var product_stall = create_stall("warm_water")
 		register_stall(product_stall, Vector2i(3, 1))
 		product_stall.current_stock = 0
 

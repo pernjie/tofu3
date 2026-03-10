@@ -13,7 +13,7 @@ class TestStallStockCheck:
 
 	func before_each():
 		super.before_each()
-		_stall = create_stall("noodle_stand")
+		_stall = create_stall("warm_water")
 		register_stall(_stall, Vector2i(2, 1))
 		# Create a dummy skill for parameter resolution
 		var skill_def = ContentRegistry.get_definition("skills", "restock_on_deplete")

@@ -32,7 +32,7 @@ class TestMoonShrineAura:
 
 	func test_no_buff_before_midnight():
 		var shrine = create_stall("moon_shrine")
-		var target = create_stall("noodle_stand")
+		var target = create_stall("warm_water")
 		register_stall_with_aura(shrine, Vector2i(2, 1))
 		register_stall_with_aura(target, Vector2i(3, 1))
 
@@ -54,7 +54,7 @@ class TestMoonShrineAura:
 
 	func test_buffs_adjacent_stall_after_midnight():
 		var shrine = create_stall("moon_shrine")
-		var target = create_stall("noodle_stand")
+		var target = create_stall("warm_water")
 		register_stall_with_aura(shrine, Vector2i(2, 1))
 		register_stall_with_aura(target, Vector2i(3, 1))
 
@@ -77,7 +77,7 @@ class TestMoonShrineAura:
 
 	func test_does_not_buff_distant_stall():
 		var shrine = create_stall("moon_shrine")
-		var distant = create_stall("noodle_stand")
+		var distant = create_stall("warm_water")
 		register_stall_with_aura(shrine, Vector2i(2, 1))
 		register_stall_with_aura(distant, Vector2i(4, 1))
 
@@ -88,8 +88,8 @@ class TestMoonShrineAura:
 
 	func test_buffs_multiple_adjacent_stalls():
 		var shrine = create_stall("moon_shrine")
-		var target_a = create_stall("noodle_stand")
-		var target_b = create_stall("game_booth")
+		var target_a = create_stall("warm_water")
+		var target_b = create_stall("stone_stacking")
 		register_stall_with_aura(shrine, Vector2i(2, 1))
 		register_stall_with_aura(target_a, Vector2i(3, 1))
 		register_stall_with_aura(target_b, Vector2i(1, 1))
@@ -106,7 +106,7 @@ class TestMoonShrineAura:
 	func test_tier_2_gives_plus_2_value():
 		var shrine = create_stall("moon_shrine")
 		shrine.upgrade()
-		var target = create_stall("noodle_stand")
+		var target = create_stall("warm_water")
 		register_stall_with_aura(shrine, Vector2i(2, 1))
 		register_stall_with_aura(target, Vector2i(3, 1))
 
@@ -122,7 +122,7 @@ class TestMoonShrineAura:
 		var shrine = create_stall("moon_shrine")
 		shrine.upgrade()
 		shrine.upgrade()
-		var target = create_stall("noodle_stand")
+		var target = create_stall("warm_water")
 		register_stall_with_aura(shrine, Vector2i(2, 1))
 		register_stall_with_aura(target, Vector2i(3, 1))
 
@@ -142,7 +142,7 @@ class TestMoonShrineAura:
 
 		EventBus.midnight_reached.emit()
 
-		var target = create_stall("noodle_stand")
+		var target = create_stall("warm_water")
 		register_stall_with_aura(target, Vector2i(3, 1))
 
 		assert_true(target.has_status("moonlit_1"),

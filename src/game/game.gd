@@ -3,6 +3,7 @@ extends Node2D
 ## Main game scene - orchestrates gameplay.
 
 const DiscoverOverlayScene = preload("res://src/ui/overlays/discover_overlay.tscn")
+const TierPreviewOverlayScene = preload("res://src/ui/overlays/tier_preview_overlay.tscn")
 
 @onready var board_visual: BoardVisual = $BoardVisual
 @onready var tokens_label: Label = $HUD/TopBar/TokensLabel
@@ -45,6 +46,7 @@ func _connect_signals() -> void:
 	EventBus.debug_show_guest.connect(_on_debug_show_guest)
 	EventBus.debug_show_stall.connect(_on_debug_show_stall)
 	EventBus.debug_show_relic.connect(_on_debug_show_relic)
+	EventBus.tier_preview_requested.connect(_on_tier_preview_requested)
 
 	# UI connections
 	board_visual.slot_clicked.connect(_on_slot_clicked)
@@ -698,3 +700,11 @@ func _on_debug_show_stall(stall: StallInstance) -> void:
 
 func _on_debug_show_relic(relic: RelicInstance) -> void:
 	debug_panel.show_relic_info(relic)
+
+
+func _on_tier_preview_requested(stall_def: StallDefinition, current_tier: int) -> void:
+	if _ui_blocking:
+		return
+	var overlay = TierPreviewOverlayScene.instantiate()
+	$HUD.add_child(overlay)
+	overlay.setup(stall_def, current_tier)

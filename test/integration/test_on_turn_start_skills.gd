@@ -104,9 +104,9 @@ class TestShadowPuppetsAverageAdjacentValue:
 		register_stall(shadow, Vector2i(2, 1))
 
 		# Place two adjacent stalls with known values
-		var noodle = create_stall("noodle_stand")  # value 1
+		var noodle = create_stall("warm_water")  # value 1
 		register_stall(noodle, Vector2i(1, 1))
-		var game = create_stall("game_booth")  # value 2
+		var game = create_stall("stone_stacking")  # value 2
 		register_stall(game, Vector2i(3, 1))
 
 		fire_for("on_turn_start", TriggerContext.create("on_turn_start"), [shadow])
@@ -128,7 +128,7 @@ class TestShadowPuppetsAverageAdjacentValue:
 		var shadow = create_stall("shadow_puppets")
 		register_stall(shadow, Vector2i(2, 1))
 
-		var game = create_stall("game_booth")  # value 2
+		var game = create_stall("stone_stacking")  # value 2
 		register_stall(game, Vector2i(1, 1))
 
 		fire_for("on_turn_start", TriggerContext.create("on_turn_start"), [shadow])
@@ -140,10 +140,10 @@ class TestShadowPuppetsAverageAdjacentValue:
 		var shadow = create_stall("shadow_puppets")
 		register_stall(shadow, Vector2i(2, 1))
 
-		# noodle_stand value=1, game_booth value=2
-		var noodle = create_stall("noodle_stand")  # value 1
+		# warm_water value=1, stone_stacking value=2
+		var noodle = create_stall("warm_water")  # value 1
 		register_stall(noodle, Vector2i(1, 1))
-		var game = create_stall("game_booth")  # value 2
+		var game = create_stall("stone_stacking")  # value 2
 		register_stall(game, Vector2i(3, 1))
 
 		# Average of (1 + 2) / 2 = 1.5, should floor to 1
@@ -156,7 +156,7 @@ class TestShadowPuppetsAverageAdjacentValue:
 		var shadow = create_stall("shadow_puppets")
 		register_stall(shadow, Vector2i(2, 1))
 
-		var game = create_stall("game_booth")  # value 2
+		var game = create_stall("stone_stacking")  # value 2
 		register_stall(game, Vector2i(1, 1))
 
 		# Turn 1: one adjacent stall with value 2
@@ -164,7 +164,7 @@ class TestShadowPuppetsAverageAdjacentValue:
 		assert_eq(shadow.get_value(), 2, "Turn 1: value should be 2")
 
 		# Turn 2: add a second adjacent stall with value 1
-		var noodle = create_stall("noodle_stand")  # value 1
+		var noodle = create_stall("warm_water")  # value 1
 		register_stall(noodle, Vector2i(3, 1))
 
 		fire_for("on_turn_start", TriggerContext.create("on_turn_start"), [shadow])

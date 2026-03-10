@@ -7,7 +7,7 @@ class TestApothecaryRestock:
 
 	func test_restocks_when_stall_depleted():
 		var guest = create_guest("apothecary")
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 		stall.current_stock = 0  # depleted
@@ -21,7 +21,7 @@ class TestApothecaryRestock:
 
 	func test_does_not_restock_when_stall_has_stock():
 		var guest = create_guest("apothecary")
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_guest(guest, Vector2i(2, 0))
 		register_stall(stall, Vector2i(2, 1))
 		stall.current_stock = 2  # not depleted

@@ -237,7 +237,7 @@ class TestMyRelic:
     func test_grants_bonus_on_restock():
         var relic = create_relic("my_relic")
         register_relic(relic, Vector2i(1, 1))
-        var stall = create_stall("noodle_stand")
+        var stall = create_stall("warm_water")
         register_stall(stall, Vector2i(2, 1))
 
         var tokens_before = GameManager.tokens

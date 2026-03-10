@@ -76,11 +76,11 @@ class TestBlacksmithStatusImmunity:
 
 	func test_other_stall_still_receives_status():
 		# Verify a normal stall IS affected (negative test)
-		var game_booth = create_stall("game_booth")
-		register_stall(game_booth, Vector2i(3, 1))
+		var stone_stacking = create_stall("stone_stacking")
+		register_stall(stone_stacking, Vector2i(3, 1))
 
-		var result = BoardSystem.inflict_status(game_booth, "smelly", 1)
+		var result = BoardSystem.inflict_status(stone_stacking, "smelly", 1)
 
 		assert_not_null(result, "Normal stall should receive status")
-		assert_true(game_booth.has_status("smelly"),
+		assert_true(stone_stacking.has_status("smelly"),
 			"Game booth should have smelly status")

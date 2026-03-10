@@ -8,7 +8,7 @@ class TestGourdDoubleRestock:
 	func test_doubles_first_restock():
 		var gourd = create_relic("gourd")
 		register_relic(gourd, Vector2i(1, 1))
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(2, 1))
 		var tier_data = stall.get_current_tier_data()
 		var restock_amount = tier_data.restock_amount
@@ -25,7 +25,7 @@ class TestGourdDoubleRestock:
 	func test_does_not_double_second_restock():
 		var gourd = create_relic("gourd")
 		register_relic(gourd, Vector2i(1, 1))
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(2, 1))
 		var tier_data = stall.get_current_tier_data()
 		var restock_amount = tier_data.restock_amount
@@ -47,7 +47,7 @@ class TestGourdDoubleRestock:
 	func test_skill_state_tracks_restock_count():
 		var gourd = create_relic("gourd")
 		register_relic(gourd, Vector2i(1, 1))
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(2, 1))
 
 		# Verify initial state
@@ -84,7 +84,7 @@ class TestPickleStandSummonKappa:
 	func test_does_not_add_kappa_when_other_stall_restocks():
 		var pickle = create_stall("pickle_stand")
 		register_stall(pickle, Vector2i(2, 1))
-		var noodle = create_stall("noodle_stand")
+		var noodle = create_stall("warm_water")
 		register_stall(noodle, Vector2i(3, 1))
 
 		# Fire restock for the noodle stand — pickle's skill should not fire
@@ -149,7 +149,7 @@ class TestRedBeanSpawnCharmed:
 	func test_does_not_fire_when_other_stall_restocks():
 		var red_bean = create_stall("red_bean_stand")
 		register_stall(red_bean, Vector2i(2, 1))
-		var noodle = create_stall("noodle_stand")
+		var noodle = create_stall("warm_water")
 		register_stall(noodle, Vector2i(3, 1))
 
 		var ghost_def = ContentRegistry.get_definition("guests", "hungry_ghost")
@@ -233,7 +233,7 @@ class TestUnagiEscalatingRestock:
 	func test_does_not_fire_for_other_stalls():
 		var unagi = create_stall("unagi_stand")
 		register_stall(unagi, Vector2i(2, 1))
-		var noodle = create_stall("noodle_stand")
+		var noodle = create_stall("warm_water")
 		register_stall(noodle, Vector2i(3, 1))
 
 		noodle.current_stock = 2
@@ -253,7 +253,7 @@ class TestVineBasketBonusPlay:
 	func test_grants_bonus_play_on_restock():
 		var vine_basket = create_relic("vine_basket")
 		register_relic(vine_basket, Vector2i(1, 1))
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(2, 1))
 
 		assert_eq(deck_system.max_plays_per_turn, 1,
@@ -268,9 +268,9 @@ class TestVineBasketBonusPlay:
 	func test_caps_at_one_bonus_per_turn():
 		var vine_basket = create_relic("vine_basket")
 		register_relic(vine_basket, Vector2i(1, 1))
-		var stall_a = create_stall("noodle_stand")
+		var stall_a = create_stall("warm_water")
 		register_stall(stall_a, Vector2i(2, 1))
-		var stall_b = create_stall("noodle_stand")
+		var stall_b = create_stall("warm_water")
 		register_stall(stall_b, Vector2i(3, 1))
 
 		fire("on_restock", TriggerContext.create("on_restock") \
@@ -284,7 +284,7 @@ class TestVineBasketBonusPlay:
 	func test_resets_each_turn():
 		var vine_basket = create_relic("vine_basket")
 		register_relic(vine_basket, Vector2i(1, 1))
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(2, 1))
 
 		# First turn: restock grants bonus
@@ -317,7 +317,7 @@ class TestVineBasketBonusPlay:
 	func test_skill_state_tracks_grant():
 		var vine_basket = create_relic("vine_basket")
 		register_relic(vine_basket, Vector2i(1, 1))
-		var stall = create_stall("noodle_stand")
+		var stall = create_stall("warm_water")
 		register_stall(stall, Vector2i(2, 1))
 
 		var bonus_skill = vine_basket.skill_instances[0]

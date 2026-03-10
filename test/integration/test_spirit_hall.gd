@@ -48,7 +48,7 @@ class TestSpiritAttunedBlocksEntry:
 
 		BoardSystem.inflict_status(guest, "spirit_attuned", 1)
 
-		var stall = create_stall("game_booth")
+		var stall = create_stall("stone_stacking")
 		register_stall(stall, Vector2i(2, 1))
 
 		var context = TriggerContext.create("on_pre_enter_stall")

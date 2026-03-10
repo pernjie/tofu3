@@ -91,7 +91,9 @@ func _refresh() -> void:
 		var slot := _shop_slots[i]
 		var card: CardInstance = offerings[i] if i < offerings.size() else null
 
-		if card:
+		if _shop_system.is_slot_sold(i):
+			slot.set_sold(card)
+		elif card:
 			slot.setup(card, card.get_effective_price())
 			slot.set_affordable(_shop_system.can_afford_card(i))
 		else:
@@ -114,6 +116,8 @@ func _update_affordability() -> void:
 	if not _shop_system:
 		return
 	for i in ShopSystem.NUM_OFFERINGS:
+		if _shop_system.is_slot_sold(i):
+			continue
 		var offerings := _shop_system.get_offerings()
 		var card: CardInstance = offerings[i] if i < offerings.size() else null
 		if card:
