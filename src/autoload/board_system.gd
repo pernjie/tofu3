@@ -208,7 +208,12 @@ func remove_guest(guest: GuestInstance) -> void:
 
 	# Remove from stall if in one
 	if guest.is_in_stall and guest.current_stall:
+		var stall_pos = guest.current_stall.board_position
 		guest.current_stall.remove_occupant(guest)
+		if board_visual:
+			var stall_entity = board_visual.get_stall_entity(stall_pos)
+			if stall_entity:
+				stall_entity.update_labels()
 
 	active_guests.erase(guest)
 

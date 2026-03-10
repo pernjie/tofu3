@@ -11,7 +11,7 @@
 
   "base_stats": {
 	"needs": {
-	  "joy": 2
+	  "joy": 3
 	},
 	"money": 3,
 	"movement_speed": 1

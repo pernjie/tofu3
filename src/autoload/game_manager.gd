@@ -8,6 +8,7 @@ var tokens: int = 0
 var reputation: int = 0
 var current_level_number: int = 0
 var persistent_data: Dictionary = {}  # Run-scoped persistent state for skills (e.g. cross-level growth)
+var reputation_lost_this_level: bool = false  # True if reputation decreased at any point during this level
 
 # Run state
 var current_run: RunState = null
@@ -125,6 +126,8 @@ func change_reputation(amount: int) -> void:
 	var old_val = reputation
 	reputation += amount
 	reputation = max(0, reputation)
+	if reputation < old_val:
+		reputation_lost_this_level = true
 	EventBus.reputation_changed.emit(old_val, reputation)
 
 	if reputation <= 0:
@@ -142,6 +145,11 @@ func record_guest_ascended() -> void:
 
 func record_guest_descended() -> void:
 	run_stats.guests_descended += 1
+
+
+func reset_level_state() -> void:
+	## Reset per-level tracking. Called when a new level begins.
+	reputation_lost_this_level = false
 
 
 func record_level_completed() -> void:

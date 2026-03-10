@@ -15,7 +15,7 @@
     {
       "id": "mixed_wanderers",
       "weight": 2,
-      "guests": ["wandering_shade", "wandering_shade"]
+      "guests": ["wandering_shade", "wandering_shade", "wandering_shade"]
     }
   ],
   "boss_guests": [],

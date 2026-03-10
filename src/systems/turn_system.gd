@@ -292,6 +292,7 @@ func start_level() -> void:
 			if guest_def.is_core_guest:
 				_initial_core_guest_count += 1
 
+	GameManager.reset_level_state()
 	EventBus.level_started.emit()
 	advance_turn()
 

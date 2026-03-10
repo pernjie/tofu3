@@ -122,6 +122,7 @@ func _register_commands() -> void:
 	_register("spawn_guest", _cmd_spawn_guest, "spawn_guest <guest_id>", "Spawn a guest by definition id")
 	_register("restock", _cmd_restock, "restock <x> <y>", "Restock the stall at position")
 	_register("banish", _cmd_banish, "banish <guest_index>", "Banish a guest by index")
+	_register("win", _cmd_win, "win", "Instantly win the current level")
 
 
 # =============================================================================
@@ -306,6 +307,20 @@ func _cmd_banish(args: Array) -> void:
 		_print("Banished %s." % guest.definition.id)
 	else:
 		_print("Failed to banish %s (blocked or already exiting)." % guest.definition.id)
+
+
+func _cmd_win(_args: Array) -> void:
+	# Clear spawn queue and remove all core guests so level-complete triggers
+	BoardSystem.guest_queue.clear()
+	var to_remove: Array[GuestInstance] = []
+	for guest in BoardSystem.active_guests:
+		if guest.is_core_guest():
+			to_remove.append(guest)
+	for guest in to_remove:
+		BoardSystem.remove_guest(guest)
+	await AnimationCoordinator.play_batch()
+	TurnSystem._check_level_complete()
+	_print("Level win triggered.")
 
 
 # =============================================================================

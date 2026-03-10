@@ -33,12 +33,23 @@ func start_new_run(hero_id: String = "angry_bull", run_id: String = "standard_ru
 	_show_interlude()
 
 
+const LEVEL_COMPLETION_TOKENS: int = 5
+const FLAWLESS_BONUS_TOKENS: int = 1
+
 func _on_level_won() -> void:
 	print("LevelFlowManager: Level won!")
 
 	if not GameManager.current_run:
 		push_error("No current run!")
 		return
+
+	# Grant completion tokens
+	var bonus := 0
+	if not GameManager.reputation_lost_this_level:
+		bonus = FLAWLESS_BONUS_TOKENS
+	var total := LEVEL_COMPLETION_TOKENS + bonus
+	GameManager.add_tokens(total)
+	print("LevelFlowManager: Granted %d tokens (%d base + %d flawless bonus)" % [total, LEVEL_COMPLETION_TOKENS, bonus])
 
 	var run = GameManager.current_run
 

@@ -11,7 +11,7 @@
 
   "base_stats": {
 	"needs": {
-	  "food": 2
+	  "food": 3
 	},
 	"money": 3,
 	"movement_speed": 1
