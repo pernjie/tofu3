@@ -2,6 +2,7 @@
   "$schema": "./_schema.json",
   "id": "pickle_stand_summon_kappa",
   "display_name_key": "SKILL_PICKLE_STAND_SUMMON_KAPPA_NAME",
+  "description": "Restock: Add a Kappa to the beast queue.",
   "owner_types": ["stall"],
   "trigger_type": "on_restock",
   "parameters": {},

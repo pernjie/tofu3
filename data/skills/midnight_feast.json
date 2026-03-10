@@ -3,6 +3,7 @@
   "id": "midnight_feast",
   "display_name_key": "SKILL_MIDNIGHT_FEAST_NAME",
   "description_key": "SKILL_MIDNIGHT_FEAST_DESC",
+  "description": "Midnight: Double value. Cost becomes 0.",
   "owner_types": ["stall"],
   "trigger_type": "on_midnight",
   "parameters": {

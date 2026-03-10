@@ -3,6 +3,7 @@
   "id": "tingling_reduce_food",
   "display_name_key": "SKILL_TINGLING_REDUCE_FOOD_NAME",
   "description_key": "SKILL_TINGLING_REDUCE_FOOD_DESC",
+  "description": "Food fulfillment -1.",
   "icon_path": "",
 
   "owner_types": ["guest"],

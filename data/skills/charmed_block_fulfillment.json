@@ -3,6 +3,7 @@
   "id": "charmed_block_fulfillment",
   "display_name_key": "SKILL_CHARMED_BLOCK_FULFILLMENT_NAME",
   "description_key": "SKILL_CHARMED_BLOCK_FULFILLMENT_DESC",
+  "description": "25% chance to block fulfillment.",
   "icon_path": "",
 
   "owner_types": ["guest"],

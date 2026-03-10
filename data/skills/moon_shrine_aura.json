@@ -3,6 +3,7 @@
   "id": "moon_shrine_aura",
   "display_name_key": "SKILL_MOON_SHRINE_AURA_NAME",
   "description_key": "SKILL_MOON_SHRINE_AURA_DESC",
+  "description": "Aura (1): Apply Moonlit to nearby stalls. After midnight.",
   "trigger_type": "aura",
   "owner_types": ["stall"],
   "global": false,

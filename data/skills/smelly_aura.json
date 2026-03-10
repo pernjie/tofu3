@@ -3,6 +3,7 @@
   "id": "smelly_aura",
   "display_name_key": "SKILL_SMELLY_AURA",
   "description_key": "SKILL_SMELLY_AURA_DESC",
+  "description": "Aura (1): Apply Smelly to nearby stalls.",
   "trigger_type": "aura",
   "owner_types": ["stall"],
   "global": false,

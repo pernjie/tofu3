@@ -3,6 +3,7 @@
   "id": "well_rested_double_fulfillment",
   "display_name_key": "SKILL_WELL_RESTED_DOUBLE_FULFILLMENT_NAME",
   "description_key": "SKILL_WELL_RESTED_DOUBLE_FULFILLMENT_DESC",
+  "description": "Double fulfillment.",
   "icon_path": "",
 
   "owner_types": ["guest"],

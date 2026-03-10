@@ -3,6 +3,7 @@
   "id": "fish_spa_cleanse",
   "display_name_key": "SKILL_FISH_SPA_CLEANSE_NAME",
   "description_key": "SKILL_FISH_SPA_CLEANSE_DESC",
+  "description": "Serve: Remove all debuffs.",
   "icon_path": "",
 
   "owner_types": ["stall"],

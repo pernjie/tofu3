@@ -3,6 +3,7 @@
   "id": "encounter_give_money",
   "display_name_key": "SKILL_ENCOUNTER_GIVE_MONEY_NAME",
   "description_key": "SKILL_ENCOUNTER_GIVE_MONEY_DESC",
+  "description": "Encounter: Give 1 money to target.",
   "icon_path": "",
 
   "owner_types": ["guest"],

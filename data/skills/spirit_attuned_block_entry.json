@@ -3,6 +3,7 @@
   "id": "spirit_attuned_block_entry",
   "display_name_key": "SKILL_SPIRIT_ATTUNED_BLOCK_ENTRY_NAME",
   "description_key": "SKILL_SPIRIT_ATTUNED_BLOCK_ENTRY_DESC",
+  "description": "Block entry.",
   "icon_path": "",
 
   "owner_types": ["guest"],

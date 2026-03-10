@@ -3,6 +3,7 @@
   "id": "restorative_yoga",
   "display_name_key": "SKILL_RESTORATIVE_YOGA_NAME",
   "description_key": "SKILL_RESTORATIVE_YOGA_DESC",
+  "description": "Serve: +1 fulfillment. If guest has a debuff.",
   "icon_path": "",
 
   "owner_types": ["stall"],

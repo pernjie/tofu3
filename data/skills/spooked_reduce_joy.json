@@ -3,6 +3,7 @@
   "id": "spooked_reduce_joy",
   "display_name_key": "SKILL_SPOOKED_REDUCE_JOY_NAME",
   "description_key": "SKILL_SPOOKED_REDUCE_JOY_DESC",
+  "description": "Joy fulfillment -1.",
   "icon_path": "",
 
   "owner_types": ["guest"],

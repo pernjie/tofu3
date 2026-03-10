@@ -3,6 +3,7 @@
   "id": "disruptive_entrance",
   "display_name_key": "SKILL_DISRUPTIVE_ENTRANCE_NAME",
   "description_key": "SKILL_DISRUPTIVE_ENTRANCE_DESC",
+  "description": "Enter: Reset service durations at this stall.",
   "owner_types": ["guest"],
   "trigger_type": "on_enter_stall",
   "conditions": [

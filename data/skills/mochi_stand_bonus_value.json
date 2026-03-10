@@ -3,6 +3,7 @@
   "id": "mochi_stand_bonus_value",
   "display_name_key": "SKILL_MOCHI_STAND_BONUS_VALUE_NAME",
   "description_key": "SKILL_MOCHI_STAND_BONUS_VALUE_DESC",
+  "description": "Serve: +1 value per previous restock.",
   "owner_types": ["stall"],
   "trigger_type": "on_pre_serve",
   "effects": [

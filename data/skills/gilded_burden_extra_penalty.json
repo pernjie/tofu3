@@ -3,6 +3,7 @@
   "id": "gilded_burden_extra_penalty",
   "display_name_key": "SKILL_GILDED_BURDEN_EXTRA_PENALTY_NAME",
   "description_key": "SKILL_GILDED_BURDEN_EXTRA_PENALTY_DESC",
+  "description": "Descend: -1 reputation per stack of Gilded Burden.",
   "icon_path": "",
 
   "owner_types": ["guest"],

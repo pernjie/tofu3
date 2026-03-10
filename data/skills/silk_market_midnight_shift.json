@@ -3,6 +3,7 @@
   "id": "silk_market_midnight_shift",
   "display_name_key": "SKILL_SILK_MARKET_MIDNIGHT_SHIFT_NAME",
   "description_key": "SKILL_SILK_MARKET_MIDNIGHT_SHIFT_DESC",
+  "description": "Midnight: Switch need type to Food.",
   "owner_types": ["stall"],
   "trigger_type": "on_midnight",
   "parameters": {

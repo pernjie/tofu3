@@ -3,6 +3,7 @@
   "id": "spirit_hall_apply_attuned",
   "display_name_key": "SKILL_SPIRIT_HALL_APPLY_ATTUNED_NAME",
   "description_key": "SKILL_SPIRIT_HALL_APPLY_ATTUNED_DESC",
+  "description": "Serve: Apply Spirit Attuned.",
   "icon_path": "",
 
   "owner_types": ["stall"],

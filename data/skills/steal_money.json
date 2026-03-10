@@ -3,6 +3,7 @@
   "id": "steal_money",
   "display_name_key": "SKILL_STEAL_MONEY_NAME",
   "description_key": "SKILL_STEAL_MONEY_DESC",
+  "description": "Encounter: Steal 1 money from target. If target has money.",
   "icon_path": "",
 
   "owner_types": ["guest"],

@@ -3,6 +3,7 @@
   "id": "spirit_attuned_double_encounter",
   "display_name_key": "SKILL_SPIRIT_ATTUNED_DOUBLE_ENCOUNTER_NAME",
   "description_key": "SKILL_SPIRIT_ATTUNED_DOUBLE_ENCOUNTER_DESC",
+  "description": "Double encounter benefits.",
   "icon_path": "",
 
   "owner_types": ["guest"],

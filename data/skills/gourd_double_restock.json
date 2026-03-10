@@ -3,6 +3,7 @@
   "id": "gourd_double_restock",
   "display_name_key": "SKILL_GOURD_DOUBLE_RESTOCK_NAME",
   "description_key": "SKILL_GOURD_DOUBLE_RESTOCK_DESC",
+  "description": "Restock: Double restock. Once per level. Any stall.",
   "owner_types": ["relic"],
   "trigger_type": "on_restock",
   "global": true,

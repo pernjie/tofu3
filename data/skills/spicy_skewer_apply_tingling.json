@@ -3,6 +3,7 @@
   "id": "spicy_skewer_apply_tingling",
   "display_name_key": "SKILL_SPICY_SKEWER_APPLY_TINGLING_NAME",
   "description_key": "SKILL_SPICY_SKEWER_APPLY_TINGLING_DESC",
+  "description": "Serve: Apply 2 Tingling.",
   "icon_path": "",
 
   "owner_types": ["stall"],

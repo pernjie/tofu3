@@ -3,6 +3,7 @@
   "id": "encounter_consume_debuff",
   "display_name_key": "SKILL_ENCOUNTER_CONSUME_DEBUFF_NAME",
   "description_key": "SKILL_ENCOUNTER_CONSUME_DEBUFF_DESC",
+  "description": "Encounter: Remove 1 debuff from target and fulfill 1 random need. If target has a debuff.",
   "icon_path": "",
 
   "owner_types": ["guest"],

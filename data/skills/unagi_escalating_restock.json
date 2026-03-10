@@ -3,6 +3,7 @@
   "id": "unagi_escalating_restock",
   "display_name_key": "SKILL_UNAGI_ESCALATING_RESTOCK_NAME",
   "description_key": "SKILL_UNAGI_ESCALATING_RESTOCK_DESC",
+  "description": "Restock: +1 stock per previous restock.",
   "owner_types": ["stall"],
   "trigger_type": "on_restock",
   "global": false,

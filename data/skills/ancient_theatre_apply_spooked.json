@@ -3,6 +3,7 @@
   "id": "ancient_theatre_apply_spooked",
   "display_name_key": "SKILL_ANCIENT_THEATRE_APPLY_SPOOKED_NAME",
   "description_key": "SKILL_ANCIENT_THEATRE_APPLY_SPOOKED_DESC",
+  "description": "Serve: Apply 4 Spooked.",
   "icon_path": "",
 
   "owner_types": ["stall"],

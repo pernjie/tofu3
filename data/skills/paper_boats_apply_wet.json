@@ -3,6 +3,7 @@
   "id": "paper_boats_apply_wet",
   "display_name_key": "SKILL_PAPER_BOATS_APPLY_WET_NAME",
   "description_key": "SKILL_PAPER_BOATS_APPLY_WET_DESC",
+  "description": "Serve: Apply 2 Wet.",
   "icon_path": "",
 
   "owner_types": ["stall"],

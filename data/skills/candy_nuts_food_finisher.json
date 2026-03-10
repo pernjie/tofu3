@@ -3,6 +3,7 @@
   "id": "candy_nuts_food_finisher",
   "display_name_key": "SKILL_CANDY_NUTS_FOOD_FINISHER_NAME",
   "description_key": "SKILL_CANDY_NUTS_FOOD_FINISHER_DESC",
+  "description": "Serve: Fulfill remaining Food. If Food is 50%+ fulfilled.",
   "owner_types": ["stall"],
   "trigger_type": "on_serve",
   "parameters": {

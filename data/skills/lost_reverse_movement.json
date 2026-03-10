@@ -3,6 +3,7 @@
   "id": "lost_reverse_movement",
   "display_name_key": "SKILL_LOST_REVERSE_MOVEMENT_NAME",
   "description_key": "SKILL_LOST_REVERSE_MOVEMENT_DESC",
+  "description": "25% chance to reverse movement.",
   "icon_path": "",
 
   "owner_types": ["guest"],

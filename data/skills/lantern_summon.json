@@ -3,6 +3,7 @@
   "id": "lantern_summon",
   "display_name_key": "SKILL_LANTERN_SUMMON_NAME",
   "description_key": "SKILL_LANTERN_SUMMON_DESC",
+  "description": "Spawn: Summon 2 guests from the queue with 1 need and 1 money.",
   "owner_types": ["guest"],
   "trigger_type": "on_spawn",
   "parameters": {

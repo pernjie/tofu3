@@ -3,6 +3,7 @@
   "id": "spirit_touch",
   "display_name_key": "SPELL_SPIRIT_TOUCH_NAME",
   "description_key": "SPELL_SPIRIT_TOUCH_DESC",
+  "description": "Fulfill 1 random need for a guest on target tile.",
   "rarity": "common",
 
   "card_type": "spell",

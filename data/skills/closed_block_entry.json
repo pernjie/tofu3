@@ -3,6 +3,7 @@
   "id": "closed_block_entry",
   "display_name_key": "SKILL_CLOSED_BLOCK_ENTRY_NAME",
   "description_key": "SKILL_CLOSED_BLOCK_ENTRY_DESC",
+  "description": "Block entry.",
   "icon_path": "",
 
   "owner_types": ["stall"],

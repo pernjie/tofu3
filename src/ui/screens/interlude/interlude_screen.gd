@@ -5,7 +5,7 @@ extends Control
 
 signal continue_pressed
 
-var card_ui_scene: PackedScene = preload("res://src/ui/components/card_ui.tscn")
+var _card_display_scene: PackedScene = preload("res://src/ui/components/card_display.tscn")
 var deck: Array[CardInstance] = []
 
 var next_level_id: String = ""
@@ -120,11 +120,9 @@ func _update_deck_list() -> void:
 	sorted_deck.sort_custom(func(a, b): return a.definition.id < b.definition.id)
 
 	for card in sorted_deck:
-		var card_ui = card_ui_scene.instantiate() as CardUI
-		card_ui.mode = CardUI.Mode.DISPLAY
-		card_ui.custom_minimum_size = Vector2(100, 140)
-		deck_grid.add_child(card_ui)
-		card_ui.setup(card)
+		var card_display := _card_display_scene.instantiate() as CardDisplay
+		deck_grid.add_child(card_display)
+		card_display.setup(card)
 
 
 func _on_view_guests_pressed() -> void:
@@ -164,11 +162,9 @@ func _update_remove_card_list() -> void:
 		slot.set("theme_override_constants/separation", 4)
 		remove_grid.add_child(slot)
 
-		var card_ui := card_ui_scene.instantiate() as CardUI
-		card_ui.mode = CardUI.Mode.DISPLAY
-		card_ui.custom_minimum_size = Vector2(100, 140)
-		slot.add_child(card_ui)
-		card_ui.setup(card)
+		var card_display := _card_display_scene.instantiate() as CardDisplay
+		slot.add_child(card_display)
+		card_display.setup(card)
 
 		var remove_btn := Button.new()
 		remove_btn.text = "Remove"

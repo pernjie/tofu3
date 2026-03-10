@@ -3,6 +3,7 @@
   "id": "restock_on_deplete",
   "display_name_key": "SKILL_RESTOCK_ON_DEPLETE_NAME",
   "description_key": "SKILL_RESTOCK_ON_DEPLETE_DESC",
+  "description": "Serve: Restock stall. If stock is empty.",
 
   "owner_types": ["guest"],
   "trigger_type": "on_serve",

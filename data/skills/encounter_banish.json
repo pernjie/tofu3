@@ -3,6 +3,7 @@
   "id": "encounter_banish",
   "display_name_key": "SKILL_ENCOUNTER_BANISH_NAME",
   "description_key": "SKILL_ENCOUNTER_BANISH_DESC",
+  "description": "Encounter: Banish target. If target has equal or fewer needs.",
   "icon_path": "",
 
   "owner_types": ["guest"],

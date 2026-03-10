@@ -3,6 +3,7 @@
   "id": "cat_ascend_aoe_joy",
   "display_name_key": "SKILL_CAT_ASCEND_AOE_JOY_NAME",
   "description_key": "SKILL_CAT_ASCEND_AOE_JOY_DESC",
+  "description": "Ascend: Fulfill 1 Joy for nearby guests.",
   "owner_types": ["guest"],
   "trigger_type": "on_ascend",
   "conditions": [

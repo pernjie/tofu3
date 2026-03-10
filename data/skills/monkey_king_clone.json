@@ -3,6 +3,7 @@
   "id": "monkey_king_clone",
   "display_name_key": "SKILL_MONKEY_KING_CLONE_NAME",
   "description_key": "SKILL_MONKEY_KING_CLONE_DESC",
+  "description": "Need fulfilled: Clone self. If needs remain.",
   "owner_types": ["guest"],
   "trigger_type": "on_need_fulfilled",
   "conditions": [

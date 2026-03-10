@@ -3,6 +3,7 @@
   "id": "apply_status_on_interact",
   "display_name_key": "SKILL_APPLY_STATUS_ON_INTERACT_NAME",
   "description_key": "SKILL_APPLY_STATUS_ON_INTERACT_DESC",
+  "description": "Interact: Apply status to target.",
   "icon_path": "",
 
   "owner_types": ["guest"],

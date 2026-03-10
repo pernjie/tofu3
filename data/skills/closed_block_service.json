@@ -3,6 +3,7 @@
   "id": "closed_block_service",
   "display_name_key": "SKILL_CLOSED_BLOCK_SERVICE_NAME",
   "description_key": "SKILL_CLOSED_BLOCK_SERVICE_DESC",
+  "description": "Block service.",
   "icon_path": "",
 
   "owner_types": ["stall"],

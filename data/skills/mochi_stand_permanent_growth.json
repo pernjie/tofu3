@@ -3,6 +3,7 @@
   "id": "mochi_stand_permanent_growth",
   "display_name_key": "SKILL_MOCHI_STAND_PERMANENT_GROWTH_NAME",
   "description_key": "SKILL_MOCHI_STAND_PERMANENT_GROWTH_DESC",
+  "description": "Restock: +1 permanent value. After midnight.",
   "owner_types": ["stall"],
   "trigger_type": "on_restock",
   "conditions": [

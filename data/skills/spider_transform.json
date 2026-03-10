@@ -3,6 +3,7 @@
   "id": "spider_transform",
   "display_name_key": "SKILL_SPIDER_TRANSFORM_NAME",
   "description_key": "SKILL_SPIDER_TRANSFORM_DESC",
+  "description": "Midnight: Transform Joy needs into Food.",
   "owner_types": ["guest"],
   "trigger_type": "on_midnight",
   "parameters": {

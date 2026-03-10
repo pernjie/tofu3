@@ -3,6 +3,7 @@
   "id": "encounter_fulfill_need",
   "display_name_key": "SKILL_ENCOUNTER_FULFILL_NEED_NAME",
   "description_key": "SKILL_ENCOUNTER_FULFILL_NEED_DESC",
+  "description": "Encounter: Fulfill 1 of target's need. If target has that need.",
   "icon_path": "",
 
   "owner_types": ["guest"],

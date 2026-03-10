@@ -1,6 +1,7 @@
 {
   "$schema": "./_schema.json",
   "id": "loom_bonus_action",
+  "description": "Turn 1: +1 card play.",
   "owner_types": ["relic"],
   "trigger_type": "on_turn_start",
   "parameters": {},

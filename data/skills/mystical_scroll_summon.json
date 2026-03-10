@@ -2,6 +2,7 @@
   "$schema": "./_schema.json",
   "id": "mystical_scroll_summon",
   "display_name_key": "SKILL_MYSTICAL_SCROLL_SUMMON_NAME",
+  "description": "Level start: Add chosen beast to the queue.",
   "owner_types": ["relic"],
   "trigger_type": "on_level_start",
   "parameters": {},

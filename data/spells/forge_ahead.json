@@ -3,6 +3,7 @@
   "id": "forge_ahead",
   "display_name_key": "SPELL_FORGE_AHEAD_NAME",
   "description_key": "SPELL_FORGE_AHEAD_DESC",
+  "description": "Upgrade target stall.",
   "rarity": "common",
 
   "card_type": "spell",

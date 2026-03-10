@@ -8,6 +8,26 @@ var sprite_sheet: String
 var animations: Dictionary
 
 
+func get_description() -> String:
+	# Explicit description overrides auto-generated
+	var explicit := super.get_description()
+	if explicit:
+		return explicit
+
+	# Auto-concat skill descriptions from tier 1
+	if tiers.is_empty():
+		return ""
+	var parts: Array[String] = []
+	for entry in tiers[0].skill_data:
+		var skill_id: String = entry.get("skill_id", "")
+		if skill_id.is_empty():
+			continue
+		var skill_def := ContentRegistry.get_definition("skills", skill_id) as SkillDefinition
+		if skill_def and skill_def.description:
+			parts.append(skill_def.description)
+	return "\n".join(parts)
+
+
 static func from_dict(data: Dictionary) -> StallDefinition:
 	var def = StallDefinition.new()
 	def._populate_from_dict(data)

@@ -3,6 +3,7 @@
   "id": "transform_need_on_fulfill",
   "display_name_key": "SKILL_TRANSFORM_NEED_ON_FULFILL_NAME",
   "description_key": "SKILL_TRANSFORM_NEED_ON_FULFILL_DESC",
+  "description": "Need fulfilled: Transform one need type into another.",
   "owner_types": ["guest"],
   "trigger_type": "on_need_fulfilled",
   "parameters": {

@@ -3,6 +3,7 @@
   "id": "slow_service",
   "display_name_key": "SKILL_SLOW_SERVICE_NAME",
   "description_key": "SKILL_SLOW_SERVICE_DESC",
+  "description": "Spawn: Double service duration.",
   "icon_path": "",
 
   "owner_types": ["guest"],

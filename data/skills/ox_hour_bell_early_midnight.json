@@ -3,6 +3,7 @@
   "id": "ox_hour_bell_early_midnight",
   "display_name_key": "SKILL_OX_HOUR_BELL_EARLY_MIDNIGHT_NAME",
   "description_key": "SKILL_OX_HOUR_BELL_EARLY_MIDNIGHT_DESC",
+  "description": "Level start: Midnight triggers at 50% through the night.",
   "owner_types": ["relic"],
   "trigger_type": "on_level_start",
   "parameters": {

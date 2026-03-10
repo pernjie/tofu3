@@ -3,6 +3,7 @@
   "id": "blacksmith_status_immunity",
   "display_name_key": "SKILL_BLACKSMITH_STATUS_IMMUNITY_NAME",
   "description_key": "SKILL_BLACKSMITH_STATUS_IMMUNITY_DESC",
+  "description": "Block all status effects on this stall.",
 
   "trigger_type": "on_pre_status",
   "owner_types": ["stall"],

@@ -3,6 +3,7 @@
   "id": "instant_restock",
   "display_name_key": "SPELL_INSTANT_RESTOCK_NAME",
   "description_key": "SPELL_INSTANT_RESTOCK_DESC",
+  "description": "Restock target product stall.",
   "rarity": "common",
 
   "card_type": "spell",

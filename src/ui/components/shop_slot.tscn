@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/ui/components/shop_slot.gd" id="1_shop_slot"]
+[ext_resource type="PackedScene" path="res://src/ui/components/card_display.tscn" id="2_card_display"]
+
+[node name="ShopSlot" type="VBoxContainer"]
+alignment = 1
+theme_override_constants/separation = 8
+script = ExtResource("1_shop_slot")
+
+[node name="CardDisplay" parent="." instance=ExtResource("2_card_display")]
+layout_mode = 2
+
+[node name="PriceLabel" type="Label" parent="."]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="."]
+layout_mode = 2
+text = "Buy"

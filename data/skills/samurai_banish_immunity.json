@@ -3,6 +3,7 @@
   "id": "samurai_banish_immunity",
   "display_name_key": "SKILL_SAMURAI_BANISH_IMMUNITY_NAME",
   "description_key": "SKILL_SAMURAI_BANISH_IMMUNITY_DESC",
+  "description": "Block banish.",
 
   "trigger_type": "on_pre_banish",
   "owner_types": ["guest"],

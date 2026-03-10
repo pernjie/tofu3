@@ -3,6 +3,7 @@
   "id": "vine_basket_reset",
   "display_name_key": "SKILL_VINE_BASKET_RESET_NAME",
   "description_key": "SKILL_VINE_BASKET_RESET_DESC",
+  "description": "",
   "owner_types": ["relic"],
   "trigger_type": "on_turn_start",
   "parameters": {},

@@ -3,6 +3,7 @@
   "id": "rest_house_grant_well_rested",
   "display_name_key": "SKILL_REST_HOUSE_GRANT_WELL_RESTED_NAME",
   "description_key": "SKILL_REST_HOUSE_GRANT_WELL_RESTED_DESC",
+  "description": "Serve: Apply Well Rested.",
   "icon_path": "",
 
   "owner_types": ["stall"],

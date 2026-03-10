@@ -14,6 +14,10 @@
     "description_key": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "description": "Explicit description. If omitted, auto-generated from skill descriptions."
+    },
     "rarity": {
       "type": "string",
       "enum": ["common", "rare", "epic", "legendary"],

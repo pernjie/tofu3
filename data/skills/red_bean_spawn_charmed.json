@@ -2,6 +2,7 @@
   "$schema": "./_schema.json",
   "id": "red_bean_spawn_charmed",
   "display_name_key": "SKILL_RED_BEAN_SPAWN_CHARMED_NAME",
+  "description": "Restock: Spawn next queued guest with 3 Charmed.",
   "owner_types": ["stall"],
   "trigger_type": "on_restock",
   "parameters": {

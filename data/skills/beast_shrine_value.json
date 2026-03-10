@@ -3,6 +3,7 @@
   "id": "beast_shrine_value",
   "display_name_key": "SKILL_BEAST_SHRINE_VALUE_NAME",
   "description_key": "SKILL_BEAST_SHRINE_VALUE_DESC",
+  "description": "Each turn: +1 value per beast on board.",
   "icon_path": "",
 
   "owner_types": ["stall"],

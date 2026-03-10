@@ -3,6 +3,7 @@
   "id": "samurai_status_immunity",
   "display_name_key": "SKILL_SAMURAI_STATUS_IMMUNITY_NAME",
   "description_key": "SKILL_SAMURAI_STATUS_IMMUNITY_DESC",
+  "description": "Block all status effects.",
 
   "trigger_type": "on_pre_status",
   "owner_types": ["guest"],

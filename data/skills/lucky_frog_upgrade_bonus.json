@@ -1,6 +1,7 @@
 {
   "$schema": "./_schema.json",
   "id": "lucky_frog_upgrade_bonus",
+  "description": "Upgrade: Apply Lucky Frog Buff to stall. Once per level. Any stall.",
   "owner_types": ["relic"],
   "trigger_type": "on_upgrade",
   "global": true,

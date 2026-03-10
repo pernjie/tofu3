@@ -3,6 +3,7 @@
   "id": "encounter_apply_status",
   "display_name_key": "SKILL_ENCOUNTER_APPLY_STATUS_NAME",
   "description_key": "SKILL_ENCOUNTER_APPLY_STATUS_DESC",
+  "description": "Encounter: Apply status to target.",
   "icon_path": "",
 
   "owner_types": ["guest"],

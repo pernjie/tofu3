@@ -3,6 +3,7 @@
   "id": "cat_lady_summon",
   "display_name_key": "SKILL_CAT_LADY_SUMMON_NAME",
   "description_key": "SKILL_CAT_LADY_SUMMON_DESC",
+  "description": "Spawn: Summon a Cat.",
   "owner_types": ["guest"],
   "trigger_type": "on_spawn",
   "conditions": [

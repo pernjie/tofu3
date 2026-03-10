@@ -17,6 +17,24 @@ func get_price() -> int:
 	return RARITY_PRICES.get(rarity, 0)
 
 
+func get_description() -> String:
+	# Explicit description overrides auto-generated
+	var explicit := super.get_description()
+	if explicit:
+		return explicit
+
+	# Auto-concat skill descriptions
+	var parts: Array[String] = []
+	for entry in skill_data:
+		var skill_id: String = entry.get("skill_id", "")
+		if skill_id.is_empty():
+			continue
+		var skill_def := ContentRegistry.get_definition("skills", skill_id) as SkillDefinition
+		if skill_def and skill_def.description:
+			parts.append(skill_def.description)
+	return "\n".join(parts)
+
+
 static func from_dict(data: Dictionary) -> CardDefinition:
 	var def = CardDefinition.new()
 	def._populate_from_dict(data)

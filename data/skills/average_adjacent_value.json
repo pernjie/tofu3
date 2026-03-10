@@ -3,6 +3,7 @@
   "id": "average_adjacent_value",
   "display_name_key": "SKILL_AVERAGE_ADJACENT_VALUE_NAME",
   "description_key": "SKILL_AVERAGE_ADJACENT_VALUE_DESC",
+  "description": "Each turn: Set value to average of adjacent stalls.",
   "owner_types": ["stall"],
   "trigger_type": "on_turn_start",
   "parameters": {},

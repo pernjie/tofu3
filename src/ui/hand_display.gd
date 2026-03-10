@@ -6,20 +6,20 @@ extends Control
 
 signal card_clicked(card: CardInstance)
 
-const CARD_WIDTH: float = 140.0
-const CARD_HEIGHT: float = 200.0
+const CARD_WIDTH: float = CardDisplay.CARD_SIZE.x
+const CARD_HEIGHT: float = CardDisplay.CARD_SIZE.y
 const CARD_GAP: float = 15.0
 const DRAW_DURATION: float = 0.3
 const REPOSITION_DURATION: float = 0.2
 const OFFSCREEN_OFFSET: float = 400.0
 
-var card_ui_scene: PackedScene = preload("res://src/ui/components/card_ui.tscn")
-var _card_uis: Array[CardUI] = []
+var _hand_card_scene: PackedScene = preload("res://src/ui/components/hand_card.tscn")
+var _card_uis: Array[HandCard] = []
 var _active_tweens: Array[Tween] = []
 
 
-func add_card(card: CardInstance, animate: bool = true) -> CardUI:
-	var card_ui := card_ui_scene.instantiate() as CardUI
+func add_card(card: CardInstance, animate: bool = true) -> HandCard:
+	var card_ui := _hand_card_scene.instantiate() as HandCard
 	add_child(card_ui)
 	card_ui.setup(card)
 	card_ui.card_clicked.connect(_on_card_ui_clicked)
@@ -74,7 +74,7 @@ func remove_card(card: CardInstance) -> void:
 		_reposition_all()
 
 
-func get_card_ui(card: CardInstance) -> CardUI:
+func get_card_ui(card: CardInstance) -> HandCard:
 	var index := _find_card_index(card)
 	if index == -1:
 		return null
