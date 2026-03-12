@@ -276,7 +276,7 @@ A predatory beast that devours weaker guests — those with fewer remaining need
     { "skill_id": "encounter_banish" }
   ],
 
-  "tags": ["mythical", "yokai"]
+  "tags": ["beast"]
 }
 ```
 

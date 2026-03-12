@@ -69,7 +69,7 @@ func get_aura_tiles_for(source: BaseInstance) -> Dictionary:
 
 	for record in _active_auras[source_id]:
 		# Skip dormant midnight-only auras for UI overlay
-		var midnight_only: bool = record.skill.get_parameter("midnight_only")
+		var midnight_only = record.skill.get_parameter("midnight_only")
 		if midnight_only and not _midnight_reached:
 			continue
 		var source_pos = _get_entity_position(record.source)
@@ -147,7 +147,7 @@ func _recalculate_aura(record: Dictionary) -> void:
 	var old_targets: Array = record.targets.duplicate()
 
 	# Midnight-only auras are dormant until midnight fires
-	var midnight_only: bool = skill.get_parameter("midnight_only")
+	var midnight_only = skill.get_parameter("midnight_only")
 	if midnight_only and not _midnight_reached:
 		_remove_all_aura_statuses(record)
 		return
@@ -162,7 +162,7 @@ func _recalculate_aura(record: Dictionary) -> void:
 	if not status_id:
 		push_warning("AuraSystem: aura skill %s has no status_effect_id" % skill.definition.id)
 		return
-	var exclude_self: bool = skill.get_parameter("exclude_self")
+	var exclude_self = skill.get_parameter("exclude_self")
 	if exclude_self == null:
 		exclude_self = true
 
@@ -252,7 +252,7 @@ func _rebuild_tile_cache() -> void:
 	for source_id in _active_auras:
 		for record in _active_auras[source_id]:
 			# Skip dormant midnight-only auras for UI overlay
-			var midnight_only: bool = record.skill.get_parameter("midnight_only")
+			var midnight_only = record.skill.get_parameter("midnight_only")
 			if midnight_only and not _midnight_reached:
 				continue
 			var source_pos = _get_entity_position(record.source)

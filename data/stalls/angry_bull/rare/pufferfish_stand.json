@@ -17,7 +17,7 @@
       "cost_to_guest": 3,
       "value": 2,
       "restock_amount": 3,
-      "restock_duration": 2,
+      "restock_duration": 3,
       "skills": [
         { "skill_id": "pufferfish_banish_on_deplete" }
       ]
@@ -27,7 +27,7 @@
       "cost_to_guest": 4,
       "value": 3,
       "restock_amount": 3,
-      "restock_duration": 2,
+      "restock_duration": 3,
       "skills": [
         { "skill_id": "pufferfish_banish_on_deplete" }
       ]
@@ -37,7 +37,7 @@
       "cost_to_guest": 5,
       "value": 4,
       "restock_amount": 3,
-      "restock_duration": 2,
+      "restock_duration": 3,
       "skills": [
         { "skill_id": "pufferfish_banish_on_deplete" }
       ]

@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patrons of the Night — Data Browser</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* --- Header --- */
+  .header {
+    background: #16213e;
+    border-bottom: 1px solid #0f3460;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .header h1 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #a0a0c0;
+    white-space: nowrap;
+  }
+  .header .item-count {
+    font-size: 12px;
+    color: #606080;
+    margin-left: auto;
+  }
+
+  /* --- Layout --- */
+  .layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* --- Sidebar --- */
+  .sidebar {
+    width: 160px;
+    min-width: 160px;
+    background: #16213e;
+    border-right: 1px solid #0f3460;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    overflow-y: auto;
+  }
+  .sidebar button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    color: #8888a8;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+  }
+  .sidebar button:hover {
+    background: #1a1a3e;
+    color: #c0c0e0;
+  }
+  .sidebar button.active {
+    background: #0f3460;
+    color: #e0e0ff;
+    font-weight: 600;
+  }
+
+  /* --- Main content --- */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* --- Toolbar (above table) --- */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    background: #1a1a2e;
+    flex-shrink: 0;
+  }
+  .toolbar:not(:empty) {
+    padding: 8px 12px;
+    border-bottom: 1px solid #0f3460;
+  }
+  .tier-toggle {
+    display: flex;
+    gap: 2px;
+  }
+  .tier-toggle button {
+    padding: 4px 10px;
+    background: #16213e;
+    border: 1px solid #0f3460;
+    color: #8888a8;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+  }
+  .tier-toggle button:first-child { border-radius: 4px 0 0 4px; }
+  .tier-toggle button:last-child { border-radius: 0 4px 4px 0; }
+  .tier-toggle button.active {
+    background: #0f3460;
+    color: #e0e0ff;
+    font-weight: 600;
+  }
+
+  /* --- Table wrapper --- */
+  .table-wrapper {
+    flex: 1;
+    overflow: auto;
+  }
+
+  /* --- Table --- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  th {
+    background: #16213e;
+    border-bottom: 2px solid #0f3460;
+    padding: 6px 18px 6px 10px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #8888a8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    user-select: none;
+    cursor: pointer;
+    position: relative;
+  }
+  td {
+    padding: 5px 10px;
+    border-bottom: 1px solid #0f3460;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", "Consolas", monospace;
+    font-size: 12px;
+    white-space: nowrap;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  tr:nth-child(even) td {
+    background: rgba(15, 52, 96, 0.15);
+  }
+  tr:hover td {
+    background: rgba(15, 52, 96, 0.35);
+  }
+
+  /* --- Tags --- */
+  .tag {
+    display: inline-block;
+    padding: 1px 6px;
+    margin: 1px 2px;
+    background: #0f3460;
+    border-radius: 3px;
+    font-size: 11px;
+    color: #a0a0c0;
+  }
+
+  /* --- Boolean --- */
+  .bool-true { color: #4ade80; }
+  .bool-false { color: #666680; }
+
+  /* --- Empty state --- */
+  .empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: #606080;
+    font-size: 14px;
+  }
+
+  /* --- Loading --- */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: #606080;
+    font-size: 14px;
+  }
+
+  /* --- Sortable headers --- */
+  th:hover {
+    color: #c0c0e0;
+    background: #1a1a3e;
+  }
+  th .sort-indicator {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 9px;
+    color: #4da6ff;
+  }
+
+  /* --- Search bar --- */
+  .toolbar-search {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .toolbar-search input {
+    background: #0d1b2a;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: #e0e0e0;
+    font-family: inherit;
+    font-size: 12px;
+    width: 200px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .toolbar-search input:focus {
+    border-color: #4da6ff;
+  }
+  .toolbar-search input::placeholder {
+    color: #606080;
+  }
+
+  /* --- Dropdown filters --- */
+  .toolbar-filters {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .toolbar-filter {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .toolbar-filter label {
+    font-size: 11px;
+    color: #8888a8;
+    white-space: nowrap;
+  }
+  .toolbar-filter select {
+    background: #0d1b2a;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    padding: 3px 6px;
+    color: #e0e0e0;
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+  }
+  .toolbar-filter select:focus {
+    border-color: #4da6ff;
+  }
+
+  /* --- Toolbar divider --- */
+  .toolbar-divider {
+    width: 1px;
+    height: 20px;
+    background: #0f3460;
+    flex-shrink: 0;
+  }
+
+  /* --- Rarity colors --- */
+  .rarity-common { color: #b0b0b0; }
+  .rarity-rare { color: #4da6ff; }
+  .rarity-epic { color: #c77dff; }
+  .rarity-legendary { color: #ffd700; }
+
+  /* --- Editable cells --- */
+  td.editable {
+    cursor: pointer;
+  }
+  td.editable:hover {
+    background: rgba(77, 166, 255, 0.08);
+  }
+  td.tier-varies {
+    color: #4da6ff;
+  }
+  td.dirty {
+    border-left: 3px solid #f0a030;
+    background: rgba(240, 160, 48, 0.08);
+  }
+
+  /* --- Inline editing inputs --- */
+  td input.cell-edit,
+  td select.cell-edit {
+    background: #0d1b2a;
+    border: 1px solid #4da6ff;
+    border-radius: 3px;
+    padding: 2px 4px;
+    color: #e0e0e0;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", "Consolas", monospace;
+    font-size: 12px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  td select.cell-edit {
+    cursor: pointer;
+  }
+
+  /* --- Save button --- */
+  .save-btn {
+    padding: 2px 10px;
+    background: #0f3460;
+    border: 1px solid #4da6ff;
+    border-radius: 3px;
+    color: #4da6ff;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .save-btn:hover {
+    background: #4da6ff;
+    color: #0d1b2a;
+  }
+  .save-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* --- Row flash animations --- */
+  @keyframes flash-green {
+    0%   { background: rgba(74, 222, 128, 0.25); }
+    100% { background: transparent; }
+  }
+  @keyframes flash-red {
+    0%   { background: rgba(248, 113, 113, 0.25); }
+    100% { background: transparent; }
+  }
+  tr.flash-success td {
+    animation: flash-green 1s ease-out;
+  }
+  tr.flash-error td {
+    animation: flash-red 1.5s ease-out;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Patrons of the Night &mdash; Data Browser</h1>
+  <span class="item-count" id="item-count"></span>
+</div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar">
+    <div class="loading">Loading...</div>
+  </nav>
+  <div class="main">
+    <div class="toolbar" id="toolbar"></div>
+    <div class="table-wrapper" id="table-wrapper">
+      <div class="empty-state">Select a type from the sidebar</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+let currentType = null;
+let currentData = [];
+let selectedTierIndex = 0;
+let sortColumn = null;       // key string of sorted column, or null
+let sortDirection = 1;       // 1 = ascending, -1 = descending
+let searchTerm = "";
+let activeFilters = {};      // { filterKey: selectedValue }
+let searchTimeout = null;
+let dirtyRows = {};          // { _file_path: { colKey: newValue, ... } }
+
+// ---------------------------------------------------------------------------
+// Dropdown filter config per type
+// ---------------------------------------------------------------------------
+const FILTER_CONFIGS = {
+  stalls: [
+    { key: "rarity", label: "Rarity" },
+    { key: "_hero", label: "Hero" },
+    { key: "operation_model", label: "Model" },
+    { key: "need_type", label: "Need" },
+  ],
+  guests: [
+    { key: "rarity", label: "Rarity" },
+    { key: "is_core_guest", label: "Core" },
+  ],
+  status_effects: [
+    { key: "effect_type", label: "Type" },
+    { key: "stack_type", label: "Stack" },
+  ],
+  relics: [
+    { key: "rarity", label: "Rarity" },
+  ],
+  spells: [
+    { key: "rarity", label: "Rarity" },
+  ],
+  levels: [
+    { key: "_level_id", label: "Level" },
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// Column configs per type
+// ---------------------------------------------------------------------------
+const COLUMN_CONFIGS = {
+  guests: [
+    { key: "id", label: "ID", editable: false },
+    { key: "rarity", label: "Rarity", editable: true, type: "select", options: ["common", "rare", "epic", "legendary"] },
+    { key: "base_stats.needs.food", label: "Food", editable: true, type: "number" },
+    { key: "base_stats.needs.joy", label: "Joy", editable: true, type: "number" },
+    { key: "base_stats.needs.interact", label: "Interact", editable: true, type: "number" },
+    { key: "base_stats.money", label: "Money", editable: true, type: "number" },
+    { key: "base_stats.movement_speed", label: "Speed", editable: true, type: "number" },
+    { key: "is_core_guest", label: "Core", editable: false, type: "boolean" },
+    { key: "skills", label: "Skills", editable: false, type: "skill_tags" },
+    { key: "tags", label: "Tags", editable: false, type: "tags" },
+  ],
+  stalls: [
+    { key: "id", label: "ID", editable: false },
+    { key: "_hero", label: "Hero", editable: false },
+    { key: "rarity", label: "Rarity", editable: true, type: "select", options: ["common", "rare", "epic", "legendary"] },
+    { key: "operation_model", label: "Model", editable: true, type: "select", options: ["product", "service", "bulk_service"] },
+    { key: "need_type", label: "Need", editable: true, type: "select", options: ["food", "joy", "any"] },
+    { key: "_tier.cost_to_guest", label: "Cost", editable: true, type: "number", tierDependent: true },
+    { key: "_tier.value", label: "Value", editable: true, type: "number", tierDependent: true },
+    { key: "_tier.restock_amount", label: "Restock Amt", editable: true, type: "number", tierDependent: true },
+    { key: "_tier.restock_duration", label: "Restock Dur", editable: true, type: "number", tierDependent: true },
+    { key: "_tier.service_duration", label: "Svc Dur", editable: true, type: "number", tierDependent: true },
+    { key: "_tier.capacity", label: "Capacity", editable: true, type: "number", tierDependent: true },
+    { key: "_tier.skills", label: "Skills", editable: false, type: "skill_tags", tierDependent: true },
+    { key: "tags", label: "Tags", editable: false, type: "tags" },
+  ],
+  relics: [
+    { key: "id", label: "ID", editable: false },
+    { key: "rarity", label: "Rarity", editable: true, type: "select", options: ["common", "rare", "epic", "legendary"] },
+    { key: "hero_id", label: "Hero", editable: false },
+    { key: "skills.length", label: "Skills", editable: false, type: "number" },
+    { key: "tags", label: "Tags", editable: false, type: "tags" },
+  ],
+  spells: [
+    { key: "id", label: "ID", editable: false },
+    { key: "rarity", label: "Rarity", editable: true, type: "select", options: ["common", "rare", "epic", "legendary"] },
+    { key: "hero_id", label: "Hero", editable: false },
+    { key: "target_type", label: "Target", editable: true, type: "select", options: ["none", "tile", "stall", "guest"] },
+    { key: "effects.length", label: "Effects", editable: false, type: "number" },
+    { key: "tags", label: "Tags", editable: false, type: "tags" },
+  ],
+  status_effects: [
+    { key: "id", label: "ID", editable: false },
+    { key: "effect_type", label: "Type", editable: true, type: "select", options: ["buff", "debuff"] },
+    { key: "stack_type", label: "Stack", editable: true, type: "select", options: ["time", "trigger", "passive"] },
+    { key: "max_stacks", label: "Max Stacks", editable: true, type: "number" },
+    { key: "initial_stacks", label: "Init Stacks", editable: true, type: "number" },
+    { key: "applicable_to", label: "Applies To", editable: false, type: "tags" },
+    { key: "tags", label: "Tags", editable: false, type: "tags" },
+  ],
+  levels: [
+    { key: "_level_id", label: "Level", editable: false },
+    { key: "id", label: "Group", editable: false },
+    { key: "weight", label: "Weight", editable: true, type: "number" },
+    { key: "_guest_count", label: "Count", editable: false, type: "number" },
+    { key: "_guests_text", label: "Guests", editable: true, type: "text" },
+  ],
+};
+
+// Keys to exclude from generic fallback columns
+const EXCLUDED_KEYS = new Set([
+  "$schema", "_file_path", "animations", "sprite_sheet", "icon_path",
+]);
+
+// ---------------------------------------------------------------------------
+// Nested value resolution
+// ---------------------------------------------------------------------------
+function getNestedValue(obj, keyPath) {
+  if (obj == null || keyPath == null) return "";
+
+  const parts = keyPath.split(".");
+  let current = obj;
+
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+
+    // Special case: .length on arrays
+    if (part === "length" && Array.isArray(current)) {
+      return current.length;
+    }
+
+    if (current == null || typeof current !== "object") {
+      return "";
+    }
+
+    current = current[part];
+  }
+
+  return current ?? "";
+}
+
+// ---------------------------------------------------------------------------
+// Stall hero derivation
+// ---------------------------------------------------------------------------
+function deriveStallHero(item) {
+  // _file_path like "data/stalls/angry_bull/common/mooncake_stand.json"
+  const fp = item._file_path || "";
+  const parts = fp.split("/");
+  // data / stalls / <hero> / <rarity> / <file>.json
+  if (parts.length >= 4 && parts[0] === "data" && parts[1] === "stalls") {
+    return parts[2];
+  }
+  return "";
+}
+
+// ---------------------------------------------------------------------------
+// Resolve a cell value for a column config + item
+// ---------------------------------------------------------------------------
+function resolveCellValue(item, col) {
+  // Tier-dependent columns
+  if (col.tierDependent) {
+    const tierField = col.key.replace("_tier.", "");
+    const tiers = item.tiers;
+    if (!Array.isArray(tiers) || !tiers[selectedTierIndex]) return "-";
+    const val = tiers[selectedTierIndex][tierField];
+    return val != null ? val : "-";
+  }
+
+  // Derived hero field for stalls
+  if (col.key === "_hero") {
+    return item._hero || "";
+  }
+
+  return getNestedValue(item, col.key);
+}
+
+// ---------------------------------------------------------------------------
+// Row key — unique identifier per table row
+// For most types this is _file_path. For level groups, appends group index.
+// ---------------------------------------------------------------------------
+function getRowKey(item) {
+  if (currentType === "levels" && item._group_index != null) {
+    return `${item._file_path}#${item._group_index}`;
+  }
+  return item._file_path;
+}
+
+// ---------------------------------------------------------------------------
+// Tier variance check — does a stat change across tiers?
+// ---------------------------------------------------------------------------
+function tierValueVaries(item, col) {
+  if (!col.tierDependent || !Array.isArray(item.tiers)) return false;
+  const field = col.key.replace("_tier.", "");
+  const values = item.tiers.map(t => t[field]).filter(v => v != null);
+  if (values.length <= 1) return false;
+  return !values.every(v => JSON.stringify(v) === JSON.stringify(values[0]));
+}
+
+// ---------------------------------------------------------------------------
+// Dirty tracking and nested value write-back
+// ---------------------------------------------------------------------------
+
+/**
+ * Build the tracking key for a dirty cell edit.
+ * For tier-dependent columns, includes the tier index to avoid cross-tier conflicts.
+ */
+function dirtyKey(colKey, col) {
+  if (col && col.tierDependent) {
+    return `${colKey}@tier${selectedTierIndex}`;
+  }
+  return colKey;
+}
+
+/**
+ * Get the dirty (edited) value for a cell, or undefined if not dirty.
+ */
+function getDirtyValue(rowKey, colKey, col) {
+  const edits = dirtyRows[rowKey];
+  if (!edits) return undefined;
+  const key = dirtyKey(colKey, col);
+  return edits.hasOwnProperty(key) ? edits[key] : undefined;
+}
+
+/**
+ * Store a dirty edit for a cell. If the new value matches the original,
+ * remove the dirty entry instead (the cell is no longer dirty).
+ */
+function setDirtyValue(rowKey, colKey, col, newValue, originalValue) {
+  const key = dirtyKey(colKey, col);
+
+  // Normalize comparison: both to same type
+  const same = (newValue === originalValue) ||
+    (typeof originalValue === "number" && Number(newValue) === originalValue) ||
+    (String(newValue) === String(originalValue));
+
+  if (same) {
+    // Value reverted to original: remove from dirty
+    if (dirtyRows[rowKey]) {
+      delete dirtyRows[rowKey][key];
+      if (Object.keys(dirtyRows[rowKey]).length === 0) {
+        delete dirtyRows[rowKey];
+      }
+    }
+    return;
+  }
+
+  if (!dirtyRows[rowKey]) {
+    dirtyRows[rowKey] = {};
+  }
+  dirtyRows[rowKey][key] = newValue;
+}
+
+/**
+ * Resolve the display value for a cell, preferring dirty override.
+ */
+function resolveDisplayValue(item, col) {
+  const rowKey = getRowKey(item);
+  const dirty = getDirtyValue(rowKey, col.key, col);
+  if (dirty !== undefined) return dirty;
+  return resolveCellValue(item, col);
+}
+
+/**
+ * Set a value on an object using dot-notation key path.
+ * Handles _tier.<field> by writing to obj.tiers[tierIndex].<field>.
+ * Handles regular dot paths like base_stats.needs.food.
+ */
+function setNestedValue(obj, keyPath, value, tierIndex) {
+  // Tier-dependent: _tier.field -> tiers[tierIndex].field
+  if (keyPath.startsWith("_tier.")) {
+    const field = keyPath.slice("_tier.".length);
+    if (Array.isArray(obj.tiers) && obj.tiers[tierIndex]) {
+      obj.tiers[tierIndex][field] = value;
+    }
+    return;
+  }
+
+  const parts = keyPath.split(".");
+  let current = obj;
+  for (let i = 0; i < parts.length - 1; i++) {
+    const part = parts[i];
+    if (current[part] == null || typeof current[part] !== "object") {
+      current[part] = {};
+    }
+    current = current[part];
+  }
+  current[parts[parts.length - 1]] = value;
+}
+
+// ---------------------------------------------------------------------------
+// Build generic columns for types without a config
+// ---------------------------------------------------------------------------
+function buildGenericColumns(data) {
+  if (!data.length) return [{ key: "id", label: "ID", editable: false }];
+
+  // Collect all top-level keys across all items
+  const keySet = new Set();
+  for (const item of data) {
+    for (const key of Object.keys(item)) {
+      if (!EXCLUDED_KEYS.has(key)) {
+        keySet.add(key);
+      }
+    }
+  }
+
+  // Sort: id first, then alphabetical
+  const keys = Array.from(keySet).sort((a, b) => {
+    if (a === "id") return -1;
+    if (b === "id") return 1;
+    return a.localeCompare(b);
+  });
+
+  return keys.map(key => ({
+    key,
+    label: key.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
+    editable: false,
+    type: "auto",
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// Cell rendering
+// ---------------------------------------------------------------------------
+function renderCellContent(value, col) {
+  const type = col.type || "auto";
+
+  if (type === "skill_tags") {
+    if (Array.isArray(value) && value.length > 0) {
+      return value.map(s => {
+        const id = typeof s === "object" ? (s.skill_id || "") : String(s);
+        return `<span class="tag">${escapeHtml(id)}</span>`;
+      }).join("");
+    }
+    return '<span class="bool-false">-</span>';
+  }
+
+  if (type === "tags") {
+    if (Array.isArray(value) && value.length > 0) {
+      return value.map(t => `<span class="tag">${escapeHtml(String(t))}</span>`).join("");
+    }
+    return '<span class="bool-false">-</span>';
+  }
+
+  if (type === "boolean") {
+    if (value === true) return '<span class="bool-true">yes</span>';
+    if (value === false) return '<span class="bool-false">no</span>';
+    return '<span class="bool-false">-</span>';
+  }
+
+  if (type === "select" && col.key === "rarity") {
+    const cls = `rarity-${escapeHtml(String(value))}`;
+    return `<span class="${cls}">${escapeHtml(String(value))}</span>`;
+  }
+
+  if (type === "number") {
+    if (value === "" || value === "-" || value == null) return '<span class="bool-false">-</span>';
+    return escapeHtml(String(value));
+  }
+
+  // Auto: detect type from value
+  if (type === "auto") {
+    if (Array.isArray(value)) {
+      if (value.length === 0) return '<span class="bool-false">[]</span>';
+      // If array of primitives, show as tags
+      if (typeof value[0] !== "object") {
+        return value.map(t => `<span class="tag">${escapeHtml(String(t))}</span>`).join("");
+      }
+      return `<span class="bool-false">[${value.length} items]</span>`;
+    }
+    if (typeof value === "object" && value !== null) {
+      return `<span class="bool-false">{...}</span>`;
+    }
+    if (typeof value === "boolean") {
+      return value
+        ? '<span class="bool-true">yes</span>'
+        : '<span class="bool-false">no</span>';
+    }
+  }
+
+  if (value === "" || value == null) return '<span class="bool-false">-</span>';
+  return escapeHtml(String(value));
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ---------------------------------------------------------------------------
+// Filter & Sort pipeline
+// ---------------------------------------------------------------------------
+function getFilteredAndSortedData() {
+  const columns = COLUMN_CONFIGS[currentType] || buildGenericColumns(currentData);
+  let data = currentData;
+
+  // --- Apply dropdown filters ---
+  const filterKeys = Object.keys(activeFilters);
+  if (filterKeys.length > 0) {
+    data = data.filter(item => {
+      for (const key of filterKeys) {
+        const filterVal = activeFilters[key];
+        if (filterVal === "") continue; // "All"
+        const itemVal = key === "_hero" ? (item._hero || "") : getNestedValue(item, key);
+        if (String(itemVal) !== filterVal) return false;
+      }
+      return true;
+    });
+  }
+
+  // --- Apply search term ---
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase();
+    data = data.filter(item => {
+      for (const col of columns) {
+        const value = resolveCellValue(item, col);
+        const str = Array.isArray(value) ? value.join(" ") : String(value);
+        if (str.toLowerCase().includes(term)) return true;
+      }
+      return false;
+    });
+  }
+
+  // --- Sort ---
+  if (sortColumn !== null) {
+    const col = columns.find(c => c.key === sortColumn);
+    if (col) {
+      const isNumeric = col.type === "number";
+      data = [...data].sort((a, b) => {
+        let va = resolveCellValue(a, col);
+        let vb = resolveCellValue(b, col);
+
+        // Handle arrays (tags) — sort as joined string
+        if (Array.isArray(va)) va = va.join(", ");
+        if (Array.isArray(vb)) vb = vb.join(", ");
+
+        if (isNumeric) {
+          const na = va === "" || va === "-" || va == null ? -Infinity : Number(va);
+          const nb = vb === "" || vb === "-" || vb == null ? -Infinity : Number(vb);
+          return (na - nb) * sortDirection;
+        }
+
+        // String sort
+        const sa = String(va).toLowerCase();
+        const sb = String(vb).toLowerCase();
+        if (sa < sb) return -1 * sortDirection;
+        if (sa > sb) return 1 * sortDirection;
+        return 0;
+      });
+    }
+  }
+
+  return data;
+}
+
+// ---------------------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------------------
+function renderTable() {
+  const wrapper = document.getElementById("table-wrapper");
+  const countEl = document.getElementById("item-count");
+
+  if (!currentData.length) {
+    wrapper.innerHTML = '<div class="empty-state">No data found</div>';
+    countEl.textContent = "0 items";
+    return;
+  }
+
+  const columns = COLUMN_CONFIGS[currentType] || buildGenericColumns(currentData);
+  const hasAnyEditable = columns.some(c => c.editable);
+  const displayData = getFilteredAndSortedData();
+
+  // Update item count (showing X of Y)
+  if (displayData.length === currentData.length) {
+    countEl.textContent = `${currentData.length} items`;
+  } else {
+    countEl.textContent = `Showing ${displayData.length} of ${currentData.length}`;
+  }
+
+  if (!displayData.length) {
+    wrapper.innerHTML = '<div class="empty-state">No matching items</div>';
+    return;
+  }
+
+  // Build table HTML
+  let html = "<table><thead><tr>";
+  for (const col of columns) {
+    const isSorted = sortColumn === col.key;
+    const indicator = isSorted
+      ? `<span class="sort-indicator">${sortDirection === 1 ? "\u25B2" : "\u25BC"}</span>`
+      : "";
+    html += `<th data-col-key="${escapeHtml(col.key)}">${escapeHtml(col.label)}${indicator}</th>`;
+  }
+  if (hasAnyEditable) {
+    html += '<th style="width:60px"></th>'; // Save column header
+  }
+  html += "</tr></thead><tbody>";
+
+  for (const item of displayData) {
+    const rowKey = getRowKey(item);
+    const rowIsDirty = !!dirtyRows[rowKey];
+    html += `<tr data-row-key="${escapeHtml(rowKey)}">`;
+
+    for (const col of columns) {
+      const value = resolveDisplayValue(item, col);
+      const cellIsDirty = getDirtyValue(rowKey, col.key, col) !== undefined;
+      const classes = [];
+      if (col.editable) classes.push("editable");
+      if (cellIsDirty) classes.push("dirty");
+      if (currentType === "stalls" && tierValueVaries(item, col)) classes.push("tier-varies");
+      const classAttr = classes.length ? ` class="${classes.join(" ")}"` : "";
+      const editableAttr = col.editable
+        ? ` data-col-key="${escapeHtml(col.key)}" data-row-key="${escapeHtml(rowKey)}"`
+        : "";
+      html += `<td${classAttr}${editableAttr}>${renderCellContent(value, col)}</td>`;
+    }
+
+    if (hasAnyEditable) {
+      html += "<td>";
+      if (rowIsDirty) {
+        html += `<button class="save-btn" data-save-path="${escapeHtml(rowKey)}">Save</button>`;
+      }
+      html += "</td>";
+    }
+    html += "</tr>";
+  }
+
+  html += "</tbody></table>";
+  wrapper.innerHTML = html;
+
+  // Attach sort listeners
+  wrapper.querySelectorAll("th[data-col-key]").forEach(th => {
+    th.addEventListener("click", () => {
+      const key = th.dataset.colKey;
+      if (sortColumn === key) {
+        sortDirection *= -1;
+      } else {
+        sortColumn = key;
+        sortDirection = 1;
+      }
+      renderTable();
+    });
+  });
+
+  // Attach editable cell click listeners
+  wrapper.querySelectorAll("td.editable").forEach(td => {
+    td.addEventListener("click", (e) => {
+      // Prevent re-entering edit mode if already editing
+      if (td.querySelector("input, select")) return;
+      startCellEdit(td);
+    });
+  });
+
+  // Attach save button listeners
+  wrapper.querySelectorAll("button.save-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      saveRow(btn.dataset.savePath);
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Keyboard navigation helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * After a cell edit is committed and the table re-rendered, navigate to another
+ * editable cell and start editing it.
+ *
+ * @param {"next-row"|"prev-row"|"next-col"|"prev-col"} direction
+ * @param {string} rowKey - current row's key
+ * @param {string} colKey - current column key
+ */
+function navigateAfterCommit(direction, rowKey, colKey) {
+  const wrapper = document.getElementById("table-wrapper");
+  const columns = COLUMN_CONFIGS[currentType] || buildGenericColumns(currentData);
+  const editableColumns = columns.filter(c => c.editable);
+
+  if (direction === "next-row" || direction === "prev-row") {
+    const rows = Array.from(wrapper.querySelectorAll("tbody tr[data-row-key]"));
+    const currentIndex = rows.findIndex(r => r.dataset.rowKey === rowKey);
+    const targetIndex = direction === "next-row" ? currentIndex + 1 : currentIndex - 1;
+    if (targetIndex < 0 || targetIndex >= rows.length) return;
+    const targetRow = rows[targetIndex];
+    const targetCell = targetRow.querySelector(`td.editable[data-col-key="${CSS.escape(colKey)}"]`);
+    if (targetCell) startCellEdit(targetCell);
+
+  } else if (direction === "next-col" || direction === "prev-col") {
+    const colIndex = editableColumns.findIndex(c => c.key === colKey);
+    const targetColIndex = direction === "next-col" ? colIndex + 1 : colIndex - 1;
+    if (targetColIndex < 0 || targetColIndex >= editableColumns.length) return;
+    const targetColKey = editableColumns[targetColIndex].key;
+    const row = wrapper.querySelector(`tr[data-row-key="${CSS.escape(rowKey)}"]`);
+    if (!row) return;
+    const targetCell = row.querySelector(`td.editable[data-col-key="${CSS.escape(targetColKey)}"]`);
+    if (targetCell) startCellEdit(targetCell);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Inline cell editing
+// ---------------------------------------------------------------------------
+function startCellEdit(td) {
+  const colKey = td.dataset.colKey;
+  const rowKey = td.dataset.rowKey;
+
+  // Find the column config and original item
+  const columns = COLUMN_CONFIGS[currentType] || buildGenericColumns(currentData);
+  const col = columns.find(c => c.key === colKey);
+  if (!col || !col.editable) return;
+
+  const item = currentData.find(d => getRowKey(d) === rowKey);
+  if (!item) return;
+
+  // Get current display value (dirty or original)
+  const currentValue = resolveDisplayValue(item, col);
+  const colType = col.type || "text";
+
+  if (colType === "select") {
+    const select = document.createElement("select");
+    select.className = "cell-edit";
+    const options = col.options || [];
+    for (const opt of options) {
+      const optEl = document.createElement("option");
+      optEl.value = opt;
+      optEl.textContent = opt;
+      if (String(currentValue) === opt) optEl.selected = true;
+      select.appendChild(optEl);
+    }
+    td.textContent = "";
+    td.appendChild(select);
+    select.focus();
+
+    let committed = false;
+    const commit = () => {
+      if (committed) return;
+      committed = true;
+      const newValue = select.value;
+      const originalValue = resolveCellValue(item, col);
+      setDirtyValue(rowKey, colKey, col, newValue, originalValue);
+      renderTable();
+    };
+
+    select.addEventListener("change", commit);
+    select.addEventListener("blur", commit);
+    select.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        renderTable(); // Cancel edit
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        commit();
+        navigateAfterCommit(e.shiftKey ? "prev-col" : "next-col", rowKey, colKey);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        commit();
+        navigateAfterCommit("next-row", rowKey, colKey);
+      }
+    });
+
+  } else if (colType === "number") {
+    const input = document.createElement("input");
+    input.type = "number";
+    input.className = "cell-edit";
+    input.value = (currentValue === "-" || currentValue === "" || currentValue == null) ? "" : currentValue;
+    td.textContent = "";
+    td.appendChild(input);
+    input.focus();
+    input.select();
+
+    let committed = false;
+    const commit = () => {
+      if (committed) return;
+      committed = true;
+      const raw = input.value;
+      // Convert to number; if empty or NaN, treat as original type
+      const newValue = raw === "" ? "" : Number(raw);
+      const originalValue = resolveCellValue(item, col);
+      if (raw !== "" && !isNaN(newValue)) {
+        setDirtyValue(rowKey, colKey, col, newValue, originalValue);
+      } else if (raw === "") {
+        // Reverted or cleared -- restore original
+        setDirtyValue(rowKey, colKey, col, originalValue, originalValue);
+      }
+      renderTable();
+    };
+
+    input.addEventListener("blur", commit);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        commit();
+        navigateAfterCommit("next-row", rowKey, colKey);
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        commit();
+        navigateAfterCommit(e.shiftKey ? "prev-col" : "next-col", rowKey, colKey);
+      } else if (e.key === "Escape") {
+        renderTable();
+      }
+    });
+
+  } else {
+    // Text input
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "cell-edit";
+    input.value = currentValue == null ? "" : String(currentValue);
+    td.textContent = "";
+    td.appendChild(input);
+    input.focus();
+    input.select();
+
+    let committed = false;
+    const commit = () => {
+      if (committed) return;
+      committed = true;
+      const newValue = input.value;
+      const originalValue = resolveCellValue(item, col);
+      setDirtyValue(rowKey, colKey, col, newValue, originalValue);
+      renderTable();
+    };
+
+    input.addEventListener("blur", commit);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        commit();
+        navigateAfterCommit("next-row", rowKey, colKey);
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        commit();
+        navigateAfterCommit(e.shiftKey ? "prev-col" : "next-col", rowKey, colKey);
+      } else if (e.key === "Escape") {
+        renderTable();
+      }
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Save handler
+// ---------------------------------------------------------------------------
+/**
+ * Parse a dirty tracking key back into the original column key and tier index.
+ * E.g. "_tier.cost_to_guest@tier1" -> { colKey: "_tier.cost_to_guest", tierIndex: 1 }
+ * E.g. "rarity" -> { colKey: "rarity", tierIndex: null }
+ */
+function parseDirtyKey(trackingKey) {
+  const tierMatch = trackingKey.match(/^(.+)@tier(\d+)$/);
+  if (tierMatch) {
+    return { colKey: tierMatch[1], tierIndex: parseInt(tierMatch[2], 10) };
+  }
+  return { colKey: trackingKey, tierIndex: null };
+}
+
+async function saveRow(rowKey) {
+  const edits = dirtyRows[rowKey];
+  if (!edits || Object.keys(edits).length === 0) return;
+
+  const item = currentData.find(d => getRowKey(d) === rowKey);
+  if (!item) return;
+
+  // Disable the save button while request is in flight
+  const btn = document.querySelector(`button.save-btn[data-save-path="${CSS.escape(rowKey)}"]`);
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "...";
+  }
+
+  // Level groups: save back to the parent level file
+  if (currentType === "levels" && item._source_level) {
+    return saveLevelGroupRow(rowKey, item, edits);
+  }
+
+  // Deep clone the original item so we don't mutate it
+  const payload = JSON.parse(JSON.stringify(item));
+
+  // Remove derived fields that aren't part of the JSON file
+  delete payload._hero;
+
+  // Apply all dirty edits onto the clone
+  for (const [trackingKey, value] of Object.entries(edits)) {
+    const { colKey, tierIndex } = parseDirtyKey(trackingKey);
+    if (tierIndex !== null) {
+      setNestedValue(payload, colKey, value, tierIndex);
+    } else {
+      setNestedValue(payload, colKey, value);
+    }
+  }
+
+  try {
+    const resp = await fetch("/api/data", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({ error: `HTTP ${resp.status}` }));
+      throw new Error(errData.error || `HTTP ${resp.status}`);
+    }
+
+    // Success: apply edits to the original data object in currentData
+    for (const [trackingKey, value] of Object.entries(edits)) {
+      const { colKey, tierIndex } = parseDirtyKey(trackingKey);
+      if (tierIndex !== null) {
+        setNestedValue(item, colKey, value, tierIndex);
+      } else {
+        setNestedValue(item, colKey, value);
+      }
+    }
+
+    // Clear dirty state for this row
+    delete dirtyRows[rowKey];
+    renderTable();
+
+    // Green flash
+    flashRow(rowKey, "flash-success");
+  } catch (err) {
+    renderTable();
+    flashRow(rowKey, "flash-error");
+    console.error("Save failed:", err.message);
+  }
+}
+
+/**
+ * Save a level group row back to its parent level JSON file.
+ */
+async function saveLevelGroupRow(rowKey, item, edits) {
+  const level = item._source_level;
+  const groupIndex = item._group_index;
+
+  // Deep clone the full level object
+  const payload = JSON.parse(JSON.stringify(level));
+
+  // Apply edits to the group within the level
+  const group = payload.guest_groups[groupIndex];
+  for (const [trackingKey, value] of Object.entries(edits)) {
+    const { colKey } = parseDirtyKey(trackingKey);
+    if (colKey === "weight") {
+      group.weight = value;
+    } else if (colKey === "_guests_text") {
+      // Parse comma-separated guest IDs back into array
+      group.guests = value.split(",").map(s => s.trim()).filter(s => s.length > 0);
+    }
+  }
+
+  try {
+    const resp = await fetch("/api/data", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({ error: `HTTP ${resp.status}` }));
+      throw new Error(errData.error || `HTTP ${resp.status}`);
+    }
+
+    // Success: apply edits to the in-memory source level and the flattened row
+    const sourceGroup = level.guest_groups[groupIndex];
+    for (const [trackingKey, value] of Object.entries(edits)) {
+      const { colKey } = parseDirtyKey(trackingKey);
+      if (colKey === "weight") {
+        sourceGroup.weight = value;
+        item.weight = value;
+      } else if (colKey === "_guests_text") {
+        const guestArray = value.split(",").map(s => s.trim()).filter(s => s.length > 0);
+        sourceGroup.guests = guestArray;
+        item._guests_text = value;
+        item._guest_count = guestArray.length;
+      }
+    }
+
+    delete dirtyRows[rowKey];
+    renderTable();
+    flashRow(rowKey, "flash-success");
+  } catch (err) {
+    renderTable();
+    flashRow(rowKey, "flash-error");
+    console.error("Save failed:", err.message);
+  }
+}
+
+/**
+ * Apply a flash animation class to a row, then remove it.
+ */
+function flashRow(rowKey, className) {
+  const row = document.querySelector(`tr[data-row-key="${CSS.escape(rowKey)}"]`);
+  if (!row) return;
+  row.classList.add(className);
+  row.addEventListener("animationend", () => {
+    row.classList.remove(className);
+  }, { once: true });
+}
+
+function renderToolbar() {
+  const toolbar = document.getElementById("toolbar");
+  let html = "";
+
+  // --- Search bar (always shown) ---
+  html += '<div class="toolbar-search">';
+  html += `<input type="text" id="search-input" placeholder="Search..." value="${escapeHtml(searchTerm)}">`;
+  html += "</div>";
+
+  // --- Tier toggle (stalls only) ---
+  if (currentType === "stalls") {
+    html += '<div class="toolbar-divider"></div>';
+    html += '<span style="color:#8888a8; font-size:12px; margin-right:4px;">Tier:</span>';
+    html += '<div class="tier-toggle">';
+    for (let i = 0; i < 3; i++) {
+      const active = i === selectedTierIndex ? " active" : "";
+      html += `<button class="${active}" data-tier="${i}">T${i + 1}</button>`;
+    }
+    html += "</div>";
+  }
+
+  // --- Dropdown filters ---
+  const filterDefs = FILTER_CONFIGS[currentType];
+  if (filterDefs && filterDefs.length > 0) {
+    html += '<div class="toolbar-divider"></div>';
+    html += '<div class="toolbar-filters">';
+    for (const fDef of filterDefs) {
+      // Collect unique values from currentData
+      const uniqueVals = new Set();
+      for (const item of currentData) {
+        const val = fDef.key === "_hero" ? (item._hero || "") : getNestedValue(item, fDef.key);
+        if (val !== "" && val != null) {
+          uniqueVals.add(String(val));
+        }
+      }
+      const sorted = Array.from(uniqueVals).sort();
+      const selected = activeFilters[fDef.key] || "";
+
+      html += '<div class="toolbar-filter">';
+      html += `<label>${escapeHtml(fDef.label)}:</label>`;
+      html += `<select data-filter-key="${escapeHtml(fDef.key)}">`;
+      html += '<option value="">All</option>';
+      for (const v of sorted) {
+        const sel = v === selected ? " selected" : "";
+        html += `<option value="${escapeHtml(v)}"${sel}>${escapeHtml(v)}</option>`;
+      }
+      html += "</select></div>";
+    }
+    html += "</div>";
+  }
+
+  toolbar.innerHTML = html;
+
+  // --- Attach listeners ---
+
+  // Search input with debounce
+  const searchInput = document.getElementById("search-input");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        searchTerm = e.target.value;
+        renderTable();
+      }, 200);
+    });
+  }
+
+  // Tier toggle (stalls)
+  if (currentType === "stalls") {
+    toolbar.querySelectorAll(".tier-toggle button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedTierIndex = parseInt(btn.dataset.tier, 10);
+        toolbar.querySelectorAll(".tier-toggle button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderTable();
+      });
+    });
+  }
+
+  // Dropdown filters
+  toolbar.querySelectorAll("select[data-filter-key]").forEach(sel => {
+    sel.addEventListener("change", () => {
+      const key = sel.dataset.filterKey;
+      if (sel.value === "") {
+        delete activeFilters[key];
+      } else {
+        activeFilters[key] = sel.value;
+      }
+      renderTable();
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Unsaved changes guard
+// ---------------------------------------------------------------------------
+function hasDirtyChanges() {
+  return Object.keys(dirtyRows).length > 0;
+}
+
+function confirmDiscardChanges() {
+  if (!hasDirtyChanges()) return true;
+  return confirm("You have unsaved changes. Continue?");
+}
+
+// ---------------------------------------------------------------------------
+// Data loading
+// ---------------------------------------------------------------------------
+async function loadType(typeName) {
+  // Guard: warn about unsaved changes when switching types
+  if (currentType !== null && typeName !== currentType && !confirmDiscardChanges()) {
+    return;
+  }
+
+  currentType = typeName;
+  selectedTierIndex = 0;
+  sortColumn = null;
+  sortDirection = 1;
+  searchTerm = "";
+  activeFilters = {};
+  dirtyRows = {};
+  clearTimeout(searchTimeout);
+
+  // Update sidebar active state
+  document.querySelectorAll("#sidebar button").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.type === typeName);
+  });
+
+  // Show loading state
+  const wrapper = document.getElementById("table-wrapper");
+  wrapper.innerHTML = '<div class="loading">Loading...</div>';
+
+  try {
+    const resp = await fetch(`/api/data/${typeName}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    currentData = await resp.json();
+
+    // Derive _hero for stalls
+    if (typeName === "stalls") {
+      for (const item of currentData) {
+        item._hero = deriveStallHero(item);
+      }
+    }
+
+    // Flatten levels into guest group rows
+    if (typeName === "levels") {
+      const flatRows = [];
+      for (const level of currentData) {
+        const groups = level.guest_groups || [];
+        for (let gi = 0; gi < groups.length; gi++) {
+          const group = groups[gi];
+          flatRows.push({
+            _file_path: level._file_path,
+            _level_id: level.id,
+            _group_index: gi,
+            _source_level: level,
+            id: group.id,
+            weight: group.weight,
+            _guest_count: (group.guests || []).length,
+            _guests_text: (group.guests || []).join(", "),
+          });
+        }
+      }
+      currentData = flatRows;
+    }
+
+    renderToolbar();
+    renderTable();
+  } catch (err) {
+    wrapper.innerHTML = `<div class="empty-state">Error loading data: ${escapeHtml(err.message)}</div>`;
+    document.getElementById("item-count").textContent = "";
+  }
+}
+
+async function init() {
+  const sidebar = document.getElementById("sidebar");
+
+  try {
+    const resp = await fetch("/api/types");
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const types = await resp.json();
+
+    sidebar.innerHTML = "";
+    for (const typeName of types) {
+      const btn = document.createElement("button");
+      btn.textContent = typeName === "levels" ? "level groups" : typeName.replace(/_/g, " ");
+      btn.dataset.type = typeName;
+      btn.addEventListener("click", () => loadType(typeName));
+      sidebar.appendChild(btn);
+    }
+
+    // Default to guests
+    if (types.includes("guests")) {
+      loadType("guests");
+    } else if (types.length > 0) {
+      loadType(types[0]);
+    }
+  } catch (err) {
+    sidebar.innerHTML = `<div class="empty-state" style="padding:16px; font-size:12px;">Failed to load types</div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
