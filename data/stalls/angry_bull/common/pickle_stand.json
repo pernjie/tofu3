@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "pickle_stand",
   "display_name_key": "STALL_PICKLE_STAND_NAME",
   "description_key": "STALL_PICKLE_STAND_DESC",
@@ -14,7 +14,7 @@
   "tiers": [
 	{
 	  "tier": 1,
-	  "cost_to_guest": 1,
+	  "cost_to_guest": 0,
 	  "value": 1,
 	  "restock_amount": 2,
 	  "restock_duration": 2,
@@ -24,7 +24,7 @@
 	},
 	{
 	  "tier": 2,
-	  "cost_to_guest": 1,
+	  "cost_to_guest": 0,
 	  "value": 1,
 	  "restock_amount": 3,
 	  "restock_duration": 2,
@@ -34,7 +34,7 @@
 	},
 	{
 	  "tier": 3,
-	  "cost_to_guest": 1,
+	  "cost_to_guest": 0,
 	  "value": 1,
 	  "restock_amount": 4,
 	  "restock_duration": 2,

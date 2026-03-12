@@ -32,7 +32,8 @@ var _shop_system: ShopSystem
 @onready var cancel_remove_button: Button = $RemoveCardPopup/MarginContainer/VBoxContainer/CancelRemoveButton
 
 @onready var guest_popup: Panel = $GuestPopup
-@onready var guest_list: VBoxContainer = $GuestPopup/MarginContainer/VBoxContainer/GuestList
+@onready var guest_grid: HFlowContainer = $GuestPopup/MarginContainer/VBoxContainer/ScrollContainer/GuestGrid
+@onready var guest_title: Label = $GuestPopup/MarginContainer/VBoxContainer/GuestTitle
 @onready var close_guests_button: Button = $GuestPopup/MarginContainer/VBoxContainer/CloseGuestsButton
 
 
@@ -95,21 +96,15 @@ func _setup_shop_panel() -> void:
 
 
 func _update_guest_list() -> void:
-	for child in guest_list.get_children():
+	for child in guest_grid.get_children():
 		child.queue_free()
 
-	for entry in guest_preview:
-		var label = Label.new()
-		var needs_str = ""
-		if entry.has("needs"):
-			var parts: Array[String] = []
-			for need_type in entry.needs:
-				parts.append("%s: %d" % [need_type, entry.needs[need_type]])
-			needs_str = " (" + ", ".join(parts) + ")"
-		label.text = "- %s%s" % [entry.id, needs_str]
-		if entry.get("is_boss", false):
-			label.text += " [boss]"
-		guest_list.add_child(label)
+	guest_title.text = "Upcoming Guests (%d)" % guest_preview.size()
+
+	for guest_def in guest_preview:
+		var card_display := _card_display_scene.instantiate() as CardDisplay
+		guest_grid.add_child(card_display)
+		card_display.setup_unit(guest_def)
 
 
 func _update_deck_list() -> void:

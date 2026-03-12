@@ -1,9 +1,9 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "moon_shrine",
   "display_name_key": "STALL_MOON_SHRINE_NAME",
   "description_key": "STALL_MOON_SHRINE_DESC",
-  "rarity": "uncommon",
+  "rarity": "epic",
 
   "card_type": "stall",
   "hero_id": "",

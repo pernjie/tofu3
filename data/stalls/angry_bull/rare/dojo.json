@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "dojo",
   "display_name_key": "STALL_DOJO_NAME",
   "description_key": "STALL_DOJO_DESC",
@@ -15,7 +15,7 @@
     {
       "tier": 1,
       "cost_to_guest": 2,
-      "value": 3,
+      "value": 2,
       "service_duration": 4,
       "capacity": 2,
       "skills": [
@@ -25,7 +25,7 @@
     {
       "tier": 2,
       "cost_to_guest": 2,
-      "value": 3,
+      "value": 2,
       "service_duration": 3,
       "capacity": 2,
       "skills": [
@@ -35,7 +35,7 @@
     {
       "tier": 3,
       "cost_to_guest": 2,
-      "value": 3,
+      "value": 2,
       "service_duration": 2,
       "capacity": 2,
       "skills": [

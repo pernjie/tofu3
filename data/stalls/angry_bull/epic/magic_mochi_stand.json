@@ -1,10 +1,10 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "magic_mochi_stand",
   "display_name_key": "STALL_MAGIC_MOCHI_STAND_NAME",
   "description_key": "STALL_MAGIC_MOCHI_STAND_DESC",
   "description": "Each restock after midnight permanently increases value by 1.",
-  "rarity": "rare",
+  "rarity": "epic",
 
   "card_type": "stall",
   "hero_id": "",

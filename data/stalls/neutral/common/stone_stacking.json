@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "stone_stacking",
   "display_name_key": "STALL_STONE_STACKING_NAME",
   "description_key": "STALL_STONE_STACKING_DESC",

@@ -120,6 +120,7 @@ func _register_commands() -> void:
 	_register("apply_status", _cmd_apply_status, "apply_status <status_id> <guest_index> [stacks]", "Apply status effect to a guest")
 	_register("remove_status", _cmd_remove_status, "remove_status <status_id> <guest_index>", "Remove status effect from a guest")
 	_register("spawn_guest", _cmd_spawn_guest, "spawn_guest <guest_id>", "Spawn a guest by definition id")
+	_register("fulfill", _cmd_fulfill, "fulfill <guest_index> <need_type> [amount]", "Fulfill a guest's need (food, joy, interact)")
 	_register("restock", _cmd_restock, "restock <x> <y>", "Restock the stall at position")
 	_register("banish", _cmd_banish, "banish <guest_index>", "Banish a guest by index")
 	_register("win", _cmd_win, "win", "Instantly win the current level")
@@ -272,6 +273,36 @@ func _cmd_spawn_guest(args: Array) -> void:
 		_print("Spawned %s at %s." % [guest_id, pos_str])
 	else:
 		_print("Failed to spawn %s." % guest_id)
+
+
+func _cmd_fulfill(args: Array) -> void:
+	if args.size() < 2:
+		_print("Usage: fulfill <guest_index> <need_type> [amount]")
+		return
+
+	var guest = _get_guest_by_index(args[0])
+	if not guest:
+		return
+
+	var need_type = args[1].to_lower()
+	if not guest.current_needs.has(need_type):
+		var valid_needs = ", ".join(guest.current_needs.keys())
+		if valid_needs.is_empty():
+			_print("Guest %s has no remaining needs." % guest.definition.id)
+		else:
+			_print("Guest %s has no '%s' need. Valid needs: %s" % [guest.definition.id, need_type, valid_needs])
+		return
+
+	var amount = guest.current_needs[need_type]
+	if args.size() >= 3 and args[2].is_valid_int():
+		amount = args[2].to_int()
+
+	var fulfilled = BoardSystem.fulfill_guest_need(guest, need_type, amount)
+	await AnimationCoordinator.play_batch()
+	if fulfilled > 0:
+		_print("Fulfilled %d %s for %s (%d remaining)." % [fulfilled, need_type, guest.definition.id, guest.current_needs.get(need_type, 0)])
+	else:
+		_print("Failed to fulfill %s for %s." % [need_type, guest.definition.id])
 
 
 func _cmd_restock(args: Array) -> void:

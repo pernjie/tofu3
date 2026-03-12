@@ -4,6 +4,7 @@ extends Node2D
 
 const DiscoverOverlayScene = preload("res://src/ui/overlays/discover_overlay.tscn")
 const TierPreviewOverlayScene = preload("res://src/ui/overlays/tier_preview_overlay.tscn")
+const CardDisplayScene = preload("res://src/ui/components/card_display.tscn")
 
 @onready var board_visual: BoardVisual = $BoardVisual
 @onready var tokens_label: Label = $HUD/TopBar/TokensLabel
@@ -15,10 +16,11 @@ const TierPreviewOverlayScene = preload("res://src/ui/overlays/tier_preview_over
 @onready var hand_display: HandDisplay = $HandLayer/HandDisplay
 @onready var end_turn_button: Button = $HandLayer/EndTurnButton
 @onready var deck_system: DeckSystem = $DeckSystem
-@onready var debug_console: DebugConsole = $HUD/DebugConsole
+@onready var debug_console: DebugConsole = $HandLayer/DebugConsole
 
 var selected_card: CardInstance = null
 var _ui_blocking: bool = false  # True when a modal overlay is active
+var _queue_overlay: Panel = null
 
 
 func _ready() -> void:
@@ -220,9 +222,25 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-	# Press Tab to toggle animation skip
+	# Escape or right-click cancels card selection
+	if selected_card:
+		var cancel := false
+		if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+			cancel = true
+		elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			cancel = true
+		if cancel:
+			_clear_card_selection()
+			get_viewport().set_input_as_handled()
+			return
+
+	# Press Tab to show guest queue overlay
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_TAB:
+			_toggle_guest_queue_overlay()
+			get_viewport().set_input_as_handled()
+			return
+		if event.keycode == KEY_BACKSLASH:
 			AnimationCoordinator.skip_animations = not AnimationCoordinator.skip_animations
 			print("Skip animations: %s" % AnimationCoordinator.skip_animations)
 			get_viewport().set_input_as_handled()
@@ -380,7 +398,7 @@ func _handle_deferred_requests(relic: RelicInstance) -> void:
 func _handle_discover_request(request: Dictionary, relic: RelicInstance) -> void:
 	## Show discover overlay and store the player's choice.
 	var overlay = DiscoverOverlayScene.instantiate()
-	$HUD.add_child(overlay)
+	$HandLayer.add_child(overlay)
 
 	var prompt = tr(request.get("prompt", "DISCOVER_DEFAULT_PROMPT"))
 	var options: Array[Dictionary] = []
@@ -391,9 +409,9 @@ func _handle_discover_request(request: Dictionary, relic: RelicInstance) -> void
 	# Wait for player selection
 	var chosen_data = await overlay.option_selected
 
-	# Store result in relic's persistent state
+	# Store result in relic's persistent state (store ID string for serialization)
 	var store_key = request.get("store_key", "discovered_choice")
-	relic.persistent_state[store_key] = chosen_data
+	relic.persistent_state[store_key] = chosen_data.id if chosen_data is GuestDefinition else chosen_data
 
 	# Clean up overlay
 	overlay.queue_free()
@@ -469,7 +487,7 @@ func _handle_spell_deferred_requests(requests: Array[Dictionary]) -> void:
 func _handle_summon_beast_choice(request: Dictionary) -> void:
 	## Show beast selection overlay and spawn the chosen beast at the target tile.
 	var overlay = DiscoverOverlayScene.instantiate()
-	$HUD.add_child(overlay)
+	$HandLayer.add_child(overlay)
 
 	var prompt = tr(request.get("prompt", "DISCOVER_BEAST_PROMPT"))
 	var options: Array[Dictionary] = []
@@ -478,11 +496,9 @@ func _handle_summon_beast_choice(request: Dictionary) -> void:
 	overlay.setup(prompt, options)
 
 	# Wait for player selection
-	var chosen_data = await overlay.option_selected
+	var beast_def = await overlay.option_selected
 
-	# Spawn the chosen beast at the target tile
-	var beast_def = ContentRegistry.get_definition("guests", chosen_data)
-	if beast_def:
+	if beast_def is GuestDefinition:
 		var target_pos: Vector2i = request.get("target_pos", Vector2i.ZERO)
 		# Find the path and index for the target tile
 		var spawn_index := -1
@@ -668,6 +684,9 @@ func _on_guest_entered_stall(guest: GuestInstance, stall: StallInstance) -> void
 	var guest_entity = board_visual.get_guest_entity(guest)
 	if guest_entity:
 		guest_entity.refresh()
+	# Refresh stall visual (occupancy changed)
+	if stall.tile:
+		board_visual.refresh_stall(stall.tile.position)
 	print("Guest %s entered %s" % [guest.definition.id, stall.definition.id])
 
 
@@ -676,6 +695,9 @@ func _on_guest_exited_stall(guest: GuestInstance, stall: StallInstance) -> void:
 	var guest_entity = board_visual.get_guest_entity(guest)
 	if guest_entity:
 		guest_entity.refresh()
+	# Refresh stall visual (occupancy changed)
+	if stall.tile:
+		board_visual.refresh_stall(stall.tile.position)
 	print("Guest %s exited %s" % [guest.definition.id, stall.definition.id])
 
 
@@ -706,5 +728,57 @@ func _on_tier_preview_requested(stall_def: StallDefinition, current_tier: int) -
 	if _ui_blocking:
 		return
 	var overlay = TierPreviewOverlayScene.instantiate()
-	$HUD.add_child(overlay)
+	$HandLayer.add_child(overlay)
 	overlay.setup(stall_def, current_tier)
+
+
+func _toggle_guest_queue_overlay() -> void:
+	if _queue_overlay:
+		_queue_overlay.queue_free()
+		_queue_overlay = null
+		return
+
+	var queue: Array = BoardSystem.guest_queue + BoardSystem.beast_queue
+	if queue.is_empty():
+		return
+
+	_queue_overlay = Panel.new()
+	_queue_overlay.set_anchors_preset(Control.PRESET_CENTER)
+	_queue_overlay.offset_left = -512
+	_queue_overlay.offset_top = -288
+	_queue_overlay.offset_right = 512
+	_queue_overlay.offset_bottom = 288
+
+	var margin := MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_top", 16)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_bottom", 16)
+	_queue_overlay.add_child(margin)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 10)
+	margin.add_child(vbox)
+
+	var title := Label.new()
+	title.text = "Guest Queue (%d)" % queue.size()
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(scroll)
+
+	var grid := HFlowContainer.new()
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	scroll.add_child(grid)
+
+	for guest_def in queue:
+		var card_display := CardDisplayScene.instantiate() as CardDisplay
+		grid.add_child(card_display)
+		card_display.setup_unit(guest_def)
+
+	$HandLayer.add_child(_queue_overlay)

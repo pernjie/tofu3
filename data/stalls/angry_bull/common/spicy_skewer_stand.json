@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "spicy_skewer_stand",
   "display_name_key": "STALL_SPICY_SKEWER_STAND_NAME",
   "description_key": "STALL_SPICY_SKEWER_STAND_DESC",

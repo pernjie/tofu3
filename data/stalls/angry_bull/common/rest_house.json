@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "rest_house",
   "display_name_key": "STALL_REST_HOUSE_NAME",
   "description_key": "STALL_REST_HOUSE_DESC",
@@ -14,7 +14,7 @@
   "tiers": [
     {
       "tier": 1,
-      "cost_to_guest": 0,
+      "cost_to_guest": 1,
       "value": 1,
       "service_duration": 4,
       "capacity": 2,
@@ -25,7 +25,7 @@
     },
     {
       "tier": 2,
-      "cost_to_guest": 0,
+      "cost_to_guest": 1,
       "value": 1,
       "service_duration": 4,
       "capacity": 3,
@@ -36,7 +36,7 @@
     },
     {
       "tier": 3,
-      "cost_to_guest": 0,
+      "cost_to_guest": 1,
       "value": 1,
       "service_duration": 4,
       "capacity": 4,

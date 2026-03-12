@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "ancient_theatre",
   "display_name_key": "STALL_ANCIENT_THEATRE_NAME",
   "description_key": "STALL_ANCIENT_THEATRE_DESC",
@@ -14,18 +14,8 @@
   "tiers": [
     {
       "tier": 1,
-      "cost_to_guest": 1,
-      "value": 2,
-      "service_duration": 3,
-      "capacity": 1,
-      "skills": [
-        { "skill_id": "ancient_theatre_apply_spooked", "parameters": { "stacks": 4 } }
-      ]
-    },
-    {
-      "tier": 2,
-      "cost_to_guest": 1,
-      "value": 2,
+      "cost_to_guest": 2,
+      "value": 4,
       "service_duration": 3,
       "capacity": 2,
       "skills": [
@@ -33,11 +23,21 @@
       ]
     },
     {
-      "tier": 3,
-      "cost_to_guest": 1,
-      "value": 2,
+      "tier": 2,
+      "cost_to_guest": 2,
+      "value": 4,
       "service_duration": 3,
       "capacity": 3,
+      "skills": [
+        { "skill_id": "ancient_theatre_apply_spooked", "parameters": { "stacks": 4 } }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 2,
+      "value": 4,
+      "service_duration": 3,
+      "capacity": 4,
       "skills": [
         { "skill_id": "ancient_theatre_apply_spooked", "parameters": { "stacks": 4 } }
       ]

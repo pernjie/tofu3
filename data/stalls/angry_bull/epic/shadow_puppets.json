@@ -1,9 +1,9 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "shadow_puppets",
   "display_name_key": "STALL_SHADOW_PUPPETS_NAME",
   "description_key": "STALL_SHADOW_PUPPETS_DESC",
-  "rarity": "rare",
+  "rarity": "epic",
 
   "card_type": "stall",
   "hero_id": "",

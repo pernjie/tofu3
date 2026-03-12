@@ -213,7 +213,7 @@ func remove_guest(guest: GuestInstance) -> void:
 		if board_visual:
 			var stall_entity = board_visual.get_stall_entity(stall_pos)
 			if stall_entity:
-				stall_entity.update_labels()
+				stall_entity.refresh()
 
 	active_guests.erase(guest)
 

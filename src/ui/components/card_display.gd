@@ -27,6 +27,7 @@ const TYPE_FONT_SIZE := 10
 const CHANGED_COLOR := Color(0.3, 0.9, 0.3)  # Green highlight for changed stats
 
 var _card: CardInstance
+var _pending_unit: GuestDefinition
 var _display_scale: float = 1.0
 
 @onready var _panel: Panel = $Panel
@@ -34,6 +35,7 @@ var _display_scale: float = 1.0
 @onready var _icon_area: TextureRect = $Panel/VBox/IconArea
 @onready var _name_label: Label = $Panel/VBox/NameLabel
 @onready var _separator: HSeparator = $Panel/VBox/Separator
+@onready var _needs_row: HBoxContainer = $Panel/VBox/NeedsRow
 @onready var _stats_box: VBoxContainer = $Panel/VBox/StatsBox
 @onready var _description_label: Label = $Panel/VBox/DescriptionLabel
 @onready var _type_label: Label = $Panel/VBox/TypeLabel
@@ -43,6 +45,11 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_set_mouse_ignore_recursive(self)
 	custom_minimum_size = CARD_SIZE
+	if _pending_unit:
+		_apply_unit_common(_pending_unit)
+		_build_needs_row(_pending_unit)
+		_auto_scale_description()
+		_pending_unit = null
 
 
 func _set_mouse_ignore_recursive(node: Node) -> void:
@@ -89,7 +96,91 @@ func setup_for_tier(stall_def: StallDefinition, tier_index: int) -> void:
 	_auto_scale_description()
 
 
+func setup_unit(guest_def: GuestDefinition) -> void:
+	if not is_node_ready():
+		_pending_unit = guest_def
+		return
+	_apply_unit_common(guest_def)
+	_build_needs_row(guest_def)
+	_auto_scale_description()
+
+
+func _apply_unit_common(guest_def: GuestDefinition) -> void:
+	_name_label.text = guest_def.get_display_name()
+	_description_label.text = guest_def.get_description()
+
+	# Icon
+	if guest_def.icon_path and ResourceLoader.exists(guest_def.icon_path):
+		_icon_area.texture = load(guest_def.icon_path)
+		_icon_area.visible = true
+	else:
+		_icon_area.visible = false
+
+	# Rarity border
+	var style := _panel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	var border_color: Color = RARITY_COLORS.get(guest_def.rarity, RARITY_COLORS["common"])
+	style.border_color = border_color
+	var bw := roundi(BORDER_WIDTH * _display_scale)
+	style.border_width_left = bw
+	style.border_width_top = bw
+	style.border_width_right = bw
+	style.border_width_bottom = bw
+	var cr := roundi(CORNER_RADIUS * _display_scale)
+	style.corner_radius_top_left = cr
+	style.corner_radius_top_right = cr
+	style.corner_radius_bottom_right = cr
+	style.corner_radius_bottom_left = cr
+	_panel.add_theme_stylebox_override("panel", style)
+
+	# Type badge
+	if guest_def.is_boss:
+		_type_label.text = "Boss"
+	elif guest_def.is_mythical_beast:
+		_type_label.text = "Beast"
+	else:
+		_type_label.text = "Guest"
+
+	# Hide stall stats
+	_stats_box.visible = false
+
+
+const NEED_LABELS := {
+	"food": "Food",
+	"joy": "Joy",
+	"interact": "Interact",
+}
+
+func _build_needs_row(guest_def: GuestDefinition) -> void:
+	for child in _needs_row.get_children():
+		child.queue_free()
+
+	var font_size := roundi(STATS_FONT_SIZE * _display_scale)
+
+	# Need type pairs
+	for need_type in guest_def.base_needs:
+		var amount: int = guest_def.base_needs[need_type]
+		var label := Label.new()
+		label.text = "%s %d" % [NEED_LABELS.get(need_type, need_type.capitalize()), amount]
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label.add_theme_font_size_override("font_size", font_size)
+		label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.65))
+		_needs_row.add_child(label)
+
+	# Money
+	if guest_def.base_money > 0:
+		var money_label := Label.new()
+		money_label.text = "%d¢" % guest_def.base_money
+		money_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		money_label.add_theme_font_size_override("font_size", font_size)
+		money_label.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+		_needs_row.add_child(money_label)
+
+	_needs_row.visible = _needs_row.get_child_count() > 0
+
+
 func _apply_common(def: CardDefinition) -> void:
+	_needs_row.visible = false
+
 	# Name
 	_name_label.text = def.get_display_name()
 

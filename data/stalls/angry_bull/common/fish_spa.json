@@ -1,9 +1,11 @@
 {
-  "$schema": "./_schema.json",
-  "id": "blacksmith",
-  "display_name_key": "STALL_BLACKSMITH_NAME",
-  "description_key": "STALL_BLACKSMITH_DESC",
-  "rarity": "rare",
+  "$schema": "../../_schema.json",
+  "id": "fish_spa",
+  "display_name_key": "STALL_FISH_SPA_NAME",
+  "description_key": "STALL_FISH_SPA_DESC",
+  "rarity": "common",
+  "icon_path": "",
+  "sprite_sheet": "",
 
   "card_type": "stall",
   "hero_id": "",
@@ -17,34 +19,34 @@
       "cost_to_guest": 2,
       "value": 2,
       "service_duration": 3,
-      "capacity": 1,
+      "capacity": 2,
       "skills": [
-        { "skill_id": "blacksmith_status_immunity" }
+        { "skill_id": "fish_spa_cleanse" }
       ]
     },
     {
       "tier": 2,
       "cost_to_guest": 2,
       "value": 2,
-      "service_duration": 3,
+      "service_duration": 2,
       "capacity": 2,
       "skills": [
-        { "skill_id": "blacksmith_status_immunity" }
+        { "skill_id": "fish_spa_cleanse" }
       ]
     },
     {
       "tier": 3,
       "cost_to_guest": 2,
       "value": 2,
-      "service_duration": 3,
-      "capacity": 3,
+      "service_duration": 1,
+      "capacity": 2,
       "skills": [
-        { "skill_id": "blacksmith_status_immunity" }
+        { "skill_id": "fish_spa_cleanse" }
       ]
     }
   ],
 
   "placement_restriction": null,
 
-  "tags": []
+  "tags": ["joy_stall", "service"]
 }

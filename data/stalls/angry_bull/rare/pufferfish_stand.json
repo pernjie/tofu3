@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "pufferfish_stand",
   "display_name_key": "STALL_PUFFERFISH_STAND_NAME",
   "description_key": "STALL_PUFFERFISH_STAND_DESC",

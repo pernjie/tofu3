@@ -1,9 +1,9 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "spirit_hall",
   "display_name_key": "STALL_SPIRIT_HALL_NAME",
   "description_key": "STALL_SPIRIT_HALL_DESC",
-  "rarity": "uncommon",
+  "rarity": "epic",
   "icon_path": "res://assets/sprites/stalls/spirit_hall_icon.png",
   "sprite_sheet": "res://assets/sprites/stalls/spirit_hall.png",
 
@@ -18,6 +18,26 @@
       "tier": 1,
       "cost_to_guest": 1,
       "value": 1,
+      "service_duration": 2,
+      "capacity": 3,
+      "skills": [
+        { "skill_id": "spirit_hall_apply_attuned" }
+      ]
+    },
+    {
+      "tier": 2,
+      "cost_to_guest": 1,
+      "value": 2,
+      "service_duration": 2,
+      "capacity": 3,
+      "skills": [
+        { "skill_id": "spirit_hall_apply_attuned" }
+      ]
+    },
+    {
+      "tier": 3,
+      "cost_to_guest": 1,
+      "value": 3,
       "service_duration": 2,
       "capacity": 3,
       "skills": [

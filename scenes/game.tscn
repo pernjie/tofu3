@@ -1,11 +1,11 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=7 format=3 uid="uid://doe5yv6ir255u"]
 
-[ext_resource type="Script" path="res://src/game/game.gd" id="1_game"]
+[ext_resource type="Script" uid="uid://3arvnmpo3ikt" path="res://src/game/game.gd" id="1_game"]
 [ext_resource type="PackedScene" path="res://src/ui/board_visual.tscn" id="2_board"]
-[ext_resource type="Script" path="res://src/systems/deck_system.gd" id="3_deck"]
+[ext_resource type="Script" uid="uid://dx21p5s8brw1u" path="res://src/systems/deck_system.gd" id="3_deck"]
 [ext_resource type="PackedScene" path="res://src/ui/components/debug_info_panel.tscn" id="4_debug"]
-[ext_resource type="Script" path="res://src/ui/hand_display.gd" id="5_hand"]
-[ext_resource type="Script" path="res://src/ui/components/debug_console.gd" id="6_debug_console"]
+[ext_resource type="Script" uid="uid://ombeekkfm4pa" path="res://src/ui/hand_display.gd" id="5_hand"]
+[ext_resource type="Script" uid="uid://nwweop77b03f" path="res://src/ui/components/debug_console.gd" id="6_debug_console"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_game")
@@ -55,6 +55,7 @@ text = "Phase: Idle"
 [node name="HandLayer" type="CanvasLayer" parent="."]
 
 [node name="HandDisplay" type="Control" parent="HandLayer"]
+layout_mode = 3
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -83,7 +84,7 @@ grow_vertical = 0
 theme_override_font_sizes/font_size = 22
 text = "End Turn"
 
-[node name="DebugConsole" type="PanelContainer" parent="HUD"]
+[node name="DebugConsole" type="PanelContainer" parent="HandLayer"]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0

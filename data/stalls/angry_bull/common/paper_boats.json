@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "paper_boats",
   "display_name_key": "STALL_PAPER_BOATS_NAME",
   "description_key": "STALL_PAPER_BOATS_DESC",

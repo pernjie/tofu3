@@ -40,3 +40,20 @@ static func from_dict(data: Dictionary) -> GuestDefinition:
 	def.skill_data = skill_data_arr
 
 	return def
+
+
+func get_description() -> String:
+	var explicit := super.get_description()
+	if explicit:
+		return explicit
+
+	# Auto-concat skill descriptions (same pattern as CardDefinition)
+	var parts: Array[String] = []
+	for entry in skill_data:
+		var skill_id: String = entry.get("skill_id", "")
+		if skill_id.is_empty():
+			continue
+		var skill_def := ContentRegistry.get_definition("skills", skill_id) as SkillDefinition
+		if skill_def and skill_def.description:
+			parts.append(skill_def.description)
+	return "\n".join(parts)

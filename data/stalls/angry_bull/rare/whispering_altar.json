@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "whispering_altar",
   "display_name_key": "STALL_WHISPERING_ALTAR_NAME",
   "description_key": "STALL_WHISPERING_ALTAR_DESC",
@@ -14,7 +14,7 @@
   "tiers": [
     {
       "tier": 1,
-      "cost_to_guest": 3,
+      "cost_to_guest": 0,
       "value": 4,
       "restock_amount": 1,
       "auto_restock": false,
@@ -24,7 +24,7 @@
     },
     {
       "tier": 2,
-      "cost_to_guest": 4,
+      "cost_to_guest": 0,
       "value": 4,
       "restock_amount": 2,
       "auto_restock": false,
@@ -34,7 +34,7 @@
     },
     {
       "tier": 3,
-      "cost_to_guest": 5,
+      "cost_to_guest": 0,
       "value": 4,
       "restock_amount": 3,
       "auto_restock": false,

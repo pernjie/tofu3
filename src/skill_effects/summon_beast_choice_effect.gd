@@ -27,7 +27,7 @@ func execute(context: TriggerContext, skill: SkillInstance) -> SkillEffectResult
 			available.append({
 				"title": guest_def.display_name_key,
 				"description": guest_def.description_key if guest_def.description_key else "",
-				"data": guest_def.id
+				"data": guest_def
 			})
 		else:
 			push_warning("SummonBeastChoiceEffect: Guest '%s' not found in ContentRegistry" % guest_id)

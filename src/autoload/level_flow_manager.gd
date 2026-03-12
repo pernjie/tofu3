@@ -116,6 +116,7 @@ func _on_interlude_continue() -> void:
 
 func _generate_guest_preview(level_def: LevelDefinition) -> Array:
 	## Generate preview by selecting a guest group and resolving its guests.
+	## Returns Array[GuestDefinition].
 	var preview: Array = []
 	_pending_boss_guest = ""
 
@@ -134,11 +135,7 @@ func _generate_guest_preview(level_def: LevelDefinition) -> Array:
 	for guest_id in group.get("guests", []):
 		var guest_def = ContentRegistry.get_definition("guests", guest_id)
 		if guest_def:
-			preview.append({
-				"id": guest_def.id,
-				"name": guest_def.display_name_key,
-				"needs": guest_def.base_needs.duplicate(),
-			})
+			preview.append(guest_def)
 
 	# Add boss if present (randomly select one if multiple options)
 	if not level_def.boss_guests.is_empty():
@@ -146,11 +143,6 @@ func _generate_guest_preview(level_def: LevelDefinition) -> Array:
 		_pending_boss_guest = boss_id
 		var boss_def = ContentRegistry.get_definition("guests", boss_id)
 		if boss_def:
-			preview.append({
-				"id": boss_def.id,
-				"name": boss_def.display_name_key,
-				"needs": boss_def.base_needs.duplicate(),
-				"is_boss": true,
-			})
+			preview.append(boss_def)
 
 	return preview

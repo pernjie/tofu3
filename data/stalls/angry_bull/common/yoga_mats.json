@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "yoga_mats",
   "display_name_key": "STALL_YOGA_MATS_NAME",
   "description_key": "STALL_YOGA_MATS_DESC",

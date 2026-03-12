@@ -1,5 +1,5 @@
 {
-  "$schema": "./_schema.json",
+  "$schema": "../../_schema.json",
   "id": "beast_shrine",
   "display_name_key": "STALL_BEAST_SHRINE_NAME",
   "description_key": "STALL_BEAST_SHRINE_DESC",
@@ -14,7 +14,7 @@
   "tiers": [
     {
       "tier": 1,
-      "cost_to_guest": 1,
+      "cost_to_guest": 2,
       "value": 0,
       "service_duration": 2,
       "capacity": 1,
@@ -24,7 +24,7 @@
     },
     {
       "tier": 2,
-      "cost_to_guest": 1,
+      "cost_to_guest": 2,
       "value": 0,
       "service_duration": 2,
       "capacity": 2,
@@ -34,7 +34,7 @@
     },
     {
       "tier": 3,
-      "cost_to_guest": 1,
+      "cost_to_guest": 2,
       "value": 0,
       "service_duration": 2,
       "capacity": 3,
