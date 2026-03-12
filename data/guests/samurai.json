@@ -4,9 +4,8 @@
   "display_name_key": "GUEST_SAMURAI_NAME",
   "description_key": "GUEST_SAMURAI_DESC",
   "rarity": "rare",
-
+  "tier": 3,
   "is_core_guest": true,
-
   "base_stats": {
     "needs": {
       "food": 2,
@@ -15,11 +14,13 @@
     "money": 3,
     "movement_speed": 1
   },
-
   "skills": [
-    { "skill_id": "samurai_status_immunity" },
-    { "skill_id": "samurai_banish_immunity" }
+    {
+      "skill_id": "samurai_status_immunity"
+    },
+    {
+      "skill_id": "samurai_banish_immunity"
+    }
   ],
-
   "tags": []
 }

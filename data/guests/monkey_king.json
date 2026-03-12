@@ -4,15 +4,23 @@
   "display_name_key": "GUEST_MONKEY_KING_NAME",
   "description_key": "GUEST_MONKEY_KING_DESC",
   "rarity": "legendary",
+  "tier": 5,
   "is_core_guest": true,
   "is_boss": true,
   "base_stats": {
-    "needs": { "food": 3, "joy": 3 },
+    "needs": {
+      "food": 3,
+      "joy": 3
+    },
     "money": 8,
     "movement_speed": 1
   },
   "skills": [
-    { "skill_id": "monkey_king_clone" }
+    {
+      "skill_id": "monkey_king_clone"
+    }
   ],
-  "tags": ["boss"]
+  "tags": [
+    "boss"
+  ]
 }

@@ -3,19 +3,19 @@
   "level_number": 5,
   "guest_groups": [
     {
-      "id": "boss_hungry",
+      "id": "samurai_ninja",
       "weight": 3,
-      "guests": ["hungry_ghost", "hungry_ghost", "playful_spirit", "ninja"]
+      "guests": ["samurai", "samurai", "samurai", "ninja", "ninja", "ninja"]
     },
     {
       "id": "boss_disruptive",
       "weight": 3,
-      "guests": ["old_man", "drunkard", "playful_spirit", "hungry_ghost"]
+      "guests": ["old_man", "old_man", "old_man", "drunkard", "drunkard", "drunkard"]
     },
     {
-      "id": "boss_elite",
+      "id": "spawners",
       "weight": 2,
-      "guests": ["samurai", "apothecary", "wandering_shade", "playful_spirit"]
+      "guests": ["lantern_bearer", "lantern_bearer", "cat_lady", "cat_lady", "cat_lady", "apothecary"]
     }
   ],
   "boss_guests": ["tengu", "monkey_king"],

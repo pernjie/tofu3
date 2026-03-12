@@ -435,6 +435,7 @@ const COLUMN_CONFIGS = {
   guests: [
     { key: "id", label: "ID", editable: false },
     { key: "rarity", label: "Rarity", editable: true, type: "select", options: ["common", "rare", "epic", "legendary"] },
+    { key: "tier", label: "Tier", editable: true, type: "number" },
     { key: "base_stats.needs.food", label: "Food", editable: true, type: "number" },
     { key: "base_stats.needs.joy", label: "Joy", editable: true, type: "number" },
     { key: "base_stats.needs.interact", label: "Interact", editable: true, type: "number" },
@@ -488,6 +489,9 @@ const COLUMN_CONFIGS = {
     { key: "id", label: "Group", editable: false },
     { key: "weight", label: "Weight", editable: true, type: "number" },
     { key: "_guest_count", label: "Count", editable: false, type: "number" },
+    { key: "_total_food", label: "Food", editable: false, type: "number" },
+    { key: "_total_joy", label: "Joy", editable: false, type: "number" },
+    { key: "_total_needs", label: "Total", editable: false, type: "number" },
     { key: "_guests_text", label: "Guests", editable: true, type: "text" },
   ],
 };
@@ -1425,11 +1429,28 @@ async function loadType(typeName) {
 
     // Flatten levels into guest group rows
     if (typeName === "levels") {
+      // Fetch guest definitions for need totals
+      let guestLookup = {};
+      try {
+        const gResp = await fetch("/api/data/guests");
+        if (gResp.ok) {
+          const guests = await gResp.json();
+          for (const g of guests) guestLookup[g.id] = g;
+        }
+      } catch (_) {}
+
       const flatRows = [];
       for (const level of currentData) {
         const groups = level.guest_groups || [];
         for (let gi = 0; gi < groups.length; gi++) {
           const group = groups[gi];
+          const guestIds = group.guests || [];
+          let totalFood = 0, totalJoy = 0;
+          for (const gid of guestIds) {
+            const needs = guestLookup[gid]?.base_stats?.needs || {};
+            totalFood += needs.food || 0;
+            totalJoy += needs.joy || 0;
+          }
           flatRows.push({
             _file_path: level._file_path,
             _level_id: level.id,
@@ -1437,8 +1458,11 @@ async function loadType(typeName) {
             _source_level: level,
             id: group.id,
             weight: group.weight,
-            _guest_count: (group.guests || []).length,
-            _guests_text: (group.guests || []).join(", "),
+            _guest_count: guestIds.length,
+            _total_food: totalFood || "-",
+            _total_joy: totalJoy || "-",
+            _total_needs: (totalFood + totalJoy) || "-",
+            _guests_text: guestIds.join(", "),
           });
         }
       }
@@ -1470,9 +1494,13 @@ async function init() {
       sidebar.appendChild(btn);
     }
 
-    // Default to guests
+    // Default to guests (sorted by tier)
     if (types.includes("guests")) {
-      loadType("guests");
+      loadType("guests").then(() => {
+        sortColumn = "tier";
+        sortDirection = 1;
+        renderTable();
+      });
     } else if (types.length > 0) {
       loadType(types[0]);
     }

@@ -4,9 +4,8 @@
   "display_name_key": "GUEST_APOTHECARY_NAME",
   "description_key": "GUEST_APOTHECARY_DESC",
   "rarity": "common",
-
+  "tier": 3,
   "is_core_guest": true,
-
   "base_stats": {
     "needs": {
       "food": 3
@@ -14,10 +13,10 @@
     "money": 2,
     "movement_speed": 1
   },
-
   "skills": [
-    { "skill_id": "restock_on_deplete" }
+    {
+      "skill_id": "restock_on_deplete"
+    }
   ],
-
   "tags": []
 }

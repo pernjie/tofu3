@@ -4,22 +4,31 @@
   "display_name_key": "GUEST_AKASHITA_NAME",
   "description_key": "GUEST_AKASHITA_DESC",
   "rarity": "rare",
-
+  "tier": 0,
   "is_core_guest": false,
   "is_mythical_beast": true,
   "spawn_at_exit": true,
   "move_direction": "reverse",
-
   "base_stats": {
-    "needs": { "interact": 3 },
+    "needs": {
+      "interact": 3
+    },
     "money": 0,
     "movement_speed": 1
   },
-
   "skills": [
-    { "skill_id": "akashita_restock_all" },
-    { "skill_id": "encounter_apply_status", "parameters": { "status_id": "wet", "stacks": 1 } }
+    {
+      "skill_id": "akashita_restock_all"
+    },
+    {
+      "skill_id": "encounter_apply_status",
+      "parameters": {
+        "status_id": "wet",
+        "stacks": 1
+      }
+    }
   ],
-
-  "tags": ["beast"]
+  "tags": [
+    "beast"
+  ]
 }

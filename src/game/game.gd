@@ -181,14 +181,14 @@ func _generate_guest_queue(level_def: LevelDefinition) -> Array:
 	# Shuffle spawn order
 	queue.shuffle()
 
-	# Append boss as final guest (use pre-selected boss from interlude, or pick randomly)
+	# Insert boss as first guest (use pre-selected boss from interlude, or pick randomly)
 	if not level_def.boss_guests.is_empty():
 		var boss_id := LevelFlowManager._pending_boss_guest
 		if boss_id == "":
 			boss_id = level_def.boss_guests.pick_random()
 		var boss_def = ContentRegistry.get_definition("guests", boss_id)
 		if boss_def:
-			queue.append(boss_def)
+			queue.push_front(boss_def)
 		else:
 			push_warning("Boss guest not found: " + boss_id)
 

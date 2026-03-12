@@ -4,9 +4,8 @@
   "display_name_key": "GUEST_NINJA_NAME",
   "description_key": "GUEST_NINJA_DESC",
   "rarity": "common",
-
+  "tier": 3,
   "is_core_guest": true,
-
   "base_stats": {
     "needs": {
       "food": 2,
@@ -15,8 +14,6 @@
     "money": 5,
     "movement_speed": 2
   },
-
   "skills": [],
-
   "tags": []
 }

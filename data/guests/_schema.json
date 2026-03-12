@@ -21,6 +21,12 @@
       "enum": ["common", "rare", "epic", "legendary"],
       "default": "common"
     },
+    "tier": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 1,
+      "description": "First level number this guest can appear in guest_groups. 0 means not part of any level (beasts, summons)"
+    },
     "icon_path": {
       "type": "string",
       "description": "Path to icon resource"

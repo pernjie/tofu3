@@ -4,20 +4,19 @@
   "display_name_key": "GUEST_DANCER_NAME",
   "description_key": "GUEST_DANCER_DESC",
   "rarity": "rare",
-
+  "tier": 2,
   "is_core_guest": true,
-
   "base_stats": {
-	"needs": {
-	  "joy": 3
-	},
-	"money": 3,
-	"movement_speed": 1
+    "needs": {
+      "joy": 3
+    },
+    "money": 3,
+    "movement_speed": 1
   },
-
   "skills": [
-	{ "skill_id": "dancer_ascend_charm" }
+    {
+      "skill_id": "dancer_ascend_charm"
+    }
   ],
-
   "tags": []
 }

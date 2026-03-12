@@ -6,6 +6,7 @@ var movement_speed: int = 1
 var skill_data: Array[Dictionary]  # [{ "skill_id": "...", "parameters": {...} }, ...]
 var sprite_sheet: String
 var animations: Dictionary
+var tier: int = 1
 var is_core_guest: bool = true
 var is_boss: bool = false
 var is_mythical_beast: bool = false
@@ -22,6 +23,7 @@ static func from_dict(data: Dictionary) -> GuestDefinition:
 	def.base_money = base_stats.get("money", 0)
 	def.movement_speed = base_stats.get("movement_speed", 1)
 
+	def.tier = data.get("tier", 1)
 	def.sprite_sheet = data.get("sprite_sheet", "")
 	def.animations = data.get("animations", {})
 	def.is_core_guest = data.get("is_core_guest", true)

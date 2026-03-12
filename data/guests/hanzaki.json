@@ -4,21 +4,24 @@
   "display_name_key": "GUEST_HANZAKI_NAME",
   "description_key": "GUEST_HANZAKI_DESC",
   "rarity": "rare",
-
+  "tier": 0,
   "is_core_guest": false,
   "is_mythical_beast": true,
   "spawn_at_exit": true,
   "move_direction": "reverse",
-
   "base_stats": {
-    "needs": { "interact": 3 },
+    "needs": {
+      "interact": 3
+    },
     "money": 0,
     "movement_speed": 1
   },
-
   "skills": [
-    { "skill_id": "encounter_banish" }
+    {
+      "skill_id": "encounter_banish"
+    }
   ],
-
-  "tags": ["beast"]
+  "tags": [
+    "beast"
+  ]
 }

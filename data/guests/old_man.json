@@ -4,9 +4,8 @@
   "display_name_key": "GUEST_OLD_MAN_NAME",
   "description_key": "GUEST_OLD_MAN_DESC",
   "rarity": "common",
-
+  "tier": 2,
   "is_core_guest": true,
-
   "base_stats": {
     "needs": {
       "food": 1,
@@ -15,10 +14,10 @@
     "money": 3,
     "movement_speed": 1
   },
-
   "skills": [
-    { "skill_id": "slow_service" }
+    {
+      "skill_id": "slow_service"
+    }
   ],
-
   "tags": []
 }

@@ -5,17 +5,22 @@
     {
       "id": "rowdy_night",
       "weight": 3,
-      "guests": ["hungry_ghost", "hungry_ghost", "drunkard", "playful_spirit", "ninja"]
-    },
-    {
-      "id": "disruptive_mix",
-      "weight": 3,
-      "guests": ["playful_spirit", "drunkard", "old_man", "hungry_ghost", "wandering_shade"]
+      "guests": ["drunkard", "drunkard", "hungry_ghost", "hungry_ghost", "hungry_ghost", "playful_spirit", "playful_spirit", "playful_spirit"]
     },
     {
       "id": "ninja_raid",
       "weight": 2,
-      "guests": ["ninja", "ninja", "hungry_ghost", "playful_spirit", "wandering_shade"]
+      "guests": ["ninja", "ninja", "ninja", "ninja", "hungry_ghost", "playful_spirit"]
+    },
+    {
+      "id": "samurai_raid",
+      "weight": 2,
+      "guests": ["samurai", "samurai", "samurai", "playful_spirit", "wandering_shade", "wandering_shade", "wandering_shade"]
+    },
+    {
+      "id": "apothecary",
+      "weight": 3,
+      "guests": ["apothecary", "apothecary", "hungry_ghost", "hungry_ghost", "hungry_ghost", "playful_spirit", "playful_spirit", "playful_spirit"]
     }
   ],
   "boss_guests": [],
