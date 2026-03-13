@@ -8,7 +8,7 @@
   "is_core_guest": true,
   "base_stats": {
     "needs": {
-      "joy": 2
+      "joy": 4
     },
     "money": 4,
     "movement_speed": 1

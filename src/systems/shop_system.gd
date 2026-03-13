@@ -12,13 +12,13 @@ const RARITY_WEIGHTS: Dictionary = {
 }
 const REROLL_BASE_COST: int = 1
 const REROLL_COST_MULTIPLIER: int = 2
-const NUM_OFFERINGS: int = 3
+const NUM_STALL_OFFERINGS: int = 3
 const PRICE_OFFSETS: Array[int] = [-2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1]
-const MIN_STALL_OFFERINGS: int = 2
 const REMOVE_CARD_COST: int = 2
 
 var _hero_id: String
-var _pool: Array[CardDefinition]
+var _stall_pool: Array[CardDefinition]
+var _other_pool: Array[CardDefinition]
 var _reroll_count: int = 0
 var _offerings: Array  # CardInstance per slot, null = empty
 var _sold_indices: Array[int] = []
@@ -28,7 +28,7 @@ var _card_removed: bool = false
 func setup(hero_id: String) -> void:
 	_hero_id = hero_id
 	_reroll_count = 0
-	_pool = _build_pool(hero_id)
+	_build_pool(hero_id)
 	_generate_offerings()
 
 
@@ -116,53 +116,41 @@ func has_offerings() -> bool:
 	return false
 
 
-func _build_pool(hero_id: String) -> Array[CardDefinition]:
-	var pool: Array[CardDefinition] = []
+func _build_pool(hero_id: String) -> void:
+	_stall_pool = []
+	_other_pool = []
 	for type in ["stalls", "spells", "relics"]:
 		for def in ContentRegistry.get_all_of_type(type):
 			if not def.shopable:
 				continue
 			if def.hero_id == hero_id or def.hero_id == "":
-				pool.append(def as CardDefinition)
-	return pool
-
-
-func _select_with_stall_guarantee(pool: Array, count: int) -> Array:
-	if count <= 0 or pool.is_empty():
-		return []
-
-	var stall_pool: Array = pool.filter(func(def): return def.card_type == "stall")
-
-	# If no stalls available, fall back to normal selection
-	if stall_pool.is_empty():
-		return WeightedRandom.select_multiple(pool, count, RARITY_WEIGHTS)
-
-	# Pick guaranteed stalls (at least 2, or as many as available)
-	var num_guaranteed := mini(MIN_STALL_OFFERINGS, stall_pool.size())
-	var guaranteed: Array = WeightedRandom.select_multiple(stall_pool, num_guaranteed, RARITY_WEIGHTS)
-	var results: Array = guaranteed.duplicate()
-
-	# Pick remaining from full pool (excluding guaranteed picks)
-	var remaining: Array = pool.duplicate()
-	for def in guaranteed:
-		remaining.erase(def)
-	var extras: Array = WeightedRandom.select_multiple(remaining, count - results.size(), RARITY_WEIGHTS)
-	results.append_array(extras)
-
-	# Shuffle so guaranteed stalls aren't always first
-	results.shuffle()
-	return results
+				var card_def := def as CardDefinition
+				if card_def.card_type == "stall":
+					_stall_pool.append(card_def)
+				else:
+					_other_pool.append(card_def)
 
 
 func _generate_offerings() -> void:
 	_sold_indices.clear()
-	var selected_defs: Array = _select_with_stall_guarantee(_pool, NUM_OFFERINGS)
 	_offerings = []
-	for def in selected_defs:
+
+	# Pick stall offerings
+	var stall_defs: Array = WeightedRandom.select_multiple(_stall_pool, NUM_STALL_OFFERINGS, RARITY_WEIGHTS)
+	for def in stall_defs:
 		var card := CardInstance.new(def)
 		card.location = CardInstance.Location.SHOP
 		card.price_offset = PRICE_OFFSETS.pick_random()
 		_offerings.append(card)
-	# Fill remaining slots with null if pool was too small
-	while _offerings.size() < NUM_OFFERINGS:
+	# Fill remaining stall slots with null if pool was too small
+	while _offerings.size() < NUM_STALL_OFFERINGS:
 		_offerings.append(null)
+
+	# Pick extra offering from non-stall pool
+	if not _other_pool.is_empty():
+		var other_defs: Array = WeightedRandom.select_multiple(_other_pool, 1, RARITY_WEIGHTS)
+		if not other_defs.is_empty():
+			var card := CardInstance.new(other_defs[0])
+			card.location = CardInstance.Location.SHOP
+			card.price_offset = PRICE_OFFSETS.pick_random()
+			_offerings.append(card)

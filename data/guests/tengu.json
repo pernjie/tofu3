@@ -9,9 +9,9 @@
   "is_boss": true,
   "base_stats": {
     "needs": {
-      "joy": 7
+      "joy": 10
     },
-    "money": 7,
+    "money": 8,
     "movement_speed": 1
   },
   "skills": [

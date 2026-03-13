@@ -10,6 +10,8 @@ var _shop_system: ShopSystem
 var _shop_slot_scene: PackedScene = preload("res://src/ui/components/shop_slot.tscn")
 
 var _shop_slots: Array[ShopSlot] = []
+var _extra_slot_spacer: Control  # Extra gap before the non-stall slot
+var _extra_slot: ShopSlot
 var _reroll_button: Button
 var _remove_button: Button
 var _remove_slot: VBoxContainer
@@ -30,11 +32,22 @@ func _build_ui() -> void:
 	slots_row.set("theme_override_constants/separation", 24)
 	add_child(slots_row)
 
-	for i in ShopSystem.NUM_OFFERINGS:
+	# Main stall slots
+	for i in ShopSystem.NUM_STALL_OFFERINGS:
 		var slot := _shop_slot_scene.instantiate() as ShopSlot
 		slot.buy_pressed.connect(_on_buy_pressed.bind(i))
 		slots_row.add_child(slot)
 		_shop_slots.append(slot)
+
+	# Extra slot (spells, relics) with wider gap
+	_extra_slot_spacer = Control.new()
+	_extra_slot_spacer.custom_minimum_size.x = 24  # 24px spacer + 24px row separation = 48px total
+	slots_row.add_child(_extra_slot_spacer)
+
+	_extra_slot = _shop_slot_scene.instantiate() as ShopSlot
+	_extra_slot.buy_pressed.connect(_on_buy_pressed.bind(ShopSystem.NUM_STALL_OFFERINGS))
+	slots_row.add_child(_extra_slot)
+	_shop_slots.append(_extra_slot)
 
 	# Remove card button (circular, to the right of offerings)
 	_remove_slot = VBoxContainer.new()
@@ -87,11 +100,17 @@ func _refresh() -> void:
 		return
 
 	var offerings := _shop_system.get_offerings()
-	for i in ShopSystem.NUM_OFFERINGS:
+	var has_extra := offerings.size() > ShopSystem.NUM_STALL_OFFERINGS
+	_extra_slot_spacer.visible = has_extra
+	_extra_slot.visible = has_extra
+
+	for i in _shop_slots.size():
 		var slot := _shop_slots[i]
 		var card: CardInstance = offerings[i] if i < offerings.size() else null
 
-		if _shop_system.is_slot_sold(i):
+		if i >= offerings.size():
+			slot.set_sold()
+		elif _shop_system.is_slot_sold(i):
 			slot.set_sold(card)
 		elif card:
 			slot.setup(card, card.get_effective_price())
@@ -115,11 +134,11 @@ func _update_reroll_button() -> void:
 func _update_affordability() -> void:
 	if not _shop_system:
 		return
-	for i in ShopSystem.NUM_OFFERINGS:
-		if _shop_system.is_slot_sold(i):
+	var offerings := _shop_system.get_offerings()
+	for i in _shop_slots.size():
+		if i >= offerings.size() or _shop_system.is_slot_sold(i):
 			continue
-		var offerings := _shop_system.get_offerings()
-		var card: CardInstance = offerings[i] if i < offerings.size() else null
+		var card: CardInstance = offerings[i]
 		if card:
 			_shop_slots[i].set_affordable(_shop_system.can_afford_card(i))
 	_update_reroll_button()

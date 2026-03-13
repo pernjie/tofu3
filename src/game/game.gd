@@ -4,6 +4,7 @@ extends Node2D
 
 const DiscoverOverlayScene = preload("res://src/ui/overlays/discover_overlay.tscn")
 const TierPreviewOverlayScene = preload("res://src/ui/overlays/tier_preview_overlay.tscn")
+const CardPreviewOverlayScene = preload("res://src/ui/overlays/card_preview_overlay.tscn")
 const CardDisplayScene = preload("res://src/ui/components/card_display.tscn")
 
 @onready var board_visual: BoardVisual = $BoardVisual
@@ -49,6 +50,8 @@ func _connect_signals() -> void:
 	EventBus.debug_show_stall.connect(_on_debug_show_stall)
 	EventBus.debug_show_relic.connect(_on_debug_show_relic)
 	EventBus.tier_preview_requested.connect(_on_tier_preview_requested)
+	EventBus.card_preview_requested.connect(_on_card_preview_requested)
+	EventBus.unit_preview_requested.connect(_on_unit_preview_requested)
 
 	# UI connections
 	board_visual.slot_clicked.connect(_on_slot_clicked)
@@ -730,6 +733,22 @@ func _on_tier_preview_requested(stall_def: StallDefinition, current_tier: int) -
 	var overlay = TierPreviewOverlayScene.instantiate()
 	$HandLayer.add_child(overlay)
 	overlay.setup(stall_def, current_tier)
+
+
+func _on_card_preview_requested(card: CardInstance) -> void:
+	if _ui_blocking:
+		return
+	var overlay = CardPreviewOverlayScene.instantiate()
+	$HandLayer.add_child(overlay)
+	overlay.setup_card(card)
+
+
+func _on_unit_preview_requested(guest_def: GuestDefinition) -> void:
+	if _ui_blocking:
+		return
+	var overlay = CardPreviewOverlayScene.instantiate()
+	$HandLayer.add_child(overlay)
+	overlay.setup_unit(guest_def)
 
 
 func _toggle_guest_queue_overlay() -> void:

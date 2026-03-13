@@ -8,7 +8,7 @@
   "is_core_guest": true,
   "base_stats": {
     "needs": {
-      "food": 3
+      "food": 4
     },
     "money": 2,
     "movement_speed": 1

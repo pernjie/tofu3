@@ -7,6 +7,7 @@ signal continue_pressed
 
 var _card_display_scene: PackedScene = preload("res://src/ui/components/card_display.tscn")
 var _tier_preview_scene: PackedScene = preload("res://src/ui/overlays/tier_preview_overlay.tscn")
+var _card_preview_scene: PackedScene = preload("res://src/ui/overlays/card_preview_overlay.tscn")
 var deck: Array[CardInstance] = []
 
 var next_level_id: String = ""
@@ -50,6 +51,8 @@ func _ready() -> void:
 
 	EventBus.tokens_changed.connect(_on_tokens_changed)
 	EventBus.tier_preview_requested.connect(_on_tier_preview_requested)
+	EventBus.card_preview_requested.connect(_on_card_preview_requested)
+	EventBus.unit_preview_requested.connect(_on_unit_preview_requested)
 	_update_token_display()
 
 	if next_level_id != "":
@@ -155,24 +158,19 @@ func _update_remove_card_list() -> void:
 	sorted_deck.sort_custom(func(a, b): return a.definition.id < b.definition.id)
 
 	for card in sorted_deck:
-		var slot := VBoxContainer.new()
-		slot.set("theme_override_constants/separation", 4)
-		remove_grid.add_child(slot)
-
 		var card_display := _card_display_scene.instantiate() as CardDisplay
-		slot.add_child(card_display)
+		remove_grid.add_child(card_display)
 		card_display.setup(card)
-
-		var remove_btn := Button.new()
-		remove_btn.text = "Remove"
-		remove_btn.pressed.connect(_on_card_remove_selected.bind(card))
-		slot.add_child(remove_btn)
+		card_display.mouse_filter = Control.MOUSE_FILTER_STOP
+		card_display.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		card_display.gui_input.connect(_on_remove_card_input.bind(card, card_display))
 
 
-func _on_card_remove_selected(card: CardInstance) -> void:
-	if _shop_system.remove_card(card):
-		deck.erase(card)
-		remove_popup.hide()
+func _on_remove_card_input(event: InputEvent, card: CardInstance, card_display: CardDisplay) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if _shop_system.remove_card(card):
+			deck.erase(card)
+			remove_popup.hide()
 
 
 func _on_cancel_remove_pressed() -> void:
@@ -193,8 +191,24 @@ func _on_tier_preview_requested(stall_def: StallDefinition, current_tier: int) -
 	overlay.setup(stall_def, current_tier)
 
 
+func _on_card_preview_requested(card: CardInstance) -> void:
+	var overlay = _card_preview_scene.instantiate()
+	add_child(overlay)
+	overlay.setup_card(card)
+
+
+func _on_unit_preview_requested(guest_def: GuestDefinition) -> void:
+	var overlay = _card_preview_scene.instantiate()
+	add_child(overlay)
+	overlay.setup_unit(guest_def)
+
+
 func _exit_tree() -> void:
 	if EventBus.tokens_changed.is_connected(_on_tokens_changed):
 		EventBus.tokens_changed.disconnect(_on_tokens_changed)
 	if EventBus.tier_preview_requested.is_connected(_on_tier_preview_requested):
 		EventBus.tier_preview_requested.disconnect(_on_tier_preview_requested)
+	if EventBus.card_preview_requested.is_connected(_on_card_preview_requested):
+		EventBus.card_preview_requested.disconnect(_on_card_preview_requested)
+	if EventBus.unit_preview_requested.is_connected(_on_unit_preview_requested):
+		EventBus.unit_preview_requested.disconnect(_on_unit_preview_requested)

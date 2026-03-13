@@ -61,5 +61,7 @@ signal debug_show_guest(guest: GuestInstance)
 signal debug_show_stall(stall: StallInstance)
 signal debug_show_relic(relic: RelicInstance)
 
-# Tier preview
+# Preview overlays
 signal tier_preview_requested(stall_def: StallDefinition, current_tier: int)
+signal card_preview_requested(card: CardInstance)
+signal unit_preview_requested(guest_def: GuestDefinition)

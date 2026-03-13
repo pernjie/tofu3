@@ -46,7 +46,7 @@ func setup_deck(starting_deck: Array) -> void:
 
 func setup_from_instances(cards: Array[CardInstance]) -> void:
 	## Initialize deck from existing CardInstance objects (for persistent deck).
-	## Skips removed cards (e.g. played relics, spent spells).
+	## Skips removed cards (e.g. played relics).
 	draw_pile.clear()
 	hand.clear()
 
@@ -91,8 +91,10 @@ func play_card(card: CardInstance, target_pos: Vector2i) -> bool:
 	hand.erase(card)
 
 	var card_type: String = card.get_card_type()
-	if card_type == "spell" or card_type == "relic":
+	if card_type == "relic":
 		card.location = CardInstance.Location.REMOVED
+	elif card_type == "spell":
+		card.location = CardInstance.Location.DISCARD
 	else:
 		card.location = CardInstance.Location.PLAYED
 

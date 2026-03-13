@@ -1,39 +1,37 @@
 class_name ShopSlot
 extends VBoxContainer
 
-## Shop slot: CardDisplay + price label + buy button.
+## Shop slot: CardDisplay + price label. Click card to buy.
 
 signal buy_pressed
 
 var _card: CardInstance
 var _is_sold: bool = false
+var _can_afford: bool = true
 var _hover_tween: Tween
 
 @onready var _card_display: CardDisplay = $CardDisplay
 @onready var _price_label: Label = $PriceLabel
-@onready var _buy_button: Button = $BuyButton
 
 
 func setup(card: CardInstance, price: int) -> void:
 	_card = card
 	_is_sold = false
+	_can_afford = true
 	_card_display.visible = true
 	_card_display.modulate = Color.WHITE
 	_card_display.scale = Vector2.ONE
 	_card_display.setup(card)
 	_price_label.text = "%d tokens" % price
-	_buy_button.visible = true
-	_buy_button.self_modulate.a = 1
-	_buy_button.disabled = false
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 
 func set_sold(card: CardInstance = null) -> void:
 	_is_sold = true
-	_buy_button.self_modulate.a = 0
-	_buy_button.disabled = true
 	_price_label.text = ""
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mouse_default_cursor_shape = Control.CURSOR_ARROW
 
 	if card:
 		_card = card
@@ -46,11 +44,14 @@ func set_sold(card: CardInstance = null) -> void:
 
 
 func set_affordable(can_afford: bool) -> void:
-	_buy_button.disabled = not can_afford
+	_can_afford = can_afford
+	if _is_sold:
+		return
+	_card_display.modulate = Color.WHITE if can_afford else Color(0.6, 0.6, 0.6, 0.8)
+	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if can_afford else Control.CURSOR_ARROW
 
 
 func _ready() -> void:
-	_buy_button.pressed.connect(func() -> void: buy_pressed.emit())
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 
@@ -77,14 +78,18 @@ func _on_mouse_exited() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if _is_sold:
 		return
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
-		_request_tier_preview()
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT and _can_afford:
+			buy_pressed.emit()
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			_request_preview()
 
 
-func _request_tier_preview() -> void:
+func _request_preview() -> void:
 	if not _card:
 		return
-	if not _card.definition is StallDefinition:
-		return
-	var stall_def := _card.definition as StallDefinition
-	EventBus.tier_preview_requested.emit(stall_def, 1)
+	if _card.definition is StallDefinition:
+		var stall_def := _card.definition as StallDefinition
+		EventBus.tier_preview_requested.emit(stall_def, 1)
+	else:
+		EventBus.card_preview_requested.emit(_card)

@@ -14,7 +14,3 @@ layout_mode = 2
 [node name="PriceLabel" type="Label" parent="."]
 layout_mode = 2
 horizontal_alignment = 1
-
-[node name="BuyButton" type="Button" parent="."]
-layout_mode = 2
-text = "Buy"
