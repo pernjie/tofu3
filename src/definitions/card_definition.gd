@@ -1,12 +1,5 @@
 class_name CardDefinition extends BaseDefinition
 
-const RARITY_PRICES: Dictionary = {
-	"common": 3,
-	"rare": 4,
-	"epic": 6,
-	"legendary": 8,
-}
-
 var card_type: String  # stall, spell, relic
 var hero_id: String  # Empty string = neutral card
 var shopable: bool  # Whether this card appears in shop offerings

@@ -29,7 +29,7 @@ func execute(context: TriggerContext, skill: SkillInstance) -> SkillEffectResult
 			available.append({
 				"title": guest_def.display_name_key,
 				"description": guest_def.description_key if guest_def.description_key else "",
-				"data": guest_def
+				"data": guest_id
 			})
 		else:
 			push_warning("DiscoverEffect: Guest '%s' not found in ContentRegistry" % guest_id)

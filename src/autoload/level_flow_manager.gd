@@ -13,9 +13,28 @@ var _pending_guest_group_index: int = -1
 var _pending_boss_guest: String = ""
 
 
+const RESET_HOLD_DURATION: float = 1.0
+var _reset_hold_time: float = 0.0
+
+
 func _ready() -> void:
 	EventBus.level_won.connect(_on_level_won)
 	EventBus.level_lost.connect(_on_level_lost)
+
+
+func _process(delta: float) -> void:
+	if Input.is_key_pressed(KEY_R):
+		_reset_hold_time += delta
+		if _reset_hold_time >= RESET_HOLD_DURATION:
+			_reset_hold_time = 0.0
+			_restart_run()
+	else:
+		_reset_hold_time = 0.0
+
+
+func _restart_run() -> void:
+	var hero_id: String = GameManager.current_run.hero.id if GameManager.current_run else "angry_bull"
+	start_new_run(hero_id)
 
 
 func start_new_run(hero_id: String = "angry_bull", run_id: String = "standard_run") -> void:

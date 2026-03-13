@@ -280,10 +280,11 @@ func advance_guest_on_path(guest: GuestInstance, path: Path, steps: int = 1, dir
 # Stall Management
 # =============================================================================
 
-func place_stall(stall_def: StallDefinition, pos: Vector2i) -> StallInstance:
+func place_stall(stall_def: StallDefinition, pos: Vector2i, card: CardInstance = null) -> StallInstance:
 	## Place a new stall: state + data display + animation.
 	## Does NOT emit events or play batch — caller controls timing.
 	## For place-or-upgrade with events, use deploy_stall().
+	## If card is provided, enhancements are transferred from card to stall.
 	if stalls.has(pos):
 		push_warning("Cannot place stall at %s - position occupied by stall" % pos)
 		return null
@@ -302,6 +303,11 @@ func place_stall(stall_def: StallDefinition, pos: Vector2i) -> StallInstance:
 	stall_tile.position = pos
 	stall.tile = stall_tile
 	stall.board_position = pos
+
+	# Transfer enhancements from card to stall
+	if card and not card.enhancements.is_empty():
+		stall.enhancements = card.enhancements.duplicate()
+		stall.apply_enhancements(stall.enhancements)
 
 	stalls[pos] = stall
 
@@ -341,17 +347,22 @@ func upgrade_and_notify(stall: StallInstance) -> StallInstance:
 	return upgraded
 
 
-func deploy_stall(stall_def: StallDefinition, pos: Vector2i) -> StallInstance:
+func deploy_stall(stall_def: StallDefinition, pos: Vector2i, card: CardInstance = null) -> StallInstance:
 	## Convenience: place or upgrade stall + emit appropriate event.
 	## For game.gd and skill effects. Does NOT play batch.
+	## If card is provided, enhancements flow from card to stall.
 	if stalls.has(pos):
 		var existing = stalls[pos]
 		if existing.definition.id == stall_def.id:
-			return upgrade_and_notify(existing)
+			var upgraded = upgrade_and_notify(existing)
+			if upgraded and card and not card.enhancements.is_empty():
+				upgraded.enhancements.append_array(card.enhancements)
+				upgraded.apply_enhancements(card.enhancements, true)
+			return upgraded
 		push_warning("Cannot place %s at %s - different stall type exists" % [stall_def.id, pos])
 		return null
 
-	var stall = place_stall(stall_def, pos)
+	var stall = place_stall(stall_def, pos, card)
 	if stall:
 		EventBus.stall_placed.emit(stall, stall.tile)
 	return stall

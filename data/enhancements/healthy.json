@@ -1,0 +1,15 @@
+{
+  "id": "healthy",
+  "display_name_key": "enhancement_healthy",
+  "description": "+1 cost, remove 1 debuff on serve",
+  "rarity": "rare",
+  "shopable": true,
+  "hero_id": "",
+  "applicable_to": {
+    "operation_models": []
+  },
+  "stat_modifiers": [
+    { "stat": "cost_to_guest", "operation": "add", "value": 1 }
+  ],
+  "added_skills": ["healthy_cleanse"]
+}

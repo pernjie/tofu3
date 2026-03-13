@@ -70,11 +70,12 @@ func show_stall_info(stall: StallInstance) -> void:
 	lines.append("== Service ==")
 	lines.append("Need Type: %s" % stall.get_need_type())
 	lines.append("Value: %d (base: %d)" % [stall.get_value(), base_value])
+	var base_cost = tier_data.cost_to_guest if tier_data else 0
+	lines.append("Cost to Guest: %d (base: %d)" % [stall.get_cost_to_guest(), base_cost])
 	lines.append("Model: %s" % stall.get_operation_model())
 
 	if stall.get_operation_model() == "product":
-		var restock_amount = tier_data.restock_amount if tier_data else 0
-		lines.append("Stock: %d / %d" % [stall.current_stock, restock_amount])
+		lines.append("Stock: %d / %d" % [stall.current_stock, stall.get_restock_amount()])
 	else:
 		lines.append("Duration: %d turns" % stall.get_service_duration())
 

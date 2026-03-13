@@ -13,8 +13,7 @@ func execute(context: TriggerContext, skill: SkillInstance) -> SkillEffectResult
 	for stall in BoardSystem.get_all_stalls():
 		if stall.get_operation_model() != "product":
 			continue
-		var tier_data = stall.get_current_tier_data()
-		if not tier_data or stall.current_stock >= tier_data.restock_amount:
+		if stall.current_stock >= stall.get_restock_amount():
 			continue
 		if BoardSystem.restock_and_notify(stall):
 			restocked_count += 1

@@ -1,5 +1,12 @@
 class_name BaseDefinition extends Resource
 
+const RARITY_PRICES: Dictionary = {
+	"common": 3,
+	"rare": 4,
+	"epic": 6,
+	"legendary": 8,
+}
+
 var id: String
 var display_name_key: String
 var description_key: String

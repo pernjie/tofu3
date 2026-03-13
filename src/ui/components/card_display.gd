@@ -38,6 +38,7 @@ var _display_scale: float = 1.0
 @onready var _needs_row: HBoxContainer = $Panel/VBox/NeedsRow
 @onready var _stats_box: VBoxContainer = $Panel/VBox/StatsBox
 @onready var _description_label: Label = $Panel/VBox/DescriptionLabel
+@onready var _enhancement_label: Label = $Panel/VBox/EnhancementLabel
 @onready var _type_label: Label = $Panel/VBox/TypeLabel
 
 
@@ -77,7 +78,8 @@ func setup(card: CardInstance) -> void:
 	_card = card
 	var def := card.definition
 	_apply_common(def)
-	_build_stall_stats(def)
+	_build_stall_stats(def, card)
+	_update_enhancement_label(card)
 	_auto_scale_description()
 
 
@@ -106,6 +108,7 @@ func setup_unit(guest_def: GuestDefinition) -> void:
 
 
 func _apply_unit_common(guest_def: GuestDefinition) -> void:
+	_enhancement_label.visible = false
 	_name_label.text = guest_def.get_display_name()
 	_description_label.text = guest_def.get_description()
 
@@ -178,8 +181,20 @@ func _build_needs_row(guest_def: GuestDefinition) -> void:
 	_needs_row.visible = _needs_row.get_child_count() > 0
 
 
+func _update_enhancement_label(card: CardInstance) -> void:
+	if card.enhancements.is_empty():
+		_enhancement_label.visible = false
+		return
+	var names: Array[String] = []
+	for enh in card.enhancements:
+		names.append(enh.get_display_name())
+	_enhancement_label.text = ", ".join(names)
+	_enhancement_label.visible = true
+
+
 func _apply_common(def: CardDefinition) -> void:
 	_needs_row.visible = false
+	_enhancement_label.visible = false
 
 	# Name
 	_name_label.text = def.get_display_name()
@@ -234,7 +249,7 @@ func _apply_common_from_def(stall_def: StallDefinition, tier: StallTierData) -> 
 		_description_label.text = "\n".join(parts)
 
 
-func _build_stall_stats(def: CardDefinition) -> void:
+func _build_stall_stats(def: CardDefinition, card: CardInstance = null) -> void:
 	for child in _stats_box.get_children():
 		child.queue_free()
 
@@ -247,10 +262,10 @@ func _build_stall_stats(def: CardDefinition) -> void:
 		_stats_box.visible = false
 		return
 
-	_build_tier_stats(stall_def, stall_def.tiers[0], null)
+	_build_tier_stats(stall_def, stall_def.tiers[0], null, card)
 
 
-func _build_tier_stats(stall_def: StallDefinition, tier: StallTierData, prev_tier: StallTierData) -> void:
+func _build_tier_stats(stall_def: StallDefinition, tier: StallTierData, prev_tier: StallTierData, card: CardInstance = null) -> void:
 	for child in _stats_box.get_children():
 		child.queue_free()
 	_stats_box.visible = true
@@ -261,18 +276,36 @@ func _build_tier_stats(stall_def: StallDefinition, tier: StallTierData, prev_tie
 		type_text += " · " + stall_def.need_type.capitalize()
 	_add_stat_line(type_text)
 
-	# Line 2: "2 food for 1¢"
+	# Line 2: "2 food for 1¢" — apply enhancement modifiers if available
+	var display_value: int = tier.value
+	var display_cost: int = tier.cost_to_guest
+	if card:
+		display_value = card.get_enhanced_stat_preview("value", tier.value)
+		display_cost = card.get_enhanced_stat_preview("cost_to_guest", tier.cost_to_guest)
 	var value_changed := prev_tier != null and (tier.value != prev_tier.value or tier.cost_to_guest != prev_tier.cost_to_guest)
-	var value_text := "%d %s for %d¢" % [tier.value, stall_def.need_type, tier.cost_to_guest]
-	_add_stat_line(value_text, value_changed)
+	var enhanced := card != null and (display_value != tier.value or display_cost != tier.cost_to_guest)
+	var value_text := "%d %s for %d¢" % [display_value, stall_def.need_type, display_cost]
+	_add_stat_line(value_text, value_changed or enhanced)
 
-	# Line 3: model-specific
+	# Line 3: model-specific — apply enhancement modifiers if available
 	if stall_def.operation_model == "product":
+		var display_restock: int = tier.restock_amount
+		var display_restock_dur: int = tier.restock_duration
+		if card:
+			display_restock = card.get_enhanced_stat_preview("restock_amount", tier.restock_amount)
+			display_restock_dur = card.get_enhanced_stat_preview("restock_duration", tier.restock_duration)
 		var stock_changed := prev_tier != null and (tier.restock_amount != prev_tier.restock_amount or tier.restock_duration != prev_tier.restock_duration)
-		_add_stat_line("Restock %d every %d turns" % [tier.restock_amount, tier.restock_duration], stock_changed)
+		var stock_enhanced := card != null and (display_restock != tier.restock_amount or display_restock_dur != tier.restock_duration)
+		_add_stat_line("Restock %d every %d turns" % [display_restock, display_restock_dur], stock_changed or stock_enhanced)
 	else:
+		var display_cap: int = tier.capacity
+		var display_dur: int = tier.service_duration
+		if card:
+			display_cap = card.get_enhanced_stat_preview("capacity", tier.capacity)
+			display_dur = card.get_enhanced_stat_preview("service_duration", tier.service_duration)
 		var cap_changed := prev_tier != null and (tier.capacity != prev_tier.capacity or tier.service_duration != prev_tier.service_duration)
-		_add_stat_line("Serves %d over %d turns" % [tier.capacity, tier.service_duration], cap_changed)
+		var cap_enhanced := card != null and (display_cap != tier.capacity or display_dur != tier.service_duration)
+		_add_stat_line("Serves %d over %d turns" % [display_cap, display_dur], cap_changed or cap_enhanced)
 
 
 func _add_stat_line(text: String, highlight: bool = false) -> void:

@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EnhancementDefinition",
+  "type": "object",
+  "required": ["id", "display_name_key", "description"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this enhancement"
+    },
+    "display_name_key": {
+      "type": "string"
+    },
+    "description_key": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable summary of the enhancement's effect"
+    },
+    "rarity": {
+      "type": "string",
+      "enum": ["common", "rare", "epic", "legendary"],
+      "default": "common"
+    },
+    "icon_path": {
+      "type": "string"
+    },
+    "shopable": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this enhancement appears in shop offerings"
+    },
+    "hero_id": {
+      "type": "string",
+      "default": "",
+      "description": "Empty string for neutral enhancements available to all heroes"
+    },
+    "applicable_to": {
+      "type": "object",
+      "properties": {
+        "operation_models": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["product", "service", "bulk_service"]
+          },
+          "description": "Which operation models this enhancement can be applied to. Empty array = applies to all."
+        }
+      }
+    },
+    "stat_modifiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stat", "operation", "value"],
+        "properties": {
+          "stat": {
+            "type": "string",
+            "description": "Stat name: value, cost_to_guest, capacity, service_duration, restock_amount, restock_duration"
+          },
+          "operation": {
+            "type": "string",
+            "enum": ["add", "multiply", "set", "add_final"]
+          },
+          "value": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "added_skills": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Skill IDs granted to the stall when this enhancement is active"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -123,8 +123,8 @@ class TestTenguTransform:
 		var tengu = create_guest("tengu")
 		register_guest(tengu, Vector2i(1, 0))
 
-		assert_eq(tengu.get_remaining_need("joy"), 7,
-			"Should start with 7 joy needs")
+		assert_eq(tengu.get_remaining_need("joy"), 10,
+			"Should start with 10 joy needs")
 
 		# Fulfill 3 joy, then fire on_need_fulfilled
 		tengu.fulfill_need("joy", 3)
@@ -135,8 +135,8 @@ class TestTenguTransform:
 
 		assert_eq(tengu.get_remaining_need("joy"), 0,
 			"Joy needs should be 0 after transform")
-		assert_eq(tengu.get_remaining_need("food"), 4,
-			"Remaining 4 joy should have become food")
+		assert_eq(tengu.get_remaining_need("food"), 7,
+			"Remaining 7 joy should have become food")
 
 	func test_food_fulfillment_transforms_remaining_to_joy():
 		var tengu = create_guest("tengu")
@@ -157,8 +157,8 @@ class TestTenguTransform:
 
 		assert_eq(tengu.get_remaining_need("food"), 0,
 			"Food needs should be 0 after transform back")
-		assert_eq(tengu.get_remaining_need("joy"), 2,
-			"Remaining 2 food should have become joy")
+		assert_eq(tengu.get_remaining_need("joy"), 5,
+			"Remaining 5 food should have become joy")
 
 	func test_full_alternation_cycle():
 		var tengu = create_guest("tengu")
@@ -169,20 +169,20 @@ class TestTenguTransform:
 		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
 			.with_guest(tengu).with_source(tengu) \
 			.with_need_type("joy").with_amount(3), [tengu])
-		assert_eq(tengu.get_remaining_need("food"), 4, "Cycle 1: 4 food remaining")
+		assert_eq(tengu.get_remaining_need("food"), 7, "Cycle 1: 7 food remaining")
 
 		# Cycle 2: fulfill 2 food -> 2 joy
 		tengu.fulfill_need("food", 2)
 		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
 			.with_guest(tengu).with_source(tengu) \
 			.with_need_type("food").with_amount(2), [tengu])
-		assert_eq(tengu.get_remaining_need("joy"), 2, "Cycle 2: 2 joy remaining")
+		assert_eq(tengu.get_remaining_need("joy"), 5, "Cycle 2: 5 joy remaining")
 
 		# Cycle 3: fulfill all joy -> ascend-ready
-		tengu.fulfill_need("joy", 2)
+		tengu.fulfill_need("joy", 5)
 		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
 			.with_guest(tengu).with_source(tengu) \
-			.with_need_type("joy").with_amount(2), [tengu])
+			.with_need_type("joy").with_amount(5), [tengu])
 
 		assert_true(tengu.are_all_needs_fulfilled(),
 			"Tengu should be fully fulfilled after complete cycle")
@@ -191,12 +191,12 @@ class TestTenguTransform:
 		var tengu = create_guest("tengu")
 		register_guest(tengu, Vector2i(1, 0))
 
-		# Fulfill all 7 joy at once (overfulfill scenario)
-		tengu.fulfill_need("joy", 7)
+		# Fulfill all 10 joy at once (overfulfill scenario)
+		tengu.fulfill_need("joy", 10)
 
 		fire_for("on_need_fulfilled", TriggerContext.create("on_need_fulfilled") \
 			.with_guest(tengu).with_source(tengu) \
-			.with_need_type("joy").with_amount(9), [tengu])
+			.with_need_type("joy").with_amount(10), [tengu])
 
 		assert_eq(tengu.get_remaining_need("food"), 0,
 			"No food needs should appear when joy was fully fulfilled")
@@ -212,7 +212,7 @@ class TestTenguTransform:
 			.with_guest(tengu).with_source(tengu) \
 			.with_need_type("joy").with_amount(3), [tengu])
 
-		assert_eq(tengu.initial_needs.get("food", 0), 4,
+		assert_eq(tengu.initial_needs.get("food", 0), 7,
 			"Initial food should reflect transformed amount for display")
 		assert_eq(tengu.initial_needs.get("joy", 0), 3,
 			"Initial joy should reflect only the already-fulfilled portion")

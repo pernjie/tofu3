@@ -5,6 +5,7 @@ extends VBoxContainer
 ## Displays card offerings, buy buttons, and reroll.
 
 signal remove_card_requested
+signal enhancement_buy_requested(slot_index: int)
 
 var _shop_system: ShopSystem
 var _shop_slot_scene: PackedScene = preload("res://src/ui/components/shop_slot.tscn")
@@ -106,17 +107,20 @@ func _refresh() -> void:
 
 	for i in _shop_slots.size():
 		var slot := _shop_slots[i]
-		var card: CardInstance = offerings[i] if i < offerings.size() else null
+		var offering: ShopOffering = offerings[i] if i < offerings.size() else null
 
-		if i >= offerings.size():
+		if offering == null:
+			slot.set_empty()
+			continue
+
+		slot.setup_offering(offering)
+
+		if _shop_system.is_slot_sold(i):
 			slot.set_sold()
-		elif _shop_system.is_slot_sold(i):
-			slot.set_sold(card)
-		elif card:
-			slot.setup(card, card.get_effective_price())
-			slot.set_affordable(_shop_system.can_afford_card(i))
+		elif _shop_system.is_slot_pending(i):
+			slot.set_pending()
 		else:
-			slot.set_sold()
+			slot.set_affordable(_shop_system.can_afford_offering(i))
 
 	_update_reroll_button()
 	_update_remove_button()
@@ -136,11 +140,11 @@ func _update_affordability() -> void:
 		return
 	var offerings := _shop_system.get_offerings()
 	for i in _shop_slots.size():
-		if i >= offerings.size() or _shop_system.is_slot_sold(i):
+		if i >= offerings.size() or _shop_system.is_slot_sold(i) or _shop_system.is_slot_pending(i):
 			continue
-		var card: CardInstance = offerings[i]
-		if card:
-			_shop_slots[i].set_affordable(_shop_system.can_afford_card(i))
+		var offering: ShopOffering = offerings[i]
+		if offering:
+			_shop_slots[i].set_affordable(_shop_system.can_afford_offering(i))
 	_update_reroll_button()
 	_update_remove_button()
 
@@ -162,8 +166,16 @@ func _update_remove_button() -> void:
 
 
 func _on_buy_pressed(slot_index: int) -> void:
+	var offering := _shop_system.get_offering(slot_index)
+	if offering and offering.is_enhancement():
+		enhancement_buy_requested.emit(slot_index)
+		return
 	if _shop_system.purchase_card(slot_index):
 		_refresh()
+
+
+func refresh() -> void:
+	_refresh()
 
 
 func _on_reroll_pressed() -> void:

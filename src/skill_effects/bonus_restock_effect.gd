@@ -14,11 +14,9 @@ func execute(context: TriggerContext, skill: SkillInstance) -> SkillEffectResult
 	if not stall:
 		return SkillEffectResult.failed("No stall in context")
 
-	var tier_data = stall.get_current_tier_data()
-	if not tier_data:
-		return SkillEffectResult.failed("Stall has no tier data")
-
-	var bonus = tier_data.restock_amount
+	var bonus = stall.get_restock_amount()
+	if bonus == 0:
+		return SkillEffectResult.failed("Stall has zero restock amount")
 	var old_stock = stall.current_stock
 	stall.current_stock += bonus
 

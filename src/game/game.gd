@@ -209,6 +209,17 @@ func _refresh_hand_dimming() -> void:
 	hand_display.refresh_all_dimming(deck_system.get_playable_types())
 
 
+func _process(delta: float) -> void:
+	if Input.is_key_pressed(KEY_R):
+		_reset_hold_time += delta
+		if _reset_hold_time >= RESET_HOLD_DURATION:
+			_reset_hold_time = 0.0
+			var hero_id: String = GameManager.current_run.hero.id if GameManager.current_run else "angry_bull"
+			LevelFlowManager.start_new_run(hero_id)
+	else:
+		_reset_hold_time = 0.0
+
+
 func _input(event: InputEvent) -> void:
 	# Backtick toggles debug console
 	if OS.is_debug_build() and event is InputEventKey and event.pressed and not event.echo:
@@ -322,10 +333,10 @@ func _on_slot_clicked(pos: Vector2i) -> void:
 
 	var stall_def = selected_card.definition as StallDefinition
 	if stall_def:
-		_place_stall(stall_def, pos)
+		_place_stall(stall_def, pos, selected_card)
 
 
-func _place_stall(stall_def: StallDefinition, pos: Vector2i) -> void:
+func _place_stall(stall_def: StallDefinition, pos: Vector2i, card: CardInstance = null) -> void:
 	## Handle placing or upgrading a stall card on the board.
 	var existing_stall = BoardSystem.get_stall_at(pos)
 
@@ -338,7 +349,7 @@ func _place_stall(stall_def: StallDefinition, pos: Vector2i) -> void:
 		if not BoardSystem.board.can_place_at(pos):
 			return
 
-	var stall = BoardSystem.deploy_stall(stall_def, pos)
+	var stall = BoardSystem.deploy_stall(stall_def, pos, card)
 	if stall:
 		deck_system.play_card(selected_card, pos)
 

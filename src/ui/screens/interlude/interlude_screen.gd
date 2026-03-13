@@ -37,6 +37,13 @@ var _shop_system: ShopSystem
 @onready var guest_title: Label = $GuestPopup/MarginContainer/VBoxContainer/GuestTitle
 @onready var close_guests_button: Button = $GuestPopup/MarginContainer/VBoxContainer/CloseGuestsButton
 
+@onready var enhancement_popup: Panel = $EnhancementPopup
+@onready var enhancement_grid: HFlowContainer = $EnhancementPopup/MarginContainer/VBoxContainer/ScrollContainer/EnhancementGrid
+@onready var enhancement_title: Label = $EnhancementPopup/MarginContainer/VBoxContainer/EnhancementTitle
+@onready var cancel_enhancement_button: Button = $EnhancementPopup/MarginContainer/VBoxContainer/CancelEnhancementButton
+
+var _shop_panel: ShopPanel
+
 
 func _ready() -> void:
 	view_guests_button.pressed.connect(_on_view_guests_pressed)
@@ -45,9 +52,11 @@ func _ready() -> void:
 	close_deck_button.pressed.connect(_on_close_deck_pressed)
 	close_guests_button.pressed.connect(_on_close_guests_pressed)
 	cancel_remove_button.pressed.connect(_on_cancel_remove_pressed)
+	cancel_enhancement_button.pressed.connect(_on_cancel_enhancement_pressed)
 	deck_popup.hide()
 	guest_popup.hide()
 	remove_popup.hide()
+	enhancement_popup.hide()
 
 	EventBus.tokens_changed.connect(_on_tokens_changed)
 	EventBus.tier_preview_requested.connect(_on_tier_preview_requested)
@@ -91,11 +100,12 @@ func _setup_shop_panel() -> void:
 	if not _shop_system:
 		return
 
-	var shop_panel := ShopPanel.new()
-	shop_panel.alignment = BoxContainer.ALIGNMENT_CENTER
-	shop_area.add_child(shop_panel)
-	shop_panel.setup(_shop_system)
-	shop_panel.remove_card_requested.connect(_on_remove_card_requested)
+	_shop_panel = ShopPanel.new()
+	_shop_panel.alignment = BoxContainer.ALIGNMENT_CENTER
+	shop_area.add_child(_shop_panel)
+	_shop_panel.setup(_shop_system)
+	_shop_panel.remove_card_requested.connect(_on_remove_card_requested)
+	_shop_panel.enhancement_buy_requested.connect(_on_enhancement_buy_requested)
 
 
 func _update_guest_list() -> void:
@@ -175,6 +185,55 @@ func _on_remove_card_input(event: InputEvent, card: CardInstance, card_display: 
 
 func _on_cancel_remove_pressed() -> void:
 	remove_popup.hide()
+
+
+func _on_enhancement_buy_requested(slot_index: int) -> void:
+	var enhancement := _shop_system.begin_enhancement_purchase(slot_index)
+	if enhancement == null:
+		return
+	_shop_panel.refresh()
+	_update_enhancement_card_list(enhancement)
+	enhancement_popup.show()
+
+
+func _update_enhancement_card_list(enhancement: EnhancementDefinition) -> void:
+	for child in enhancement_grid.get_children():
+		child.queue_free()
+
+	enhancement_title.text = "Apply: %s" % enhancement.get_display_name()
+
+	var eligible := _shop_system.get_eligible_cards(enhancement)
+
+	if eligible.is_empty():
+		var label := Label.new()
+		label.text = "No eligible stall cards in deck"
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		enhancement_grid.add_child(label)
+		return
+
+	var sorted := eligible.duplicate()
+	sorted.sort_custom(func(a, b): return a.definition.id < b.definition.id)
+
+	for card in sorted:
+		var card_display := _card_display_scene.instantiate() as CardDisplay
+		enhancement_grid.add_child(card_display)
+		card_display.setup(card)
+		card_display.mouse_filter = Control.MOUSE_FILTER_STOP
+		card_display.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		card_display.gui_input.connect(_on_enhancement_card_input.bind(card))
+
+
+func _on_enhancement_card_input(event: InputEvent, card: CardInstance) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if _shop_system.complete_enhancement_purchase(card):
+			enhancement_popup.hide()
+			_shop_panel.refresh()
+
+
+func _on_cancel_enhancement_pressed() -> void:
+	_shop_system.cancel_enhancement_purchase()
+	enhancement_popup.hide()
+	_shop_panel.refresh()
 
 
 func _on_continue_pressed() -> void:

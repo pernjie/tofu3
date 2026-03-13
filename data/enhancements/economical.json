@@ -1,0 +1,16 @@
+{
+  "id": "economical",
+  "display_name_key": "enhancement_economical",
+  "description": "-1 value, -1 price",
+  "rarity": "common",
+  "shopable": true,
+  "hero_id": "",
+  "applicable_to": {
+    "operation_models": ["product"]
+  },
+  "stat_modifiers": [
+    { "stat": "value", "operation": "add", "value": -1 },
+    { "stat": "cost_to_guest", "operation": "add", "value": -1 }
+  ],
+  "added_skills": []
+}
