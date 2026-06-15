@@ -46,6 +46,7 @@ func _connect_signals() -> void:
 	EventBus.guest_banished.connect(_on_guest_banished)
 	EventBus.stall_restocked.connect(_on_stall_restocked)
 	EventBus.guest_served.connect(_on_guest_served)
+	EventBus.beast_interacted.connect(_on_beast_interacted)
 	EventBus.debug_show_guest.connect(_on_debug_show_guest)
 	EventBus.debug_show_stall.connect(_on_debug_show_stall)
 	EventBus.debug_show_relic.connect(_on_debug_show_relic)
@@ -207,17 +208,6 @@ func _update_hud() -> void:
 
 func _refresh_hand_dimming() -> void:
 	hand_display.refresh_all_dimming(deck_system.get_playable_types())
-
-
-func _process(delta: float) -> void:
-	if Input.is_key_pressed(KEY_R):
-		_reset_hold_time += delta
-		if _reset_hold_time >= RESET_HOLD_DURATION:
-			_reset_hold_time = 0.0
-			var hero_id: String = GameManager.current_run.hero.id if GameManager.current_run else "angry_bull"
-			LevelFlowManager.start_new_run(hero_id)
-	else:
-		_reset_hold_time = 0.0
 
 
 func _input(event: InputEvent) -> void:
@@ -417,7 +407,13 @@ func _handle_discover_request(request: Dictionary, relic: RelicInstance) -> void
 	var prompt = tr(request.get("prompt", "DISCOVER_DEFAULT_PROMPT"))
 	var options: Array[Dictionary] = []
 	for opt in request.get("options", []):
-		options.append(opt)
+		var resolved_opt: Dictionary = opt.duplicate()
+		var data = opt.get("data")
+		if data is String:
+			var guest_def = ContentRegistry.get_definition("guests", data)
+			if guest_def:
+				resolved_opt["data"] = guest_def
+		options.append(resolved_opt)
 	overlay.setup(prompt, options)
 
 	# Wait for player selection
@@ -506,7 +502,13 @@ func _handle_summon_beast_choice(request: Dictionary) -> void:
 	var prompt = tr(request.get("prompt", "DISCOVER_BEAST_PROMPT"))
 	var options: Array[Dictionary] = []
 	for opt in request.get("options", []):
-		options.append(opt)
+		var resolved_opt: Dictionary = opt.duplicate()
+		var data = opt.get("data")
+		if data is String:
+			var guest_def = ContentRegistry.get_definition("guests", data)
+			if guest_def:
+				resolved_opt["data"] = guest_def
+		options.append(resolved_opt)
 	overlay.setup(prompt, options)
 
 	# Wait for player selection
@@ -713,6 +715,17 @@ func _on_guest_exited_stall(guest: GuestInstance, stall: StallInstance) -> void:
 	if stall.tile:
 		board_visual.refresh_stall(stall.tile.position)
 	print("Guest %s exited %s" % [guest.definition.id, stall.definition.id])
+
+
+func _on_beast_interacted(beast: GuestInstance, guest: GuestInstance) -> void:
+	# Refresh beast visual (interact need count changed)
+	var beast_entity = board_visual.get_guest_entity(beast)
+	if beast_entity:
+		beast_entity.refresh()
+	# Refresh guest visual (interaction effects may have changed state)
+	var guest_entity = board_visual.get_guest_entity(guest)
+	if guest_entity:
+		guest_entity.refresh()
 
 
 func _on_guest_served(guest: GuestInstance, stall: StallInstance) -> void:

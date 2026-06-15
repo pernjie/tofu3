@@ -19,7 +19,9 @@ const PRE_ENHANCED_CHANCE: float = 0.05
 
 var _hero_id: String
 var _stall_pool: Array[CardDefinition]
-var _other_pool: Array  # CardDefinition + EnhancementDefinition (mixed for weighted random)
+var _spell_pool: Array[CardDefinition]
+var _relic_pool: Array[CardDefinition]
+var _shopable_enhancements: Array[EnhancementDefinition]
 var _enhancement_defs: Array[EnhancementDefinition]  # Full list for pre-enhanced rolls
 var _reroll_count: int = 0
 var _offerings: Array  # ShopOffering per slot, null = empty
@@ -190,7 +192,9 @@ func has_offerings() -> bool:
 
 func _build_pool(hero_id: String) -> void:
 	_stall_pool = []
-	_other_pool = []
+	_spell_pool = []
+	_relic_pool = []
+	_shopable_enhancements = []
 	_enhancement_defs = []
 	for type in ["stalls", "spells", "relics"]:
 		for def in ContentRegistry.get_all_of_type(type):
@@ -198,10 +202,10 @@ func _build_pool(hero_id: String) -> void:
 				continue
 			if def.hero_id == hero_id or def.hero_id == "":
 				var card_def := def as CardDefinition
-				if card_def.card_type == "stall":
-					_stall_pool.append(card_def)
-				else:
-					_other_pool.append(card_def)
+				match card_def.card_type:
+					"stall": _stall_pool.append(card_def)
+					"spell": _spell_pool.append(card_def)
+					"relic": _relic_pool.append(card_def)
 
 	for def in ContentRegistry.get_all_of_type("enhancements"):
 		var enh_def := def as EnhancementDefinition
@@ -209,7 +213,7 @@ func _build_pool(hero_id: String) -> void:
 			continue
 		_enhancement_defs.append(enh_def)
 		if enh_def.shopable:
-			_other_pool.append(enh_def)
+			_shopable_enhancements.append(enh_def)
 
 
 func _generate_offerings() -> void:
@@ -217,8 +221,9 @@ func _generate_offerings() -> void:
 	_pending_slot = -1
 	_offerings = []
 
-	# Pick stall offerings
+	# Pick stall offerings (guaranteed at least 1 food + 1 joy)
 	var stall_defs: Array = WeightedRandom.select_multiple(_stall_pool, NUM_STALL_OFFERINGS, RARITY_WEIGHTS)
+	stall_defs = _ensure_need_coverage(stall_defs)
 	for def in stall_defs:
 		var card := CardInstance.new(def)
 		card.location = CardInstance.Location.SHOP
@@ -229,15 +234,23 @@ func _generate_offerings() -> void:
 	while _offerings.size() < NUM_STALL_OFFERINGS:
 		_offerings.append(null)
 
-	# Pick extra offering from mixed pool (spells, relics, enhancements)
-	if not _other_pool.is_empty():
-		var selected: Array = WeightedRandom.select_multiple(_other_pool, 1, RARITY_WEIGHTS)
-		if not selected.is_empty():
-			var def = selected[0]
-			if def is EnhancementDefinition:
-				_offerings.append(ShopOffering.from_enhancement(def))
+	# Pick extra offering: choose type first (equal weight), then item by rarity
+	var extra_pools: Array = []
+	if not _spell_pool.is_empty():
+		extra_pools.append(_spell_pool)
+	if not _relic_pool.is_empty():
+		extra_pools.append(_relic_pool)
+	if not _shopable_enhancements.is_empty():
+		extra_pools.append(_shopable_enhancements)
+
+	if not extra_pools.is_empty():
+		var chosen_pool: Array = extra_pools[randi() % extra_pools.size()]
+		var selected = WeightedRandom.select_by_rarity(chosen_pool, RARITY_WEIGHTS)
+		if selected:
+			if selected is EnhancementDefinition:
+				_offerings.append(ShopOffering.from_enhancement(selected))
 			else:
-				var card := CardInstance.new(def)
+				var card := CardInstance.new(selected)
 				card.location = CardInstance.Location.SHOP
 				card.price_offset = PRICE_OFFSETS.pick_random()
 				_offerings.append(ShopOffering.from_card(card, card.price_offset))
@@ -261,3 +274,56 @@ func _try_pre_enhance(card: CardInstance) -> void:
 
 	if not compatible.is_empty():
 		card.apply_enhancement(compatible.pick_random())
+
+
+func _ensure_need_coverage(selected: Array) -> Array:
+	if _covers_need(selected, "food") and _covers_need(selected, "joy"):
+		return selected
+
+	var result := selected.duplicate()
+	var used := {}
+	for def in result:
+		used[def] = true
+
+	for needed_type in ["food", "joy"]:
+		if _covers_need(result, needed_type):
+			continue
+
+		# Find a replacement that covers the missing need type
+		var candidates := _stall_pool.filter(func(d: CardDefinition) -> bool:
+			if used.has(d):
+				return false
+			var st := d as StallDefinition
+			return st.need_type == needed_type or st.need_type == "any"
+		)
+		if candidates.is_empty():
+			continue
+
+		var replacement = WeightedRandom.select_by_rarity(candidates, RARITY_WEIGHTS)
+		if not replacement:
+			continue
+
+		# Swap out a stall that doesn't serve the OTHER required type
+		var other_type := "joy" if needed_type == "food" else "food"
+		var swap_idx := -1
+		for i in result.size():
+			var st := result[i] as StallDefinition
+			if st.need_type != other_type and st.need_type != "any":
+				swap_idx = i
+				break
+		if swap_idx < 0:
+			swap_idx = result.size() - 1
+
+		used.erase(result[swap_idx])
+		result[swap_idx] = replacement
+		used[replacement] = true
+
+	return result
+
+
+func _covers_need(defs: Array, need: String) -> bool:
+	for def in defs:
+		var st := def as StallDefinition
+		if st.need_type == need or st.need_type == "any":
+			return true
+	return false

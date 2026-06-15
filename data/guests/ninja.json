@@ -8,10 +8,10 @@
   "is_core_guest": true,
   "base_stats": {
     "needs": {
-      "food": 3,
-      "joy": 3
+      "food": 2,
+      "joy": 2
     },
-    "money": 7,
+    "money": 4,
     "movement_speed": 2
   },
   "skills": [],

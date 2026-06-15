@@ -10,7 +10,7 @@
     {
       "id": "ninja_raid",
       "weight": 2,
-      "guests": ["ninja", "ninja", "ninja", "ninja", "hungry_ghost", "playful_spirit"]
+      "guests": ["ninja", "ninja", "hungry_ghost", "playful_spirit", "hungry_ghost", "playful_spirit"]
     },
     {
       "id": "samurai_raid",
